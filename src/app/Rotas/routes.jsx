@@ -16,7 +16,7 @@ import VerMais from '../componentes/Administradores/PaginaDeVerMais/app';
 
 export default function Rotas() {
   return(
-    <HashRouter>
+    <HashRouter basename="/">
         <Routes>
             {/*O "path" é uma indicação do que vai aparecer na URL do navegador*/}
             <Route path='/' element={<HomeVisitantes/>}/>

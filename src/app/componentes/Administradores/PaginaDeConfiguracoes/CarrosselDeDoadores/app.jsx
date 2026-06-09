@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import api from "../../../../../services/api";
 import axios from "axios";
-import styles from "./carrosselDoadores.module.css";
+import styles from "./carrossel.module.css";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 

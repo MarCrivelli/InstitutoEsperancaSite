@@ -4,7 +4,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
-import styles from "./carrosselAnimais.module.css";
+import styles from "./carrossel.module.css";
 
 const SetaCustomizadaDoCarrossel = ({ onClick, direcao }) => {
   const Icone = direcao === "left" ? FiChevronLeft : FiChevronRight;
