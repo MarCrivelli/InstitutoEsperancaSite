@@ -1,5 +1,5 @@
 //Importações para as rotas funcionarem
-import { HashRouter, Route, Routes} from 'react-router-dom';
+import { HashRouter, BrowserRouter, Route, Routes} from 'react-router-dom';
 //Importações para as páginas de visitantes
 import HomeVisitantes from '../componentes/Visitantes/Home/PaginaPrincipal/app';
 import GerenciarUsuario from '../componentes/PaginaDeUsuarios/PaginaPrincipal/app';
@@ -16,7 +16,7 @@ import VerMais from '../componentes/Administradores/PaginaDeVerMais/app';
 
 export default function Rotas() {
   return(
-    <HashRouter basename="/">
+    <BrowserRouter>
         <Routes>
             {/*O "path" é uma indicação do que vai aparecer na URL do navegador*/}
             <Route path='/' element={<HomeVisitantes/>}/>
@@ -30,8 +30,9 @@ export default function Rotas() {
             <Route path='/configuracoes' element={<Configuracoes/>}/>
             <Route path='/programar_postagem' element={<ProgramarPostagem/>}/>
             <Route path='/ver_mais/:id' element={<VerMais/>}/>
+
         </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 
