@@ -1,0 +1,78 @@
+.fundoPostagem {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 126px);
+  height: 100vh;
+  padding: 2%;
+  background-image: url("/fundoPatas2.png");
+  background-repeat: repeat; /* Faz com que a imagem se repita */
+  background-size: 900px 900px; /* Define o tamanho da imagem (largura x altura) */
+  background-position: top left; /* A posição inicial da repetição é no canto superior esquerdo */
+  background-color: #e3e3e37e;
+  border: 1px solid #b3b3b3;
+}
+
+.painel {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border: 1px solid #b3b3b3;
+  height: auto;
+  width: 100%;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.tituloPainel{
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.filtroPostagem{
+  display: flex;
+  width: 100%;
+  height: auto;
+  flex-wrap: wrap-reverse;
+}
+
+.colunaPostagem1, .colunaPostagem2{
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.colunaPostagem1{
+  width: 55%;
+  border-right: 1px solid #b3b3b3;
+  row-gap: 30px;
+  min-width: 500px;
+}
+
+.linhaFiltro{
+  height: auto;
+  border-bottom: 1px solid #b3b3b3;
+  padding-bottom: 30px;
+}
+
+.tituloLinhaFiltro{
+  font-size: 1.9rem;
+}
+
+.colunaPostagem2{
+  justify-content: center;
+  align-items: center;
+  width: 45%;
+}
+
+.textoSemFiltro{
+  color: black;
+  font-size: 2rem;
+  font-weight: 300;
+}
+
+.botaoPostar{
+  height: 36px;
+  width: 200px;
+  margin-left: auto;
+}

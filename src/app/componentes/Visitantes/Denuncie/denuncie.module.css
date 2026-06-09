@@ -1,0 +1,162 @@
+.fundoDenuncia {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #03051b;
+  width: 100%;
+  min-height: calc(100vh - 126px);
+}
+
+.alinharInfoSubPagina {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-block: 20px;
+}
+
+.imagemIntrodutoria {
+  transition: ease-in-out 1s;
+  object-fit: scale-down;
+  max-width: 400px;
+  min-width: 190px;
+  max-height: 227px;
+  filter: drop-shadow(0px 100px 100px #0077ff) drop-shadow(0px 0px 20px #00ffea);
+}
+
+.tituloSubPagina {
+  position: relative;
+  color: white;
+  font-size: 4rem;
+  text-align: center;
+}
+
+.conteudoSubPagina {
+  background-color: rgb(255, 252, 244);
+  width: 94%;
+  min-height: 100vh;
+  border-radius: 20px;
+  padding: 5% 10px 5% 10px;
+  margin-bottom: 3%;
+  position: relative;
+}
+
+.alinharCards {
+  display: flex;
+  width: 100%;
+  height: auto;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 24%;
+  max-height: 400px;
+  min-width: 400px;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.alinharImagemCard {
+  height: 50%;
+}
+
+.imagemCard {
+  object-fit: scale-down;
+  width: 100%;
+  height: 100%;
+}
+
+.textoCard {
+  width: 100%;
+  text-align: justify;
+  font-size: 1.5rem;
+  padding-block: 10px;
+}
+
+.botaoRedirecional {
+  margin: auto auto 20px auto;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #b3b3b3;
+  border-radius: 4px;
+}
+
+.botaoRedirecional:hover {
+  background-color: rgb(211, 247, 255);
+}
+
+.divisoria {
+  height: 1px;
+  background-color: #b3b3b3;
+  width: 70%;
+  margin-inline: auto;
+  margin-block: 60px;
+}
+
+.secao {
+  width: 70%;
+  height: auto;
+  margin-inline: auto;
+}
+
+.secao > h1 {
+  text-align: center;
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.secao > h3 {
+  text-align: justify;
+  color: rgba(0, 0, 0, 0.796);
+  font-weight: 200;
+}
+
+.alinharNumero {
+  display: flex;
+  align-items: center;
+  padding-block: 10px;
+  gap: 20px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.alinharNumero > h2 {
+  font-size: 1.7rem;
+  margin: 0;
+}
+
+.inputCopiar {
+  height: 30px;
+  width: auto;
+}
+
+.inputCopiar:hover {
+  cursor: pointer;
+}
+
+@media (max-width: 1100px) {
+  .card {
+    flex-grow: 1;
+    max-height: none;
+    min-width: 200px;
+  }
+  .secao {
+    width: 100%;
+  }
+  .secao > h1 {
+    font-size: 3rem;
+  }
+  .alinharNumero {
+    padding-block: 30px;
+    width: 100%;
+  }
+  .alinharNumero > h2 {
+    font-size: 1.3rem;
+    text-align: left;
+  }
+}

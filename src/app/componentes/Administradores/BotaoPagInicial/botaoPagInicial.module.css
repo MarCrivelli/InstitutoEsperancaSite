@@ -1,0 +1,44 @@
+.linkBotaoSolto {
+    position: fixed;
+    left: -80px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 10px;
+    z-index: 90000000;
+  }
+  
+  .botaoPagInicial {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    background-color: rgba(39, 39, 39, 0.89);
+    border-radius: 50%;
+    transition: 0.5s ease-in-out;
+    transition-delay: .15s;
+  }
+  
+  .botaoPagInicial img {
+    width: 45%;
+    height: 45%;
+    opacity: 0;
+    transition: 0.6s ease-in-out;
+  }
+  
+  .botaoPagInicial:hover,
+  .botaoPagInicial.active {
+    cursor: pointer;
+    transform: translateX(60px);
+    background-color: rgb(39, 39, 39);
+  }
+  
+  .botaoPagInicial:hover img,
+  .botaoPagInicial.active img {
+    opacity: 1;
+  }
+  
+  
+  
+  
+  

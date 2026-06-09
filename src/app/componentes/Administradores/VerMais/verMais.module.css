@@ -1,0 +1,74 @@
+.alinharPainel{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+  }
+
+  .fundoPainel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-height: calc(100vh - 126px);
+    width: 95%;
+    background-color: #e3e3e37e;
+    border-radius: 20px;
+    width: 99%;
+    padding: 40px;
+    gap: 50px;
+    row-gap: 50px;
+    border: 1px solid #dee2e6;
+    background-image: url("/fundoPatas2.png");
+    background-repeat: repeat;
+    background-size: 900px 900px;
+    background-position: top left;
+}
+
+
+  .painel{
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+  }
+
+  .dadosIdentificacao{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    border-bottom: 1px solid #b3b3b3;
+    margin: 1%;
+    padding-bottom: 15px;
+  }
+
+  
+
+  .imagemIdentificacao{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(50% - 20px);
+    min-width: 400px;
+    min-height: auto;
+    flex-grow: 1;
+    padding-bottom: 71px;
+  }
+
+  .tituloImagem{
+    margin-block: 10px;
+  }
+
+  .imagemVerMais{
+    object-fit: scale-down;
+    width: 80%;
+    border: 4px solid black;
+  }
+
+  .nomeAnimal{
+    width: 100%;
+    text-align: center;
+    font-size: 3.4rem;
+  }

@@ -1,0 +1,197 @@
+.fundoHeader {
+    min-height: 90px;
+    width: 100%;
+    z-index: 90000;
+  }
+  
+  .tagLinkAdms {
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    width: 300px;
+    height: 300px;
+  }
+  
+  .tagLinkAdms:hover {
+    cursor: pointer;
+  }
+  
+  .headerAdm {
+    display: flex;
+    align-items: center;
+    min-height: 126px;
+    justify-content: space-between;
+    width: 100%;
+    z-index: 90000;
+  }
+  
+  .containerLogo {
+    display: flex;
+    align-items: center;
+    padding-left: 25px;
+    flex-direction: row;
+    width: auto;
+    height: 100%;
+    gap: 40px;
+    text-decoration: none;
+  }
+
+  .containerLogo .tituloLogo, .subtituloLogo{
+    margin: 0;
+    color: rgb(0, 0, 0);
+    text-align: center;
+  }
+
+  .containerLogo h1{
+    font-size: 2rem;
+  }
+
+  .containerLogo p{
+    font-size: 1.4rem;
+  }
+  
+  .menu {
+    display: flex;
+    list-style: none;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    height: auto;
+    margin: 0;
+    padding-right: 2rem;
+  }
+  
+  .menu .tagLinkAdms {
+    display: block;
+    width: auto;
+    height: auto;
+    padding: 0.5rem;
+    border-radius: 10px;
+  }
+  
+  .btnMobile {
+    display: none;
+  }
+  
+  .linkUsuario {
+    border: 0 !important;
+  }
+  
+  .iconeAvatar {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .logoHeader {
+    width: 80px;
+    height: 70px;
+    object-fit: scale-down;
+  }
+  
+  .alinharLinks {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .iconeLink {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .textoLink {
+    font-size: 23px;
+    color: rgb(0, 0, 0);
+    display: block;
+    margin-bottom: 0px;
+  }
+
+  @media (max-width: 1400px) {
+    .textoLogo{
+      display: none;
+    }
+  }
+  
+  @media (max-width: 1100px) {
+    .btnMobile {
+      display: block;
+    }
+    .alinharLinks {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .menu {
+      display: block;
+      position: absolute;
+      width: 100%;
+      top: 126px;
+      right: 0px;
+      background-color: rgb(255, 255, 255);
+      height: 0px;
+      z-index: 1000;
+      transition: 0.6s;
+      visibility: hidden;
+      overflow-y: hidden;
+      padding: 0;
+    }
+    .nav.active .menu {
+      display: block;
+      height: calc(100vh - 70px);
+      visibility: visible;
+      overflow-y: auto;
+    }
+    .menu .tagLinkAdms {
+      padding: 1rem 0;
+      margin: 0;
+      background-color: rgb(49, 49, 49);
+      width: 100%;
+      border-radius: 0;
+    }
+    .linkUsuario {
+      border-radius: 0 !important;
+    }
+    .iconeAvatar {
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .btnMobile {
+      display: flex;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 15px;
+    }
+    .hamburguer {
+      display: block;
+      border-top: 2px solid;
+      color: rgb(0, 0, 0);
+      width: 35px;
+    }
+    .hamburguer::after,
+    .hamburguer:before {
+      content: "";
+      display: block;
+      width: 35px;
+      height: 2px;
+      background-color: currentColor;
+      margin-top: 10px;
+      transition: 0.3s;
+      position: relative;
+    }
+    .nav.active .hamburguer {
+      border-top-color: transparent;
+    }
+    .nav.active .hamburguer::before {
+      transform: rotate(135deg);
+    }
+    .nav.active .hamburguer::after {
+      transform: rotate(-135deg);
+      top: -12px;
+    }
+}  
