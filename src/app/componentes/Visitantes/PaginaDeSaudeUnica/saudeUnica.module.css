@@ -1,0 +1,133 @@
+section.secao.parallax {
+  display: flex;
+  flex-direction: column;
+  height: 100vh !important;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  z-index: 49;
+}
+
+section.secao.parallax::before {
+  content: "";
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 10;
+  background: linear-gradient(
+    to bottom,
+    #03051b76 0,
+    #03051b76 40%,
+    #03051bda 100%
+  );
+}
+
+section.secao.parallax h1 {
+  text-align: center;
+  margin: auto;
+  color: white;
+  font-size: 5rem;
+  z-index: 50;
+  animation: efeitoDeslizanteTitulo 0.8s ease-out forwards;
+  padding: 20px;
+}
+
+@keyframes efeitoDeslizanteTitulo {
+  from {
+    transform: translateY(30vw);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0vw);
+    opacity: 1;
+  }
+}
+
+section.secao.parallax1 {
+  background-image: url(https://institutofaunabrasil.org.br/wp-content/uploads/2024/02/Banner-site-sem-granu4.jpg);
+}
+
+section.secao.parallax2 {
+  background-image: url(https://institutofaunabrasil.org.br/wp-content/uploads/2024/02/Banner-site-sem-granu4.jpg);
+}
+
+.conteudo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  
+  position: relative;
+  overflow: hidden;
+}
+
+.conteudo1 {
+  z-index: 10;
+  min-height: 60vh;
+  padding: 60px;
+  background-image: url(/imagensDeFundo/fundoPontiagudo.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top left;
+  justify-content: flex-start;
+}
+
+.conteudo1 .painel {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  border-radius: 20px;
+  max-width: 900px;
+  padding: 40px;
+  z-index: 10;
+  background-color: #ffffff;
+  filter: drop-shadow(10px 10px 0 #110b1c80);
+}
+
+.conteudo1 .painel p {
+  font-size: 1.8rem;
+  font-weight: 350;
+  color: #110b1cbf;
+  text-align: justify;
+}
+
+.conteudo1 .painel strong {
+  text-decoration: underline;
+  color: #2a0f5c;
+  font-weight: 900;
+}
+
+.conteudo1 img{
+  content: "";
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  bottom: -40px;
+  right: 0px;
+}
+
+.conteudo2 {
+  background-image: url(/imagensDeFundo/fundoGlacial.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top left;
+  padding: 100px 20%;
+}
+
+.card {
+  background-color: white;
+  padding: 40px;
+  border-radius: 20px;
+  flex: 1 400px;
+
+  --progresso: 0;
+
+  opacity: calc(0.4 + var(--progresso) * 0.6);
+  transform: scale(calc(0.8 + var(--progresso) * 0.2));
+  transition:
+    opacity 0.15s linear,
+    transform 0.15s linear;
+}

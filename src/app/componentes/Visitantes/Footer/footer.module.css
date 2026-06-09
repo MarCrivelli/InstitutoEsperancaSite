@@ -1,0 +1,91 @@
+.infoInstituto {
+  display: flex;
+  padding: 100px 20% 150px 20%;
+  row-gap: 100px;
+  flex-wrap: wrap;
+  background-color: white;
+}
+
+.sobreNos,
+.redesSociais,
+.contato {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.sobreNos p {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-align: justify;
+}
+
+.alinharRedesSociais {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.alinharRedesSociais a{
+  width: 50px;
+  height: 50px;
+}
+
+.alinharRedesSociais a:last-child {
+  width: 45px;
+  height: 45px;
+}
+
+.alinharRedesSociais img {
+  width: 100%;
+  height: 100%;
+  transition: ease-in-out 0.15s;
+}
+
+.alinharRedesSociais img:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+}
+
+.alinharInfoContato {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  row-gap: 0;
+}
+
+.alinharInfoContato strong,
+.alinharInfoContato p {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin-bottom: 0;
+}
+
+.alinharInfoContato strong {
+  font-weight: 500;
+}
+
+@media (max-width: 768px){
+
+  .tituloSeccao{
+    font-size: 2rem;
+  }
+
+  .infoInstituto {
+    padding-inline: 10%;
+  }
+
+  .alinharInfoContato p,
+  .alinharInfoContato strong{
+    font-size: 0.8rem;
+  }
+
+  .alinharInfoContato strong{
+    font-weight: 700;
+  }
+
+  .sobreNos p {
+    font-size: 0.8rem;
+  }
+  .contato {
+    row-gap: 20px;
+  }
+}

@@ -1,197 +1,251 @@
-.fundoHeader {
-    min-height: 90px;
-    width: 100%;
-    z-index: 90000;
-  }
-  
-  .tagLinkAdms {
-    color: rgb(255, 255, 255);
-    text-decoration: none;
-    width: 300px;
-    height: 300px;
-  }
-  
-  .tagLinkAdms:hover {
-    cursor: pointer;
-  }
-  
-  .headerAdm {
-    display: flex;
-    align-items: center;
-    min-height: 126px;
-    justify-content: space-between;
-    width: 100%;
-    z-index: 90000;
-  }
-  
-  .containerLogo {
-    display: flex;
-    align-items: center;
-    padding-left: 25px;
-    flex-direction: row;
-    width: auto;
-    height: 100%;
-    gap: 40px;
-    text-decoration: none;
-  }
+.headerAdms {
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  height: 70px;
+  justify-content: space-between;
+  z-index: 100;
+  position: relative;
+}
 
-  .containerLogo .tituloLogo, .subtituloLogo{
-    margin: 0;
-    color: rgb(0, 0, 0);
-    text-align: center;
-  }
+.linkLogo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+  width: auto;
+  min-width: 57px;
+  text-decoration: none;
+}
 
-  .containerLogo h1{
-    font-size: 2rem;
-  }
+.logo {
+  height: 100%;
+  width: auto;
+  object-fit: scale-down;
+}
 
-  .containerLogo p{
-    font-size: 1.4rem;
+.nav {
+  width: auto;
+}
+
+.menu {
+  display: flex;
+  list-style: none;
+  height: 100%;
+  width: 100%;
+  gap: 10px;
+  padding: 0;
+}
+
+.menu li {
+  display: flex;
+  align-items: center;
+  width: auto;
+}
+
+.linkSubPaginas {
+  text-decoration: none;
+  font-size: 1rem;
+  margin-inline: 10px;
+  font-family: "Jockey One", sans-serif;
+}
+
+.linkSubPaginas,
+.hamburguerAdms {
+  color: rgb(240, 240, 240);
+  transition: transform ease-in-out 0.2s;
+}
+
+.linkSubPaginas:hover {
+  transform: scale(1.03);
+}
+
+.linkUsuario {
+  height: 100%;
+  width: 10%;
+  z-index: 2;
+}
+
+.linkUsuario::before {
+  content: "";
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(45deg, #00429f, #00ff95);
+  border-radius: 50%;
+  z-index: -1;
+  animation: bordaAnimada 2.8s linear infinite;
+  animation-play-state: paused;
+  transition: all 0.6s ease-out;
+}
+
+.linkUsuario:hover::before {
+  animation-play-state: running;
+}
+
+@keyframes bordaAnimada {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .menu {
-    display: flex;
-    list-style: none;
-    justify-content: center;
-    align-items: center;
-    gap: 50px;
-    height: auto;
-    margin: 0;
-    padding-right: 2rem;
+  100% {
+    transform: rotate(360deg);
   }
+}
+
+.iconeUsuario {
+  position: relative;
+  height: 50px;
+  width: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.btnMobile {
+  display: flex;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
   
-  .menu .tagLinkAdms {
-    display: block;
-    width: auto;
-    height: auto;
-    padding: 0.5rem;
-    border-radius: 10px;
-  }
-  
-  .btnMobile {
+}
+
+.hamburguerAdms {
+  display: block;
+  border-top: 2px solid;
+  width: 35px;
+}
+
+.hamburguerAdms::after,
+.hamburguerAdms:before {
+  content: "";
+  display: block;
+  width: 35px;
+  height: 2px;
+  background-color: currentColor;
+  margin-top: 10px;
+  transition: 0.3s;
+  position: relative;
+}
+
+/* Overlay escuro */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+}
+
+/* Menu lateral */
+.menuLateral {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  right: -300px; /* Começa escondido */
+  width: 200px;
+  height: 100%;
+  background-color: #0d0907;
+  z-index: 999;
+  transition: right 0.3s ease-out;
+  box-sizing: border-box;
+}
+
+.menuLateral.menuAberto {
+  right: 0;
+}
+
+.botaoFechar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: none;
+  border: none;
+  color: rgb(173, 173, 173);
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 3px 10px 3cqw 10px;
+  transition: color 0.2s;
+}
+
+.botaoFechar:hover {
+  color: rgb(230, 230, 230);
+}
+
+.menuLateral nav {
+  height: 130px;
+}
+
+.menuLateral nav ul {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  height: auto;
+  padding: 0;
+  margin-top: 65px;
+  row-gap: 10px;
+}
+
+.menuLateral nav li {
+  margin-bottom: 0px;
+}
+
+.linkMenuMobile {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-family: "Jockey One", sans-serif;
+  padding: 5px 5px 5px 10px;
+  transition: opacity 0.2s;
+  gap: 7px;
+  background-color: rgb(22, 22, 22);
+  opacity: .6;
+}
+
+.linkMenuMobile:hover {
+  opacity: 1;
+}
+
+.linkMenuMobile img {
+  width: 30px;
+}
+
+/* Animação do botão hamburguer para X */
+.menuAberto ~ .headerAdms .hamburguerAdms {
+  border-top-color: transparent;
+}
+
+.menuAberto ~ .headerAdms .hamburguerAdms::before {
+  transform: rotate(135deg);
+  top: -12px;
+}
+
+.menuAberto ~ .headerAdms .hamburguerAdms::after {
+  transform: rotate(-135deg);
+  top: -12px;
+}
+
+@media (max-width: 700px) {
+  .menu li:nth-child(-n + 3) {
     display: none;
   }
-  
-  .linkUsuario {
-    border: 0 !important;
-  }
-  
-  .iconeAvatar {
-    width: 70px;
-    height: 70px;
-  }
-  
-  .logoHeader {
-    width: 80px;
-    height: 70px;
-    object-fit: scale-down;
-  }
-  
-  .alinharLinks {
+  .linkMenuMobile {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .iconeLink {
-    width: 40px;
-    height: 40px;
-  }
-  
-  .textoLink {
-    font-size: 23px;
-    color: rgb(0, 0, 0);
+    font-size: 0.9rem;
     display: block;
-    margin-bottom: 0px;
+    padding: 5px 5px 5px 10px;
+    transition: color 0.2s;
+    background-color: rgb(22, 22, 22);
   }
 
-  @media (max-width: 1400px) {
-    .textoLogo{
-      display: none;
-    }
+  .linkMenuMobile img {
+    width: 20px;
+    margin-right: 7px;
   }
-  
-  @media (max-width: 1100px) {
-    .btnMobile {
-      display: block;
-    }
-    .alinharLinks {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    .menu {
-      display: block;
-      position: absolute;
-      width: 100%;
-      top: 126px;
-      right: 0px;
-      background-color: rgb(255, 255, 255);
-      height: 0px;
-      z-index: 1000;
-      transition: 0.6s;
-      visibility: hidden;
-      overflow-y: hidden;
-      padding: 0;
-    }
-    .nav.active .menu {
-      display: block;
-      height: calc(100vh - 70px);
-      visibility: visible;
-      overflow-y: auto;
-    }
-    .menu .tagLinkAdms {
-      padding: 1rem 0;
-      margin: 0;
-      background-color: rgb(49, 49, 49);
-      width: 100%;
-      border-radius: 0;
-    }
-    .linkUsuario {
-      border-radius: 0 !important;
-    }
-    .iconeAvatar {
-      position: relative;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    .btnMobile {
-      display: flex;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      border: none;
-      background: none;
-      cursor: pointer;
-      padding: 15px;
-    }
-    .hamburguer {
-      display: block;
-      border-top: 2px solid;
-      color: rgb(0, 0, 0);
-      width: 35px;
-    }
-    .hamburguer::after,
-    .hamburguer:before {
-      content: "";
-      display: block;
-      width: 35px;
-      height: 2px;
-      background-color: currentColor;
-      margin-top: 10px;
-      transition: 0.3s;
-      position: relative;
-    }
-    .nav.active .hamburguer {
-      border-top-color: transparent;
-    }
-    .nav.active .hamburguer::before {
-      transform: rotate(135deg);
-    }
-    .nav.active .hamburguer::after {
-      transform: rotate(-135deg);
-      top: -12px;
-    }
-}  
+}

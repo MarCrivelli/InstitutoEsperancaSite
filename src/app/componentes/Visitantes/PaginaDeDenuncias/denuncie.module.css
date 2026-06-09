@@ -1,0 +1,286 @@
+section.secao.parallax {
+  display: flex;
+  flex-direction: column;
+  height: 100vh !important;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  z-index: 49;
+}
+
+section.secao.parallax::before {
+  content: "";
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 10;
+  background: linear-gradient(
+    to bottom,
+    #03051b76 0,
+    #03051b76 40%,
+    #03051bda 100%
+  );
+}
+
+section.secao.parallax h1 {
+  text-align: center;
+  margin: auto;
+  color: white;
+  font-size: 5rem;
+  z-index: 50;
+  animation: efeitoDeslizanteTitulo 0.8s ease-out forwards;
+  padding: 20px;
+}
+
+@keyframes efeitoDeslizanteTitulo {
+  from {
+    transform: translateY(30vw);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0vw);
+    opacity: 1;
+  }
+}
+
+section.secao.parallax1 {
+  background-image: url(https://institutofaunabrasil.org.br/wp-content/uploads/2024/02/Banner-site-sem-granu4.jpg);
+}
+
+section.secao.parallax2 {
+  background-image: url(https://institutofaunabrasil.org.br/wp-content/uploads/2024/02/Banner-site-sem-granu4.jpg);
+}
+
+.conteudo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.conteudo1 {
+  z-index: 10;
+  min-height: 60vh;
+  padding: 150px 90px;
+  background-image: url(/imagensDeFundo/fundoLavaQuadrada.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top left;
+  background-color: #140021;
+}
+
+.conteudo2 {
+  background-image: url(/imagensDeFundo/fundoMontanhaEscura.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top left;
+  padding: 100px 40px;
+}
+
+.conteudo2::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 300px;
+  height: 300px;
+  background-image: url(/imagensDeFundo/lua.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  animation: girarLua 21s linear infinite;
+  transition: all 0.6s ease-out;
+}
+
+@keyframes girarLua {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.painel {
+  display: flex;
+  z-index: 100;
+}
+
+.conteudo1 .painel {
+  width: 100%;
+  gap: 100px;
+  row-gap: 30px;
+  padding-inline: 7%;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.conteudo1 .painel .card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 400px;
+  padding: 20px;
+  border-radius: 20px;
+  background-image: url(/pagDenuncias/estiloCards.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top left;
+  color: #140021;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 4px -4px 30px #14002176;
+  min-height: 440px;
+}
+
+.conteudo1 .painel .card .divImagem {
+  display: flex;
+  width: 100%;
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.conteudo1 .painel .card .divImagem::before {
+  content: "";
+  position: absolute;
+  background-color: #ffffff;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 100px;
+  z-index: 1;
+  border-radius: 50%;
+}
+
+.conteudo1 .painel .card img {
+  width: 140px;
+  margin-inline: auto;
+  border-radius: 50%;
+  overflow: visible;
+  z-index: 10;
+}
+
+.conteudo1 .painel .card h1 {
+  text-align: center;
+  -webkit-text-stroke-color: #ffffff;
+  -webkit-text-stroke-width: 0.03rem;
+  z-index: 10;
+}
+
+.conteudo1 .painel .card p {
+  font-size: 1rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-align: justify;
+  z-index: 10;
+}
+
+.selectEstados {
+  max-width: 300px;
+  overflow-y: visible;
+  margin-top: 10px;
+  z-index: 10000000000;
+}
+
+.conteudo2 .painel {
+  flex-direction: column;
+  color: #ffffff;
+  max-width: 1100px;
+  gap: 20px;
+}
+
+.conteudo2 .painel h1 .conteudo2 .painel ol li {
+  text-align: justify;
+}
+
+.conteudo2 .painel h1 {
+  font-size: 2.3rem;
+}
+
+.conteudo2 .painel ol {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.conteudo2 .painel ol strong,
+.conteudo2 .painel ol li {
+  font-weight: 500;
+}
+
+.conteudo2 .painel ol strong {
+  font-size: 1.3rem;
+  color: rgb(255, 255, 255);
+  background-color: rgb(0, 105, 123);
+  border-radius: 2em;
+  padding: 1px 10px;
+}
+
+.conteudo2 .painel ol li {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.841);
+}
+
+@media (max-width: 1400px) {
+  section.secao.parallax h1 {
+    font-size: 4rem;
+  }
+  .conteudo2 .painel h1 {
+  }
+  .conteudo2 {
+    padding: 100px 50px;
+  }
+}
+
+@media (max-width: 840px) {
+  .conteudo1 {
+    padding-inline: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  section.secao.parallax h1 {
+    font-size: 3rem;
+  }
+  .conteudo1 .painel {
+    row-gap: 50px;
+    padding-inline: 0;
+  }
+  .conteudo1 .painel .card {
+    padding: 20px;
+    min-height: 300px;
+  }
+  .conteudo1 .painel .card .divImagem {
+    margin-bottom: 20px;
+  }
+  .conteudo1 .painel .card .divImagem::before {
+    padding: 80px;
+  }
+  .conteudo1 .painel .card img {
+    width: 120px;
+  }
+  .conteudo1 .painel .card h1 {
+    font-size: 2rem;
+    -webkit-text-stroke-width: 0.01rem;
+  }
+
+  .conteudo1 .painel .card p {
+    font-size: 0.8rem;
+  }
+  .conteudo2 {
+    background-image: url(/imagensDeFundo/fundoMontanhaEscura_Celular.svg);
+    padding: 100px 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  section.secao.parallax h1 {
+    font-size: 2.5rem;
+  }
+  .conteudo1 {
+    padding: 100px 20px;
+    background-image: url(/imagensDeFundo/fundoLavaQuadrada_Celular.svg);
+  }
+}

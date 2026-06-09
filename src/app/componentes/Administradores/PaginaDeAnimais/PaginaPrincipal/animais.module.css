@@ -1,0 +1,325 @@
+.fundoPagina {
+  background-image: url(/imagensDeFundo/fundoOndaRosa.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top left;
+}
+
+.modoSelecaoAtivo {
+  padding-bottom: 140px;
+}
+
+.fundoPainel {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: calc(100vh - 70px);
+  height: auto;
+  padding: 2%;
+}
+
+.painel {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 50px;
+  row-gap: 50px;
+  padding: 40px;
+  border-radius: 20px;
+  justify-content: center;
+}
+
+.botoesFlutuantes {
+  position: fixed;
+  right: 16.5px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10;
+}
+
+.botaoAcao {
+  position: relative;
+  background-color: #ff008c;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  padding: 10px;
+  box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.419);
+  transition: all 0.3s ease;
+}
+
+.botaoAcao:hover {
+  background-color: #ff5fb7;
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.botaoAcao > img {
+  width: 100%;
+  height: 100%;
+  object-fit: scale-down;
+}
+
+.containerPostagem {
+  position: fixed;
+  bottom: -100px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  transition: bottom 0.3s ease-out;
+  background-color: rgb(22, 22, 22);
+  border-top: 2px solid black;
+  padding: 40px 20px;
+  opacity: 0;
+  visibility: hidden;
+  gap: 10px;
+}
+
+/* quando o container aparece quando você seleciona um animal 
+para postar estiver na tela, as seguintes estilizações serão 
+aplicadas: */
+.containerPostagem.visivel {
+  bottom: 0;
+  opacity: 1;
+  visibility: visible;
+}
+
+.fecharContainerPostagem {
+  margin-left: auto;
+  top: -40px;
+  right: 5px;
+  position: absolute;
+  padding: 0px 8px;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  background-color: #161616;
+  border-radius: 3px;
+  transition: background ease-in-out 0.3s;
+}
+
+.fecharContainerPostagem:hover {
+  background-color: #161616b7;
+}
+
+.containerPostagem p {
+  color: white;
+  margin-bottom: 0;
+  font-weight: 500;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.botaoPostar {
+  border: 1px solid #9cccff;
+  padding: 10px 45px;
+  border-radius: 4px;
+  background-color: #0074f2;
+  color: white;
+  font-weight: 600;
+  transition: background ease-in-out 0.3s;
+}
+
+.botaoPostar:hover {
+  background: transparent;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: animacaoDeslizanteModal 0.5s ease-out forwards;
+  height: 85dvh;
+  width: 90%;
+}
+
+.modalContent h2 {
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 2.3rem;
+  font-weight: 700;
+  padding-inline: 20px;
+}
+
+@keyframes animacaoDeslizanteModal {
+  from {
+    transform: translateX(100vw);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0vw);
+    opacity: 1;
+  }
+}
+
+.modalContent::-webkit-scrollbar {
+  display: none;
+}
+
+.fecharModal {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+  padding-inline: 9px;
+  padding-bottom: 2px;
+  border: 1px solid #3333337a;
+  border-radius: 6px;
+  transition: 0.2s ease-in-out background;
+}
+
+.fecharModal:hover {
+  background-color: #b6e9ff63;
+}
+
+.loading,
+.error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.loading {
+  color: #333;
+}
+
+.loading > img {
+  width: 65px;
+  height: 50px;
+}
+
+.loading > p {
+  font-size: 1.4rem;
+}
+
+.error {
+  color: #6c6c6c;
+  font-size: 1.2rem;
+}
+
+.botaoRecarregar {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #2f007b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.botaoRecarregar:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 1100px) {
+  .fundoPainel {
+    min-height: none;
+  }
+  .modalContent {
+    width: 95%;
+  }
+  .modalContent h2 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 891px) {
+  .painel {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 766px) {
+  .fundoPagina {
+    background-image: url(/imagensDeFundo/fundoOndaRosa_Celular.svg);
+  }
+  .painel {
+    min-height: 100vh;
+    padding: 40px 10px 40px 10px;
+    border-radius: 0px;
+    border: none;
+    background-color: transparent;
+    row-gap: 30px;
+  }
+
+  .botoesFlutuantes {
+    display: flex;
+    bottom: 0;
+    right: 5px;
+    transform: none;
+  }
+
+  .botaoAcao {
+    width: 45px;
+    height: 45px;
+    padding: 7px;
+  }
+
+  .modalContent {
+    padding: 20px;
+  }
+
+  .fecharModal {
+    font-size: 1.7rem;
+    border: none;
+    right: 3px;
+    top: 3px;
+  }
+
+  .containerPostagem {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    row-gap: 10px;
+  }
+}
+
+@media (max-width: 705px) {
+  .modalContent h2 {
+    font-size: 1.4rem;
+    width: 100%;
+  }
+  .modalOverlay {
+    padding-block: 100px;
+  }
+  .modalContent {
+    height: 95dvh;
+  }
+}

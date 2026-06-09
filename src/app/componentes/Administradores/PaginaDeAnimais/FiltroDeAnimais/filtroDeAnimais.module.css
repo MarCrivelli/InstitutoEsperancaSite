@@ -1,0 +1,136 @@
+.containerFiltrosDeSelecao {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  width: 100%;
+  flex-grow: 1;
+}
+
+.containerFiltro {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
+  row-gap: 20px;
+  border: 1px solid #b3b3b3;
+  flex: 1 300px;
+  height: auto;
+}
+
+.tituloItemFiltrar {
+  font-size: 2rem;
+  text-align: center;
+  border-bottom: 1px solid #b3b3b3;
+  padding-block: 5px;
+}
+
+.alinharDadosDeFiltragem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-inline: 30px;
+}
+
+.labelDadosSaude,
+.labelDeIdentificacao {
+  font-weight: 600;
+  font-size: 1.2rem;
+  text-align: start;
+  width: 100%;
+  padding-left: 3px;
+}
+
+.barrinhaDePesquisa {
+  padding-left: 8px;
+  border-radius: 4px;
+  border: 1px solid #b3b3b3;
+}
+
+.barrinhaDePesquisa,
+.selectFiltrarAnimal {
+  height: 36px;
+  width: 100%;
+}
+
+.alinharBotaoInserir {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: auto auto 0 auto;
+}
+
+.botaoInserir {
+  border-radius: 6px;
+  border: none;
+  background-color: #007bff;
+  transition: background-color 0.3s ease;
+  color: white;
+  padding: 7px 35px;
+}
+
+.filtroSelecao {
+  width: auto;
+  min-width: 200px;
+  flex-grow: 1;
+}
+
+.divLimparFiltro {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  margin: auto;
+}
+
+.alinharBotaoInserir {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  margin: auto auto 0 auto;
+}
+
+.botaoLimparFiltros {
+  border-radius: 6px;
+  border: none;
+  background-color: #d60000;
+  transition: background-color 0.3s ease;
+  color: white;
+  padding: 10px 35px;
+}
+
+@media (max-width: 1100px) {
+  .containerFiltro {
+    padding: 0 20px 20px 20px;
+  }
+
+  .tituloItemFiltrar {
+    font-size: 1.7rem;
+  }
+  
+  .alinharDadosDeFiltragem {
+    align-items: flex-start;
+    padding-inline: 0;
+  }
+  
+}
+
+@media (max-width: 705px) {
+  .tituloItemFiltrar {
+    font-size: 1.2rem;
+  }
+  .labelDadosSaude,
+  .labelDeIdentificacao {
+    font-size: 0.8rem;
+  }
+
+  .barrinhaDePesquisa,
+  .selectFiltrarAnimal {
+    font-size: .7rem;
+  }
+}
+
+@media (max-width: 300px) {
+  .botaoLimparFiltros {
+    width: 100%;
+  }
+}

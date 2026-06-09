@@ -1,116 +1,215 @@
-import styles from "./headerVisitantes.module.css"; // Importando o CSS Module
+import styles from "./headerVisitantes.module.css";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function Header() {
-  // Cuida dos eventos do header responsivo com botão de hambúrguer.
-  const [isActive, setIsActive] = useState(false);
+export default function HeaderVisitantes({ tipo = "padrao" }) {
+  const [menuAberto, setMenuAberto] = useState(false);
+  const [usuarioLogado, setUsuarioLogado] = useState(null);
 
-  const toggleMenu = (event) => {
-    if (event.type === "touchstart") {
-      event.preventDefault(); // Previne o comportamento padrão
-    }
-    setIsActive(!isActive);
+  // Configurações para cada tipo de header
+  const tiposConfig = {
+    padrao: {
+      logoSrc: "/logos/logoBranca.png",
+      headerClass: styles.headerPadrao,
+      linksClass: styles.linksPadrao,
+      hamburguerClass: styles.hamburguerPadrao,
+    },
+    linkPreto: {
+      logoSrc: "/logos/logoPreta.png",
+      headerClass: styles.headerLinkPreto,
+      linksClass: styles.linksPreto,
+      hamburguerClass: styles.hamburguerPreto,
+    },
+    modoDark: {
+      logoSrc: "/logos/logoBranca.png",
+      headerClass: styles.headerModoDark,
+      linksClass: styles.linksModoDark,
+      hamburguerClass: styles.hamburguerModoDark,
+    },
   };
 
-  useEffect(() => {
-    const button = document.getElementById("btnMobile");
-    button.addEventListener("touchstart", toggleMenu, { passive: false });
+  const config = tiposConfig[tipo] || tiposConfig.padrao;
 
-    return () => {
-      button.removeEventListener("touchstart", toggleMenu);
+  useEffect(() => {
+    const carregarUsuario = () => {
+      try {
+        const dadosUsuario = localStorage.getItem("usuario");
+        const token = localStorage.getItem("token");
+
+        if (dadosUsuario && token) {
+          const usuario = JSON.parse(dadosUsuario);
+          setUsuarioLogado(usuario);
+          console.log("👤 Usuário logado carregado:", usuario);
+        } else {
+          console.log("❌ Nenhum usuário logado encontrado");
+        }
+      } catch (error) {
+        console.error("Erro ao carregar dados do usuário:", error);
+      }
     };
-  }, [isActive]);
+
+    carregarUsuario();
+  }, []);
+
+  // Fecha o menu quando a tela for redimensionada para mais de 700px
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 700) {
+        setMenuAberto(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Impede rolagem quando o menu está aberto
+  useEffect(() => {
+    if (menuAberto) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [menuAberto]);
 
   return (
-    <div className={styles.fundoHeaderVisitantes}>
-      <header id="headerVisitantes" className={styles.headerVisitantes}>
-        <div className={styles.containerLogo}>
-          <Link id="logo" to="/administracao" title="Instituto Esperança">
-            <img
-              src="logos/logoBranca.png"
-              className={styles.logoHeader}
-              alt="Logo do Instituto Esperança"
-            />
-          </Link>
-        </div>
-        <nav
-          id="nav"
-          className={`${styles.nav} ${isActive ? styles.active : ""}`}
-        >
-          <button
-            id="btnMobile"
-            className={styles.btnMobile}
-            aria-expanded={isActive}
-            aria-label={isActive ? "Fechar Menu" : "Abrir Menu"}
-            onClick={toggleMenu}
-          >
-            <span
-              id="hamburguerVisitantes"
-              className={styles.hamburguerVisitantes}
-            ></span>
-          </button>
-          <ul id="menu" className={styles.menu} role="menu">
+    <>
+      <header className={`${styles.headerVisitantes} ${config.headerClass}`}>
+        <Link className={styles.linkLogo} to="/" title="Instituto Esperança">
+          <img
+            src={config.logoSrc}
+            className={styles.logo}
+            alt="Logo do Instituto Esperança"
+          />
+        </Link>
+
+        <nav className={styles.nav}>
+          <ul className={styles.menu} role="menu">
             <li>
-              <Link to="/quero_adotar" className={styles.tagLink}>
-                <div className={styles.alinharLinks}>
-                  <img
-                    className={styles.iconeLink}
-                    src="header/adotar.png"
-                    alt="Ícone Quero Adotar"
-                  />
-                  <h1 className={styles.textoLink}>Quero adotar!</h1>
-                </div>
+              <Link
+                to="/quero_adotar"
+                className={`${styles.linkSubPaginas} ${config.linksClass}`}
+              >
+                Quero adotar!
               </Link>
             </li>
             <li>
-              <Link to="/como_doar" className={styles.tagLink}>
-                <div className={styles.alinharLinks}>
-                  <img
-                    className={styles.iconeLink}
-                    src="header/doar.png"
-                    alt="Ícone Como Doar"
-                  />
-                  <h1 className={styles.textoLink}>Como doar?</h1>
-                </div>
+              <Link
+                to="/como_doar"
+                className={`${styles.linkSubPaginas} ${config.linksClass}`}
+              >
+                Como doar?
               </Link>
             </li>
             <li>
-              <Link to="/denuncie" className={styles.tagLink}>
-                <div className={styles.alinharLinks}>
-                  <img
-                    className={styles.iconeLink}
-                    src="header/denuncie.png"
-                    alt="Ícone Denuncie"
-                  />
-                  <h1 className={styles.textoLink}>Denuncie</h1>
-                </div>
+              <Link
+                to="/denuncie"
+                className={`${styles.linkSubPaginas} ${config.linksClass}`}
+              >
+                Denuncie
               </Link>
             </li>
             <li>
-              <Link to="/saude_unica" className={styles.tagLink}>
-                <div className={styles.alinharLinks}>
-                  <img
-                    className={styles.iconeLink}
-                    src="header/saude.png"
-                    alt="Ícone Saúde Única"
-                  />
-                  <h1 className={styles.textoLink}>Saúde única</h1>
-                </div>
+              <Link
+                to="/saude_unica"
+                className={`${styles.linkSubPaginas} ${config.linksClass}`}
+              >
+                Saúde única
               </Link>
             </li>
             <li>
-              <Link className={styles.linkUsuario} to="/autenticar" title="usuário">
+              <Link
+                className={styles.linkUsuario}
+                to="/autenticar"
+                title={
+                  usuarioLogado
+                    ? `Logado como: ${usuarioLogado.nome}`
+                    : "Fazer login"
+                }
+              >
                 <img
-                  src="/usuario.png"
-                  alt="Botão que leva à página de autenticação"
-                  className={styles.iconeAvatar}
+                  src={usuarioLogado?.foto || "/user.png"}
+                  alt="perfil"
+                  className={styles.iconeUsuario}
                 />
               </Link>
+            </li>
+            <li>
+              <button
+                className={styles.btnMobile}
+                onClick={() => setMenuAberto(!menuAberto)}
+                aria-label="Menu"
+              >
+                <span
+                  className={`${styles.hamburguerVisitantes} ${config.hamburguerClass}`}
+                ></span>
+              </button>
             </li>
           </ul>
         </nav>
       </header>
-    </div>
+
+      {/* Overlay escuro */}
+      {menuAberto && (
+        <div className={styles.overlay} onClick={() => setMenuAberto(false)} />
+      )}
+
+      {/* Menu lateral */}
+      <div
+        className={`${styles.menuLateral} ${
+          menuAberto ? styles.menuAberto : ""
+        } ${tipo === "modoDark" ? styles.menuLateralDark : ""}`}
+      >
+        {/* Botão de fechar */}
+        <button
+          className={styles.botaoFechar}
+          onClick={() => setMenuAberto(false)}
+          aria-label="Fechar menu"
+        >
+          ×
+        </button>
+
+        <nav>
+          <ul>
+            <li>
+              <Link
+                to="/quero_adotar"
+                className={styles.linkMenuMobile}
+                onClick={() => setMenuAberto(false)}
+              >
+                Quero adotar!
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/como_doar"
+                className={styles.linkMenuMobile}
+                onClick={() => setMenuAberto(false)}
+              >
+                Como doar?
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/denuncie"
+                className={styles.linkMenuMobile}
+                onClick={() => setMenuAberto(false)}
+              >
+                Denuncie
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/saude_unica"
+                className={styles.linkMenuMobile}
+                onClick={() => setMenuAberto(false)}
+              >
+                Saúde única
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </>
   );
 }

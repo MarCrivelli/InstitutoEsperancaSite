@@ -1,0 +1,610 @@
+.fundoPagina {
+  background: linear-gradient(
+    to right,
+    #8b322c 0%,
+    #8b322c 25%,
+    #dd5746 25%,
+    #dd5746 50%,
+    #ffc470 50%,
+    #ffc470 75%,
+    #4793af 75%,
+    #4793af 100%
+  );
+}
+
+.fundoVermais {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: calc(100vh - 70px);
+  padding: 3% 6% 5% 6%;
+}
+
+.painel,
+.carrossel,
+.slideImagemEntrada,
+.slideImagemSaida,
+.slideImagemEntrada::before,
+.slideImagemSaida::before {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.painel {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  width: 100%;
+  flex-grow: 1;
+  box-sizing: border-box;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  padding-bottom: 20px;
+}
+
+.carrossel {
+  background-color: rgb(0, 0, 0);
+  width: auto;
+}
+
+.slideImagemEntrada,
+.slideImagemSaida {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  margin-inline: auto;
+  position: relative;
+  padding: 70px 20px;
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+}
+
+.slideImagemEntrada::before,
+.slideImagemSaida::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(10px);
+  z-index: 1;
+  background-color: #0f141da9;
+}
+
+.containerImagemCarrossel,
+.semImagemDeSaida {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+  background-color: rgb(255, 255, 255);
+  height: auto;
+  padding: 20px;
+}
+
+.semImagemDeSaida {
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-width: 25%;
+  max-width: 440px;
+}
+
+.alinharImagemQuebrada {
+  background-color: rgb(255, 255, 255);
+  border-radius: 50px;
+  max-width: 400px;
+  padding: 10px;
+}
+
+.alinharImagemQuebrada img {
+  width: 100%;
+  height: 100%;
+}
+
+.semImagemDeSaida h1 {
+  font-size: 2rem;
+}
+
+.semImagemDeSaida p {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-align: justify;
+}
+
+.semImagemDeSaida label {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.containerImagemCarrossel > img {
+  flex-grow: 1;
+  width: auto;
+  max-width: 100%;
+  object-fit: scale-down;
+  max-height: 400px;
+  min-height: 300px;
+}
+
+.botoesUtilitarios {
+  display: flex;
+  padding-top: 10px;
+  gap: 10px;
+}
+
+.botaoTrocarImagem,
+.botaoVerAmpliado {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+}
+
+.botaoTrocarImagem:hover,
+.botaoVerAmpliado:hover {
+  cursor: pointer;
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.botaoTrocarImagem.desativado {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.botaoTrocarImagem.desativado:hover {
+  transform: none !important;
+  opacity: 0.6 !important;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.imagemAmpliada {
+  max-width: 100%;
+  max-height: 80vh;
+  display: block;
+  margin: 0 auto;
+  border-radius: 15px;
+  border: 5px solid white;
+}
+
+.botaoFecharModal {
+  position: relative;
+  margin-left: auto;
+  margin-bottom: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.081);
+  background-color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  padding-bottom: 5px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background ease-in 0.14s;
+}
+
+.botaoFecharModal:hover {
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.alinharDadosDeIdentificacao {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 40px;
+  gap: 40px;
+}
+
+.dadosDeIdentificacao {
+  display: flex;
+  flex: 1 400px;
+  flex-direction: column;
+  padding-bottom: 20px;
+  row-gap: 20px;
+}
+
+.tituloDadosDeIdentificacao,
+.selectTitulo {
+  text-align: center;
+  font-size: 2rem;
+  width: 100%;
+}
+
+.selectTitulo {
+  font-family: "Jockey One", sans-serif;
+}
+
+/* Estilo personalizado para o Select com classe selectTitulo */
+.selectTitulo .css-13cymwt-control {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  min-height: auto !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  justify-content: center !important;
+}
+
+.selectTitulo .css-13cymwt-control:hover {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.selectTitulo .css-1fdsijx-ValueContainer {
+  padding: 0 !important;
+  flex-wrap: nowrap !important;
+}
+
+.selectTitulo .css-1xc3v61-indicatorContainer {
+  padding: 0 !important;
+  margin-left: 4px !important;
+  color: inherit !important;
+}
+
+.selectTitulo .css-1xc3v61-indicatorContainer svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Múltiplas tentativas para remover o separador */
+.selectTitulo .css-1u9des2-indicatorSeparator,
+.selectTitulo span[class*="indicatorSeparator"],
+.selectTitulo div[class*="indicatorSeparator"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+}
+
+/* Seletor mais específico */
+.selectTitulo > div[class*="control"] .css-1u9des2-indicatorSeparator {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.selectTitulo .css-1pahdxg-control {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  min-height: auto !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  justify-content: center !important;
+}
+
+.selectTitulo .css-1pahdxg-control:hover {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Estilo para o dropdown menu */
+.selectTitulo .css-1nmdiq5-menu {
+  margin-top: 8px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid #e1e5e9 !important;
+}
+
+.selectTitulo .css-d7l1ni-option {
+  padding: 12px 16px !important;
+  cursor: pointer !important;
+}
+
+.selectTitulo .css-d7l1ni-option:hover {
+  background-color: #f8f9fa !important;
+}
+
+/* Fallback para diferentes versões do react-select */
+.selectTitulo .react-select__control {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  min-height: auto !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  justify-content: center !important;
+}
+
+.selectTitulo .react-select__control:hover {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.selectTitulo .react-select__value-container {
+  padding: 0 !important;
+  flex-wrap: nowrap !important;
+}
+
+.selectTitulo .react-select__indicator {
+  padding: 0 !important;
+  margin-left: 4px !important;
+  color: inherit !important;
+}
+
+.selectTitulo .react-select__indicator svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.selectTitulo .react-select__indicator-separator,
+.selectTitulo span[class*="indicatorSeparator"],
+.selectTitulo div[class*="indicatorSeparator"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+}
+
+.selectTitulo .react-select__menu {
+  margin-top: 8px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid #e1e5e9 !important;
+}
+
+.selectTitulo .react-select__option {
+  padding: 12px 16px !important;
+  cursor: pointer !important;
+}
+
+.selectTitulo .react-select__option:hover {
+  background-color: #f8f9fa !important;
+}
+
+/* Estilo adicional para garantir que funcione em diferentes temas */
+.selectTitulo div[class*="control"] {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  min-height: auto !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  justify-content: center !important;
+}
+
+.selectTitulo div[class*="ValueContainer"] {
+  padding: 0 !important;
+  flex-wrap: nowrap !important;
+}
+
+.selectTitulo div[class*="indicatorContainer"] {
+  padding: 0 !important;
+  margin-left: 4px !important;
+  color: inherit !important;
+}
+
+.selectTitulo div[class*="indicatorSeparator"],
+.selectTitulo span[class*="indicatorSeparator"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+}
+
+/* Seletor ainda mais específico */
+.selectTitulo > div > div[class*="indicatorSeparator"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.descricaoTextarea {
+  height: 100%;
+  min-height: 200px;
+  max-height: 375px;
+  padding: 6px 0px 6px 12px;
+}
+
+.alinharDados {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.alinharDados .inputDadosIdentificacao {
+  min-height: 36px;
+  border: 1px solid #b3b3b3;
+  padding: 6px 0px 6px 12px;
+  border-radius: 5px;
+}
+
+.errorMessage {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  margin-left: 0.5rem;
+}
+
+.inputDesativado {
+  background-color: #f2f2f2 !important;
+  border-color: #e6e6e6 !important;
+  cursor: not-allowed !important;
+}
+
+/* Estilo para selects desativados - já existe no react-select, mas garantindo consistência */
+.selectInserirAnimal .react-select__control--is-disabled {
+  background-color: #f2f2f2 !important;
+  border-color: #e6e6e6 !important;
+  cursor: not-allowed !important;
+}
+
+/* Garantir que os selects desativados também tenham o cursor correto */
+.selectInserirAnimal .react-select__control--is-disabled .react-select__value-container {
+  cursor: not-allowed !important;
+}
+
+.botaoSalvarContainer {
+  display: flex;
+  width: 100%;
+  height: 70px;
+  margin-top: auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.botaoEditar,
+.botaoCancelar,
+.botaoSalvar {
+  padding: 10px 30px;
+  border-radius: 7px;
+  cursor: pointer;
+  color: rgb(255, 255, 255);
+}
+
+.botaoEditar {
+  background-color: #1987ff;
+  border: 1px solid #115eb2;
+  box-shadow: 2px 2px 1px #115eb2;
+}
+
+.botoesEdicao {
+  display: flex;
+  gap: 20px;
+  padding-inline: 10px;
+}
+
+.botaoCancelar {
+  background-color: red;
+  border: 1px solid #b20000;
+  box-shadow: 2px 2px 1px #b20000;
+}
+
+.botaoSalvar {
+  border: 1px solid #2c5b6c;
+  box-shadow: 2px 2px 1px #2c5b6c;
+  background-color: #4793af;
+
+  transition: filter ease-in-out 0.3s;
+}
+
+.desativado {
+  cursor: not-allowed;
+  filter: grayscale(1);
+  transition: filter ease-in-out 0.4s;
+}
+
+@media (max-width: 500px) {
+  .fundoVermais {
+    padding: 30px 10px;
+  }
+  .slideImagemEntrada,
+  .slideImagemSaida {
+    padding: 0 0 70px 0;
+  }
+  .containerImagemCarrossel,
+  .containerImagemCarrossel > img {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    width: 100%;
+  }
+
+  .containerImagemCarrossel,
+  .semImagemDeSaida {
+    background: transparent;
+    padding: 0px;
+  }
+
+  .alinharImagemQuebrada {
+    background-color: #eaf7ff;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .semImagemDeSaida h1,
+  .semImagemDeSaida p,
+  .semImagemDeSaida label {
+    color: white;
+    padding-inline: 10px;
+  }
+
+  .semImagemDeSaida h1 {
+    font-size: 1.4rem;
+    margin-top: 10px;
+    text-align: start;
+  }
+
+  .semImagemDeSaida p {
+    font-size: 1rem;
+  }
+
+  .semImagemDeSaida label {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .containerImagemCarrossel > img {
+    z-index: 20;
+    position: relative;
+    object-fit: cover;
+    max-height: 250px;
+  }
+
+  .tituloDadosDeIdentificacao {
+    font-size: 1.5rem;
+    text-align: start;
+  }
+  .alinharDadosDeIdentificacao {
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .descricaoTextarea {
+    max-height: 315px;
+  }
+  .botaoEditar{
+    padding: 7px 30px;
+  }
+  
+  .botaoCancelar,
+  .botaoSalvar {
+    padding: 8px 25px;
+    font-size: .7rem;
+  }
+}

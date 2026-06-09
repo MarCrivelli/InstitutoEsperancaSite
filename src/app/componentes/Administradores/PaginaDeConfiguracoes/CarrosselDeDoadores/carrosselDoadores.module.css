@@ -1,0 +1,196 @@
+.fundoCarrosselDoadores {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.painel {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: white;
+}
+
+.carrossel {
+  width: 100%;
+}
+
+.slideFormulario,
+.itemCarrossel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-block: 50px;
+  height: 100%;
+}
+
+.slideFormulario {
+  gap: 15px;
+}
+
+.infoDoador {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.infoDoador h1,
+.infoDoador p {
+  width: 100%;
+  max-width: 800px;
+  color: white;
+}
+
+.infoDoador p {
+  text-align: justify;
+  margin-inline: auto;
+}
+
+.botaoAddImagemDoador,
+.fotoPreview,
+.containerImagem,
+.containerPreImagem,
+.fotoDoador {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+
+.botaoAddImagemDoador {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+
+.fotoPreview,
+.fotoDoador {
+  object-fit: cover;
+}
+
+.fotoDoador {
+  width: 100%;
+  height: 100%;
+}
+
+.containerPreImagem {
+  border-style: dashed;
+}
+
+.containerPreImagem,
+.containerImagem {
+  border-width: 3px;
+  border-color: #fdc429;
+}
+
+.containerImagem {
+  border-style: solid;
+}
+
+.iconePadrao {
+  padding: 10px;
+}
+
+.iconePadrao > img {
+  height: 110px;
+  object-fit: scale-down;
+}
+
+.inputForm {
+  width: 80%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.textareaForm {
+  width: 80%;
+  height: 100px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+}
+
+.contador {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: -15px;
+  margin-bottom: 10px;
+  width: 80%;
+}
+
+.botaoAdicionar {
+  padding: 10px 50px;
+  background-color: #1a2129;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.botaoAdicionar:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.botaoRemover {
+  padding: 8px 20px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.botaoRemover:hover {
+  background-color: #c0392b;
+}
+
+@media (max-width: 768px) {
+  .fundoCarrosselDoadores {
+    padding: 20% 5%;
+  }
+
+  .slideFormulario,
+  .itemCarrossel {
+    padding: 30px 10px 50px 10px;
+  }
+
+  .itemCarrossel h1 {
+    font-size: 1.1rem;
+    margin-block: 3px 10px;
+  }
+
+  .itemCarrossel p {
+    font-size: 0.9rem;
+  }
+
+  .containerImagem,
+  .containerPreImagem {
+    width: 150px;
+    height: 150px;
+  }
+  .iconePadrao {
+    font-size: 0.7rem;
+  }
+  .inputForm,
+  .textareaForm,
+  .botaoAdicionar,
+  .contador {
+    width: 100%;
+  }
+  .botaoAdicionar {
+    padding: 10px 0 10px 0;
+  }
+}

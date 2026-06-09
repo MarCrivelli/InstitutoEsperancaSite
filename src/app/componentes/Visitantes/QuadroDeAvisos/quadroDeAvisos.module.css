@@ -1,0 +1,26 @@
+.botaoAviso {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: rgba(0, 3, 36, 0.7);
+  color: rgb(255, 255, 255);
+  border: 3px solid black;
+  padding: 6px 15px;
+  border-radius: 50%;
+  z-index: 100000;
+  opacity: 0.6;
+  transition: opacity ease-in-out 0.3s;
+}
+
+.botaoAviso:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+@media (max-width: 500px) {
+  .botaoAviso {
+    bottom: 10px;
+    right: 10px;
+    padding: 1px 10px;
+  }
+}
