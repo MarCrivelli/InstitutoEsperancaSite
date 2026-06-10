@@ -13,7 +13,12 @@ const commonOptions = {
 
 let sequelize;
 
+console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
+console.log('🔍 DATABASE_URL existe?', process.env.DATABASE_URL ? 'SIM' : 'NÃO');
+
 if (process.env.DATABASE_URL) {
+  console.log('🌐 Conectando usando DATABASE_URL do Render');
+
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     ...commonOptions,
     dialectOptions: {
@@ -24,6 +29,8 @@ if (process.env.DATABASE_URL) {
     }
   });
 } else {
+  console.log('⚠️ DATABASE_URL não encontrada. Usando configuração local.');
+
   const config = {
     development: {
       username: process.env.DB_USER || 'postgres',
@@ -67,7 +74,6 @@ if (process.env.DATABASE_URL) {
   );
 }
 
-// Testar conexão
 sequelize.authenticate()
   .then(() => {
     console.log('✅ Conexão com PostgreSQL estabelecida.');
@@ -77,8 +83,9 @@ sequelize.authenticate()
     process.exit(1);
   });
 
-// Exportar para compatibilidade
 module.exports = {
+  sequelize,
+  Sequelize,
   development: {
     username: process.env.DB_USER || 'postgres',
     password: process.env.DB_PWD || '',
@@ -107,7 +114,5 @@ module.exports = {
         rejectUnauthorized: false
       }
     }
-  },
-  sequelize,
-  Sequelize
+  }
 };
