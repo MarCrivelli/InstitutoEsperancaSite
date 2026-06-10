@@ -119,7 +119,7 @@ export default function QueroAdotar() {
                     {!mostrandoDescricao ? (
                       <>
                         <img
-                          src={`${import.meta.env.VITE_API_URL}/uploads/${animal.imagemEntrada}`}
+                          src={`${import.meta.env.VITE_API_URL}uploads/${animal.imagemEntrada}`}
                           alt={animal.nome}
                           draggable={false}
                           loading="lazy"

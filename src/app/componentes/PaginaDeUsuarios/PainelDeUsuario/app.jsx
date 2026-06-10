@@ -468,7 +468,7 @@ export default function PainelUsuario({
         <div className={styles.espacamentoDado}>
           <img
             className={styles.iconeUsuario}
-            src={usuarioLogado.foto || `${import.meta.env.BASE_URL}paraErros/user.png`}
+            src={usuarioLogado.foto || `${import.meta.env.VITE_API_URL}paraErros/user.png`}
             alt="Avatar do usuário"
           />
         </div>

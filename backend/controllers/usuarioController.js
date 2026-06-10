@@ -61,12 +61,6 @@ const garantirAdminFixo = async () => {
       dataUltimoLogin: new Date(),
     });
 
-    console.log("═══════════════════════════════════════");
-    console.log("🎉 ADMINISTRADOR FIXO CRIADO!");
-    console.log(`📧 Email: ${ADMIN_FIXO.email}`);
-    console.log(`🔐 Senha: ${ADMIN_FIXO.senha}`);
-    console.log("═══════════════════════════════════════");
-
     return novoAdmin;
   } catch (error) {
     console.error("❌ Erro ao garantir admin fixo:", error);
