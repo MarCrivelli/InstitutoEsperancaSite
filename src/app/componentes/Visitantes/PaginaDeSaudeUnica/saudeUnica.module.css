@@ -59,7 +59,7 @@ section.secao.parallax2 {
   display: flex;
   flex-wrap: wrap;
   gap: 40px;
-  
+
   position: relative;
   overflow: hidden;
 }
@@ -100,7 +100,7 @@ section.secao.parallax2 {
   font-weight: 900;
 }
 
-.conteudo1 img{
+.conteudo1 img {
   content: "";
   position: absolute;
   width: 500px;
@@ -130,4 +130,42 @@ section.secao.parallax2 {
   transition:
     opacity 0.15s linear,
     transform 0.15s linear;
+}
+
+@media (max-width: 768px) {
+  .conteudo {
+    padding-block: 100px;
+  }
+
+  .conteudo1 {
+    justify-content: center;
+  }
+
+  .conteudo1 .painel {
+    justify-content: center;
+    padding: 20px;
+  }
+  .conteudo1 .painel p {
+    font-size: 1.4rem;
+  }
+  .conteudo1 img {
+    width: 200px;
+    height: 200px;
+  }
+  .conteudo1,
+  .conteudo2 {
+    padding-inline: 20px;
+  }
+  .conteudo2 {
+    background-image: url(/imagensDeFundo/fundoGlacial_Celular.svg);
+  }
+}
+
+@media (max-width: 480px) {
+  section.secao.parallax h1 {
+    font-size: 2.5rem;
+  }
+  .conteudo1 .painel p {
+    font-size: 1rem;
+  }
 }
