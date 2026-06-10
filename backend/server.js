@@ -45,6 +45,15 @@ app.use((req, res, next) => {
 // ============================================================================
 // ROTA DE TESTE
 // ============================================================================
+
+app.get('/', (req, res) => {
+  res.json({
+    erro: false,
+    mensagem: 'Backend do Instituto Esperança funcionando!',
+    status: 'online'
+  });
+});
+
 app.get('/teste-cors', (req, res) => {
   res.json({
     erro: false,
@@ -57,6 +66,7 @@ app.get('/teste-cors', (req, res) => {
 // ============================================================================
 // ROTAS PRINCIPAIS
 // ============================================================================
+
 const routes = require('./routers/routes');
 app.use('/', routes);
 
