@@ -54,6 +54,7 @@
   text-decoration: none;
   margin-inline: 10px;
   transition: all ease-in-out 0.2s;
+  background-color: red;
 }
 
 .linkUsuario {

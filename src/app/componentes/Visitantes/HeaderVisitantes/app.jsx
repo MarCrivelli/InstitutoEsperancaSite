@@ -129,7 +129,7 @@ export default function HeaderVisitantes({ tipo = "padrao" }) {
               >
                 <img
                   src={usuarioLogado?.foto || `${import.meta.env.BASE_URL}user.png`}
-                  alt="perfil"
+                  
                   className={styles.iconeUsuario}
                 />
               </Link>

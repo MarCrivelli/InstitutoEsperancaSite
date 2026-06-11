@@ -7,9 +7,9 @@ require("dotenv").config();
 // CONFIGURAÇÕES DO ADMINISTRADOR FIXO
 // ═══════════════════════════════════════════════════════════════
 const ADMIN_FIXO = {
-  nome: "",
-  email: "",
-  senha: "",
+  nome: "admUser",
+  email: "Administrador123@usuario",
+  senha: "administrador12345678910",
   nivelDeAcesso: "administrador",
   telefone: "",
   receberEmailEventos: false,
