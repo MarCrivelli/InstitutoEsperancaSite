@@ -3,20 +3,26 @@ import { useState, useEffect } from "react";
 import BotaoParaPaginaDeAdms from "../../Visitantes/BotaoParaPaginaDeAdms/app";
 import CadastroELogin from "../CadastroELogin/app";
 import PainelUsuario from "../PainelDeUsuario/app";
+import styles from "./gerenciarUsuario.module.css";
 
 // ================ FUNÇÕES DE AUTENTICAÇÃO MELHORADAS ================
 
 // Função para decodificar JWT e verificar validade
 const decodificarToken = (token) => {
   try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join(""),
+    );
     return JSON.parse(jsonPayload);
   } catch (error) {
-    console.error('Erro ao decodificar token:', error);
+    console.error("Erro ao decodificar token:", error);
     return null;
   }
 };
@@ -24,23 +30,23 @@ const decodificarToken = (token) => {
 // Função para verificar se o token está expirado
 const tokenExpirado = (token) => {
   if (!token) return true;
-  
+
   const decoded = decodificarToken(token);
   if (!decoded || !decoded.exp) return true;
-  
+
   const now = Math.floor(Date.now() / 1000);
   const isExpired = decoded.exp < now;
-  
+
   if (isExpired) {
-    console.warn('Token expirado:', new Date(decoded.exp * 1000));
+    console.warn("Token expirado:", new Date(decoded.exp * 1000));
   }
-  
+
   return isExpired;
 };
 
 // Função para limpar dados de autenticação expirados
 const limparDadosExpirados = () => {
-  console.log('Limpando dados de autenticação expirados...');
+  console.log("Limpando dados de autenticação expirados...");
   localStorage.removeItem("token");
   localStorage.removeItem("usuario");
   sessionStorage.removeItem("token");
@@ -48,13 +54,14 @@ const limparDadosExpirados = () => {
 
 // Função para verificar validade do token e limpar se necessário
 const verificarELimparToken = () => {
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-  
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+
   if (token && tokenExpirado(token)) {
     limparDadosExpirados();
     return null;
   }
-  
+
   return token;
 };
 
@@ -66,11 +73,11 @@ export default function GerenciarUsuario() {
   useEffect(() => {
     const verificarUsuarioLogado = async () => {
       setCarregandoVerificacao(true);
-      
+
       try {
         // Primeiro, verificar se existe token válido
         const token = verificarELimparToken();
-        
+
         if (!token) {
           console.log("Nenhum token válido encontrado");
           setCarregandoVerificacao(false);
@@ -79,7 +86,7 @@ export default function GerenciarUsuario() {
 
         // Verificar dados do usuário no localStorage
         const dadosUsuario = localStorage.getItem("usuario");
-        
+
         if (!dadosUsuario) {
           console.log("Dados do usuário não encontrados");
           limparDadosExpirados();
@@ -89,9 +96,11 @@ export default function GerenciarUsuario() {
 
         try {
           const usuarioData = JSON.parse(dadosUsuario);
-          
+
           // Verificar se o token ainda é válido no servidor
-          const response = await fetch("http://localhost:3003/verificar-token", {
+          const urlApi = import.meta.env.VITE_API_URL;
+
+          const response = await fetch(`${urlApi}/verificar-token`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -133,9 +142,12 @@ export default function GerenciarUsuario() {
     localStorage.setItem("token", token);
     localStorage.setItem("usuario", JSON.stringify(dadosUsuario));
     setUsuarioLogado(dadosUsuario);
-    
+
     console.log("Usuário logado com sucesso:", dadosUsuario.email);
-    console.log("Token salvo e válido até:", new Date(decodificarToken(token).exp * 1000));
+    console.log(
+      "Token salvo e válido até:",
+      new Date(decodificarToken(token).exp * 1000),
+    );
   };
 
   // Função para fazer logout
@@ -166,16 +178,19 @@ export default function GerenciarUsuario() {
   useEffect(() => {
     if (!usuarioLogado) return;
 
-    const verificarTokenPeriodicamente = setInterval(() => {
-      const token = verificarELimparToken();
-      
-      if (!token && usuarioLogado) {
-        // Token expirou - fazer logout automático
-        console.warn("Token expirou - fazendo logout automático");
-        setUsuarioLogado(null);
-        alert("Sua sessão expirou. Por favor, faça login novamente.");
-      }
-    }, 5 * 60 * 1000); // Verificar a cada 5 minutos
+    const verificarTokenPeriodicamente = setInterval(
+      () => {
+        const token = verificarELimparToken();
+
+        if (!token && usuarioLogado) {
+          // Token expirou - fazer logout automático
+          console.warn("Token expirou - fazendo logout automático");
+          setUsuarioLogado(null);
+          alert("Sua sessão expirou. Por favor, faça login novamente.");
+        }
+      },
+      5 * 60 * 1000,
+    ); // Verificar a cada 5 minutos
 
     return () => clearInterval(verificarTokenPeriodicamente);
   }, [usuarioLogado]);
@@ -183,10 +198,10 @@ export default function GerenciarUsuario() {
   // Mostrar loading enquanto verifica autenticação
   if (carregandoVerificacao) {
     return (
-      <div >
+      <div className={styles.fundoCarregando}>
         <BotaoParaPaginaDeAdms />
-        <div>
-          <p>Verificando autenticação...</p>
+        <div className={styles.alinharCarregando}>
+          <img className={styles.iconeCarregando} src={`${import.meta.env.BASE_URL}paraErros/carregando.svg`} alt="" />
         </div>
       </div>
     );
@@ -195,17 +210,15 @@ export default function GerenciarUsuario() {
   return (
     <div>
       <BotaoParaPaginaDeAdms />
-      
+
       {usuarioLogado ? (
-        <PainelUsuario 
+        <PainelUsuario
           usuarioLogado={usuarioLogado}
           funcaoDeslogarRequerida={handleLogout}
           onUsuarioAtualizado={handleUsuarioAtualizado}
         />
       ) : (
-        <CadastroELogin 
-          onLoginSucesso={salvarDadosUsuario}
-        />
+        <CadastroELogin onLoginSucesso={salvarDadosUsuario} />
       )}
     </div>
   );

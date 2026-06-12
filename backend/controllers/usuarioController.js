@@ -8,8 +8,8 @@ require("dotenv").config();
 // ═══════════════════════════════════════════════════════════════
 const ADMIN_FIXO = {
   nome: "admUser",
-  email: "Administrador123@usuario",
-  senha: "administrador12345678910",
+  email: "",
+  senha: "",
   nivelDeAcesso: "administrador",
   telefone: "",
   receberEmailEventos: false,
@@ -161,7 +161,7 @@ const cadastrarUsuario = async (req, res) => {
         nivelDeAcesso: novoUsuario.nivelDeAcesso,
       },
       process.env.SEGREDO || "chave_secreta_desenvolvimento",
-      { expiresIn: "300h" } /* Mudar depois */
+      { expiresIn: "24h" } 
     );
 
     res.status(201).json({

@@ -44,8 +44,6 @@ export default function QueroAdotar() {
 
   const [itemAtual, setItemAtual] = useState(0);
   const [animalAbertoId, setAnimalAbertoId] = useState(null);
-  if (erro) return <p>Erro: {erro}</p>;
-
   const ultimoIndice = animaisFiltrados.length - 1;
 
   const irParaProximo = (e) => {
@@ -71,6 +69,164 @@ export default function QueroAdotar() {
   const poucosAnimais = animaisFiltrados.length <= 3;
   const isMobile = window.innerWidth <= 768;
 
+  let ConteudoCarrossel;
+
+  if (carregando) {
+    ConteudoCarrossel = (
+      <div className={styles.mensagemCarrossel}>
+        <div className={styles.painel}>
+          <h2>Carregando animais...</h2>
+        </div>
+      </div>
+    );
+  } else if (erro) {
+    ConteudoCarrossel = (
+      <div className={styles.mensagemCarrossel}>
+        <div className={styles.painel}>
+          <h2>Erro ao carregar os animais.</h2>
+          <p>{erro}</p>
+        </div>
+      </div>
+    );
+  } else if (!animaisFiltrados || animaisFiltrados.length >= 0) {
+    ConteudoCarrossel = (
+      <div className={styles.mensagemCarrossel}>
+        <div className={styles.painel}>
+          <h2>Sem animais disponíveis para adoção no momento.</h2>
+        </div>
+      </div>
+    );
+  } else {
+    ConteudoCarrossel = (
+      <Carousel
+        className={`${styles.carrossel} ${
+          poucosAnimais && !isMobile ? styles.poucos : ""
+        }`}
+        selectedItem={itemAtual}
+        onChange={(indice) => {
+          setItemAtual(indice);
+          setAnimalAbertoId(null);
+        }}
+        showThumbs={false}
+        showStatus={false}
+        showIndicators={false}
+        showArrows={false}
+        infiniteLoop={false}
+        swipeable={isMobile || !poucosAnimais}
+        emulateTouch={isMobile || !poucosAnimais}
+        centerMode={true}
+        centerSlidePercentage={
+          poucosAnimais && isMobile ? 80 : centerSlidePercentage
+        }
+        transitionTime={800}
+        interval={4000}
+      >
+        {animaisFiltrados.map((animal, indice) => {
+          const emFoco = indice === itemAtual;
+          const mostrandoDescricao = animal.id === animalAbertoId;
+
+          return (
+            <div key={animal.id} className={styles.itemSlide}>
+              <div
+                className={`${styles.cardAnimal} ${
+                  emFoco ? styles.cardAtivo : styles.cardInativo
+                }`}
+              >
+                {!mostrandoDescricao ? (
+                  <>
+                    <img
+                      src={`${import.meta.env.VITE_API_URL}/uploads/${animal.imagemEntrada}`}
+                      alt={animal.nome}
+                      draggable={false}
+                      loading="lazy"
+                    />
+
+                    <h1>{animal.nome}</h1>
+
+                    <p>
+                      <strong>Idade: </strong>
+                      {opcoes.vincularLabel(
+                        animal.idade?.toString(),
+                        "idadeAnimais",
+                      )}
+                    </p>
+
+                    <p>
+                      <strong>Sexo: </strong>
+                      {opcoes.vincularLabel(animal.sexo, "sexoDoAnimal")}
+                    </p>
+
+                    <p>
+                      <strong>Status de castração: </strong>
+                      {opcoes.vincularLabel(
+                        animal.statusCastracao,
+                        "StatusCastracao",
+                      )}
+                    </p>
+
+                    <button
+                      type="button"
+                      className={styles.botaoSobre}
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setAnimalAbertoId(animal.id);
+                      }}
+                    >
+                      Sobre
+                    </button>
+
+                    {emFoco && (
+                      <div className={styles.acoesCard}>
+                        <button
+                          type="button"
+                          className={`${styles.botaoNavegacao} ${styles.botaoEsquerdo}`}
+                          onClick={irParaAnterior}
+                          disabled={itemAtual === 0}
+                        >
+                          &lt;
+                        </button>
+
+                        <button
+                          type="button"
+                          className={`${styles.botaoNavegacao} ${styles.botaoDireito}`}
+                          onClick={irParaProximo}
+                          disabled={itemAtual === ultimoIndice}
+                        >
+                          &gt;
+                        </button>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className={styles.descricaoAnimal}>
+                    <h1 className={styles.nomeAnimal}>{animal.nome}</h1>
+
+                    <p>{animal.descricaoEntrada}</p>
+
+                    <button
+                      type="button"
+                      className={styles.botaoVoltar}
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setAnimalAbertoId(null);
+                      }}
+                    >
+                      Voltar
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </Carousel>
+    );
+  }
+
   return (
     <>
       <main>
@@ -81,134 +237,7 @@ export default function QueroAdotar() {
           <h1>Animais disponíveis para a adoção</h1>
         </section>
 
-        <section className={styles.secao}>
-          <Carousel
-            className={`${styles.carrossel} ${
-              poucosAnimais && !isMobile ? styles.poucos : ""
-            }`}
-            selectedItem={itemAtual}
-            onChange={(indice) => {
-              setItemAtual(indice);
-              setAnimalAbertoId(null);
-            }}
-            showThumbs={false}
-            showStatus={false}
-            showIndicators={false}
-            showArrows={false}
-            infiniteLoop={false}
-            swipeable={isMobile || !poucosAnimais}
-            emulateTouch={isMobile || !poucosAnimais}
-            centerMode={true}
-            centerSlidePercentage={
-              poucosAnimais && isMobile ? 80 : centerSlidePercentage
-            }
-            transitionTime={800}
-            interval={4000}
-          >
-            {animaisFiltrados.map((animal, indice) => {
-              const emFoco = indice === itemAtual;
-              const mostrandoDescricao = animal.id === animalAbertoId;
-
-              return (
-                <div key={animal.id} className={styles.itemSlide}>
-                  <div
-                    className={`${styles.cardAnimal} ${
-                      emFoco ? styles.cardAtivo : styles.cardInativo
-                    }`}
-                  >
-                    {!mostrandoDescricao ? (
-                      <>
-                        <img
-                          src={`${import.meta.env.VITE_API_URL}uploads/${animal.imagemEntrada}`}
-                          alt={animal.nome}
-                          draggable={false}
-                          loading="lazy"
-                        />
-
-                        <h1>{animal.nome}</h1>
-
-                        <p>
-                          <strong>Idade: </strong>
-                          {opcoes.vincularLabel(
-                            animal.idade?.toString(),
-                            "idadeAnimais",
-                          )}
-                        </p>
-
-                        <p>
-                          <strong>Sexo: </strong>
-                          {opcoes.vincularLabel(animal.sexo, "sexoDoAnimal")}
-                        </p>
-
-                        <p>
-                          <strong>Status de castração: </strong>
-                          {opcoes.vincularLabel(
-                            animal.statusCastracao,
-                            "StatusCastracao",
-                          )}
-                        </p>
-
-                        <button
-                          type="button"
-                          className={styles.botaoSobre}
-                          onMouseDown={(e) => e.stopPropagation()}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setAnimalAbertoId(animal.id);
-                          }}
-                        >
-                          Sobre
-                        </button>
-
-                        {emFoco && (
-                          <div className={styles.acoesCard}>
-                            <button
-                              type="button"
-                              className={`${styles.botaoNavegacao} ${styles.botaoEsquerdo}`}
-                              onClick={irParaAnterior}
-                              disabled={itemAtual === 0}
-                            >
-                              &lt;
-                            </button>
-
-                            <button
-                              type="button"
-                              className={`${styles.botaoNavegacao} ${styles.botaoDireito}`}
-                              onClick={irParaProximo}
-                              disabled={itemAtual === ultimoIndice}
-                            >
-                              &gt;
-                            </button>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <div className={styles.descricaoAnimal}>
-                        <h1 className={styles.nomeAnimal}>{animal.nome}</h1>
-
-                        <p>{animal.descricaoEntrada}</p>
-
-                        <button
-                          type="button"
-                          className={styles.botaoVoltar}
-                          onMouseDown={(e) => e.stopPropagation()}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setAnimalAbertoId(null);
-                          }}
-                        >
-                          Voltar
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </Carousel>
-        </section>
+        <section className={styles.secao}>{ConteudoCarrossel}</section>
 
         <section
           className={`${styles.secao} ${styles.parallax} ${styles.parallax2}`}
@@ -219,7 +248,9 @@ export default function QueroAdotar() {
         <section className={`${styles.secao} ${styles.conteudo}`}>
           <div className={styles.bloco}>
             <div className={styles.cardInformativo}>
-              <img src={`${import.meta.env.BASE_URL}pagAdocao/avaliacao.png`}></img>
+              <img
+                src={`${import.meta.env.BASE_URL}pagAdocao/avaliacao.png`}
+              ></img>
               <h2>Avaliação Comportamental</h2>
               <p>
                 Um critério muito importante é a avaliação de como o futuro
@@ -255,7 +286,9 @@ export default function QueroAdotar() {
           </div>
           <div className={styles.bloco}>
             <div className={styles.cardInformativo}>
-              <img src={`${import.meta.env.BASE_URL}pagAdocao/rotina.png`}></img>
+              <img
+                src={`${import.meta.env.BASE_URL}pagAdocao/rotina.png`}
+              ></img>
               <h2>Rotina Adequada</h2>
               <p>
                 Os animais domésticos precisam de atenção e cuidados diários

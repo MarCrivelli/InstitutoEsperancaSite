@@ -92,7 +92,7 @@ export default function HeaderAdms() {
                 }
               >
                 <img
-                  src={usuarioLogado?.foto || `${import.meta.env.BASE_URL}user.png`}
+                  src={usuarioLogado?.foto || `${import.meta.env.BASE_URL}paraErros/user.png`}
                   alt="perfil"
                   className={styles.iconeUsuario}
                 />

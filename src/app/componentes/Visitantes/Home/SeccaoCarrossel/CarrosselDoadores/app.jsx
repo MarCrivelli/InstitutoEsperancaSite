@@ -103,7 +103,7 @@ export default function CarrosselDoadoresVisitantes({ ehMobile }) {
               onError={(e) => {
                 console.error("Erro ao carregar imagem:", e.target.src);
                 e.target.onerror = null;
-                e.target.src = "/imagem-padrao-doador.jpg";
+                e.target.src = `${import.meta.env.BASE_URL}paraErros/user.png`;
               }}
             />
           </div>

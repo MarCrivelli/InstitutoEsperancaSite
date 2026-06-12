@@ -2,12 +2,10 @@
 
 //================ Importações externas ================//
 import { useState, useEffect, useRef } from "react";
-import Select from "react-select";
 
 //================ Minhas importações ================//
 import styles from "./painelUsuario.module.css";
 import HeaderVisitantes from "../../Visitantes/HeaderVisitantes/app";
-import opcoes from "/src/app/componentes/Administradores/OpcoesDeSelecao/opcoes";
 
 export default function PainelUsuario({
   usuarioLogado,
