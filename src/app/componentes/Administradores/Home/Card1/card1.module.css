@@ -1,0 +1,276 @@
+.containerWrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding-inline: 17px;
+  overflow-x: hidden;
+}
+
+.containerLembretes {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 15px 10px 15px 10px;
+  background-color: #191919;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border-radius: 10px;
+  position: relative;
+  z-index: 100;
+  gap: 20px;
+  min-width: 100%;
+}
+
+.containerLembretes:before{
+  content: "";
+  position: absolute;
+  background-image: url(/imagensDeFundo/fundoPatas_BrancoTotal.png);
+  background-repeat: repeat;
+  background-size: 400px;
+  background-position: top left;
+  opacity: .1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.containerLembretes::-webkit-scrollbar {
+  width: 13px;
+}
+
+.containerLembretes::-webkit-scrollbar-track {
+  background: #ffc100;
+  border-radius: 10px;
+}
+
+.containerLembretes::-webkit-scrollbar-thumb {
+  background-color: #008cff;
+  border-radius: 10px;
+  border: 2px solid currentColor;
+}
+
+.containerLembretes::-webkit-scrollbar-thumb:hover {
+  background-color: #008cff;
+}
+
+.lembreteNovoAdicionado {
+  animation: animacaoDeNovoLembrete 0.7s ease-out forwards;
+}
+
+@keyframes animacaoDeNovoLembrete {
+  from {
+    transform: translateY(649px);
+    opacity: 0;
+    position: absolute;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+    position: relative;
+  }
+}
+
+.lembreteCarregado {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.lembreteItem {
+  display: flex;
+  height: auto;
+  padding: 8px;
+  background-color: #11262c;
+  border-radius: 5px;
+  color: white;
+  width: 100%;
+}
+
+.lembreteData {
+  font-weight: bold;
+  display: inline;
+  margin-right: 8px;
+  white-space: normal;
+  word-break: break-word;
+  text-align: justify;
+}
+
+.lembreteDescricao {
+  font-weight: normal;
+  color: white;
+}
+
+.lembreteLixeira {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #ff6b6b;
+  flex-shrink: 0;
+  margin: 0 0 auto auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.lembreteItem:hover .lembreteLixeira {
+  opacity: 1;
+  visibility: visible;
+}
+
+.botaoAdicionar {
+  display: flex;
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  padding-left: 38px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #0077ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  z-index: 100;
+}
+
+.botaoAdicionar:hover {
+  transform: scale(1.1);
+  opacity: .9;
+}
+
+.botaoAdicionar::before{
+  content: "+";
+  position: absolute;
+  font-size: 2.5rem;
+  -webkit-text-stroke-color: #00489a;
+  -webkit-text-stroke-width: 0.08rem;
+  font-weight: 1000;
+  top: -1rem;
+  left: .28rem;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
+  gap: 20px;
+  animation: deslizarModal 0.5s ease-out forwards all;
+}
+
+@keyframes deslizarModal {
+  from {
+    transform: translateY(120vh);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0vh);
+    opacity: 1;
+  }
+}
+
+.modal h1 {
+  margin-top: 0;
+  color: #2f2f2f;
+}
+
+.alinharLadoALado,
+.alinharAcima {
+  display: flex;
+}
+
+.alinharLadoALado {
+  gap: 5px;
+}
+
+.labelNaFrente {
+  font-size: 1rem;
+}
+
+.alinharAcima {
+  flex-direction: column;
+}
+
+.inputInserirAviso {
+  width: 100%;
+  border: 1px solid #b3b3b3;
+  color: rgb(0, 0, 0);
+  padding-inline: 3px;
+  min-height: 36px;
+}
+
+.inputPeriodo {
+  width: 15px;
+}
+
+.labelInserirAviso {
+  text-align: start;
+}
+
+.textareaInserirAviso {
+  min-height: 100px;
+}
+
+.inputDeCor {
+  border: none;
+  width: 30px;
+}
+
+.botoesForm {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.botoesForm button {
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  flex-grow: 1;
+}
+
+.botoesForm button:first-child {
+  background-color: #444;
+  color: white;
+  border: none;
+}
+
+.botoesForm button:last-child {
+  background-color: #0095ff;
+  color: white;
+  border: none;
+}
+
+@media (max-width: 700px) {
+  .botaoAdicionar {
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+  }
+  .lembreteData {
+    font-size: .7rem;
+  }
+}

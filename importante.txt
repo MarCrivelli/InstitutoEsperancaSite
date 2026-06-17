@@ -1,0 +1,76 @@
+Links dos ícones que precisam ser atribuídos:
+
+1. Cachorro triste
+<a href="https://www.flaticon.com/free-icons/sad" title="sad icons">Sad icons created by Freepik - Flaticon</a>
+
+2. Dinheiro 
+<a href="https://www.flaticon.com/free-icons/business-and-finance" title="business and finance icons">Business and finance icons created by cah nggunung - Flaticon</a>
+
+3. Doação
+<a href="https://www.flaticon.com/free-icons/adopt" title="Adopt icons">Adopt icons created by Freepik - Flaticon</a>
+
+4. Adoção
+<a href="https://www.flaticon.com/free-icons/adopt" title="Adopt icons">Adopt icons created by Freepik - Flaticon</a>
+
+5. Colaborador
+<a href="https://www.flaticon.com/free-icons/collaboration" title="collaboration icons">Collaboration icons created by Freepik - Flaticon</a>
+
+6. Instagram
+<a href="https://www.flaticon.com/free-icons/instagram" title="instagram icons">Instagram icons created by Grow studio - Flaticon</a>
+
+7. Icone editar
+<a href="https://www.flaticon.com/free-icons/edit" title="edit icons">Edit icons created by Kiranshastry - Flaticon</a>
+
+8. relógio vermelho
+<a href="https://www.flaticon.com/free-icons/calendar" title="calendar icons">Calendar icons created by Freepik - Flaticon</a>
+
+9. Dinheiro roxo
+<a href="https://www.flaticon.com/free-icons/budget" title="budget icons">Budget icons created by Freepik - Flaticon</a>
+
+10. Casa Laranja
+<a href="https://www.flaticon.com/free-icons/real-estate" title="real estate icons">Real estate icons created by Smashicons - Flaticon</a>
+
+11. Pessoa com detalhes em verde
+<a href="https://www.flaticon.com/free-icons/good-person" title="good person icons">Good person icons created by nangicon - Flaticon</a>
+
+12. Papel com detalhes em amarelo
+<a href="https://www.flaticon.com/free-icons/checklist" title="checklist icons">Checklist icons created by Freepik - Flaticon</a>
+
+13. Ração de Cachorro
+<a href="https://www.flaticon.com/free-icons/dog-food" title="dog-food icons">Dog-food icons created by monkik - Flaticon</a>
+
+14. Cone veterinário
+<a href="https://www.flaticon.com/free-icons/cone-of-shame" title="cone of shame icons">Cone of shame icons created by Freepik - Flaticon</a>
+
+15. Coleira 
+<a href="https://www.flaticon.com/free-icons/collar" title="collar icons">Collar icons created by Freepik - Flaticon</a>
+
+16. Caminha de Cachorro
+<a href="https://www.flaticon.com/free-icons/dog" title="dog icons">Dog icons created by Freepik - Flaticon</a>
+
+17. Lua
+<a href="https://www.flaticon.com/free-icons/full-moon" title="full moon icons">Full moon icons created by vectorsmarket15 - Flaticon</a>
+Sites que peguei alguns componentes utilizados:
+
+18. Policial
+<a href="https://www.flaticon.com/free-icons/police" title="police icons">Police icons created by Freepik - Flaticon</a>
+
+19. Binóculo
+<a href="https://www.flaticon.com/free-icons/find" title="find icons">Find icons created by Freepik - Flaticon</a>
+
+20. Atendente
+<a href="https://www.flaticon.com/free-icons/operator" title="operator icons">Operator icons created by kliwir art - Flaticon</a>
+
+22. Árvore
+<a href="https://www.flaticon.com/free-icons/bonsai" title="bonsai icons">Bonsai icons created by justicon - Flaticon</a>
+
+23. Borda floral
+<a href="https://www.flaticon.com/free-icons/floral" title="floral icons">Floral icons created by Freepik - Flaticon</a>
+
+https://react-select.com/home
+
+https://react-bootstrap.github.io/docs/components/tabs
+
+https://react-select.com/advanced
+
+npx sequelize-cli db:migrate

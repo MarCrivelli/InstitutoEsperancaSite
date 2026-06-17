@@ -1,0 +1,35 @@
+.fundoCarregando {
+  height: 100vh;
+  background-color: rgb(89, 0, 255);
+}
+
+.fundoCarregando:before {
+  content: "";
+  position: absolute;
+  background-image: url(/imagensDeFundo/fundoPatas_PretoTotal.png);
+  background-repeat: repeat;
+  background-size: 400px;
+  background-position: top left;
+  opacity: 0.3;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.alinharCarregando {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.iconeCarregando {
+  width: 100px;
+  height: 100px;
+  margin: auto;
+  filter: drop-shadow(0 0 0 #140038);
+  z-index: 100;
+}

@@ -1,0 +1,189 @@
+.fundoPagina {
+  background-image: url(/imagensDeFundo/fundoPoligonal.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top left;
+  background-attachment: fixed;
+  min-height: 100vh;
+  overflow-y: hidden;
+  z-index: 1;
+}
+
+.fundoPainel {
+  width: 100%;
+  min-height: calc(100vh - 70px);
+  height: auto;
+  padding: 28px 100px;
+}
+
+.painel {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  min-height: calc(100vh - (70px + 60px + 60px));
+  width: 100%;
+  border-radius: 20px;
+  padding: 5%;
+}
+
+.introducaoPagina {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 50px;
+}
+
+.introducaoPagina p {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-align: justify;
+  font-size: 1.1rem;
+}
+
+.introducaoPagina span {
+  font-weight: 700;
+  color: #343434;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: none;
+  padding: 10px 2px;
+  gap: 10px;
+}
+
+.tabs li {
+  width: calc(50% - 5px);
+}
+
+.conteudoTab {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-width: 0 1px 1px 1px;
+  border-color: rgba(0, 0, 0, 0.159);
+  border-style: solid;
+  border-radius: 20px;
+  min-height: 351px;
+}
+
+.conteudoTab2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: calc(351px - 40px);
+  gap: 5px;
+}
+
+.conteudoTab2 h1 {
+  text-align: center;
+  font-size: 2.4rem;
+}
+
+.conteudoTab2 p {
+  text-align: justify;
+  font-size: 1.5rem;
+  width: 50%;
+}
+
+.botaoTabNaoSelecionado,
+.botaoTabSelecionado {
+  width: 100%;
+}
+
+.botaoTabNaoSelecionado {
+  color: #555 !important;
+  background-color: #ffffff !important;
+  border: 1px solid #b3b3b373 !important;
+  margin-right: 8px;
+  border-radius: 8px !important;
+  padding: 0.466rem 18px !important;
+  transition: transform 0.3s ease;
+}
+
+.botaoTabNaoSelecionado:hover {
+  transform: scale(1.01);
+}
+
+.botaoTabSelecionado,
+.containerBotaoPostagem > button {
+  color: white !important;
+  background-color: #ffb300 !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-weight: bold;
+  box-shadow: 2px 2px 0px #ff9900;
+}
+
+.containerFiltros {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 30px;
+}
+
+.filtro {
+  flex: 1 450px;
+  max-width: calc(50% - 30px);
+}
+
+.containerBotaoPostagem {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.containerBotaoPostagem button {
+  padding: 5px 25px;
+}
+
+@media (max-width: 768px) {
+  .fundoPainel {
+    padding: 50px 25px;
+  }
+
+  .painel {
+    padding: 20px 30px;
+  }
+
+  .introducaoPagina h1,
+  .conteudoTab2 h1 {
+    font-size: 1.6rem;
+  }
+
+  .introducaoPagina p,
+  .conteudoTab2 p {
+    font-size: 0.8rem;
+  }
+  .conteudoTab,
+  .conteudoTab2 {
+    min-height: 100px;
+  }
+
+  .botaoTabNaoSelecionado,
+  .botaoTabSelecionado {
+    font-size: 0.6rem;
+  }
+
+  .containerFiltros {
+    gap: 20px;
+    row-gap: 40px;
+  }
+
+  .filtro {
+    flex: 2 300px;
+    max-width: 100%;
+  }
+
+  .filtro label {
+    font-size: 0.8rem;
+  }
+
+  .filtro .select {
+    height: 10px !important;
+  }
+  .containerBotaoPostagem {
+    margin-top: 40px;
+  }
+}
