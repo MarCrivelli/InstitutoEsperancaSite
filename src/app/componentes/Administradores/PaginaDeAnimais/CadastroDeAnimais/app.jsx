@@ -37,10 +37,28 @@ export default function CadastroDeAnimais({ onAnimalCadastrado, onClose }) {
 
   const registrarAnimal = async (event) => {
     event.preventDefault();
+
+    if (
+      !nome ||
+      !idade ||
+      !sexo ||
+      !tipo ||
+      !statusMicrochipagem ||
+      !statusVacinacao ||
+      !statusCastracao ||
+      !statusAdocao ||
+      !statusVermifugacao ||
+      !image
+    ) {
+      alert("Preencha todos os campos e selecione uma imagem.");
+      return;
+    }
+
     setIsLoading(true);
 
     const formData = new FormData();
-    formData.append("nome", nome);
+
+    formData.append("nome", nome.trim());
     formData.append("idade", idade);
     formData.append("sexo", sexo);
     formData.append("tipo", tipo);
@@ -49,37 +67,72 @@ export default function CadastroDeAnimais({ onAnimalCadastrado, onClose }) {
     formData.append("statusCastracao", statusCastracao);
     formData.append("statusAdocao", statusAdocao);
     formData.append("statusVermifugacao", statusVermifugacao);
-    if (image) {
-      formData.append("imagem", image);
-    }
+    formData.append("imagem", image);
 
     try {
-      const resposta = await fetch(`${import.meta.env.VITE_API_UTL}/animais`, {
+      const token = localStorage.getItem("token");
+      const urlApi = import.meta.env.VITE_API_URL;
+
+      if (!urlApi) {
+        throw new Error("VITE_API_URL não foi definida.");
+      }
+
+      if (!token) {
+        alert("Sua sessão não foi encontrada. Faça login novamente.");
+        return;
+      }
+
+      const resposta = await fetch(`${urlApi}/animais`, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 
-      if (resposta.ok) {
-        await resposta.json();
+      const tipoConteudo = resposta.headers.get("content-type");
 
-        if (onAnimalCadastrado) {
-          await onAnimalCadastrado();
-        }
+      let dadosResposta = null;
 
-        alert("Animal cadastrado com sucesso!");
-        resetForm();
-
-        if (onClose) onClose();
+      if (tipoConteudo?.includes("application/json")) {
+        dadosResposta = await resposta.json();
       } else {
-        const erro = await resposta.json();
-        console.error("Erro ao cadastrar animal:", erro);
-        alert(
-          `Erro ao cadastrar o animal: ${erro.message || "Erro desconhecido"}`,
+        const textoResposta = await resposta.text();
+
+        dadosResposta = {
+          message:
+            textoResposta || `O servidor retornou o status ${resposta.status}.`,
+        };
+      }
+
+      if (!resposta.ok) {
+        console.error("Erro ao cadastrar animal:", {
+          status: resposta.status,
+          statusText: resposta.statusText,
+          dados: dadosResposta,
+        });
+
+        throw new Error(
+          dadosResposta?.message ||
+            dadosResposta?.mensagem ||
+            `Erro HTTP ${resposta.status}`,
         );
+      }
+
+      if (onAnimalCadastrado) {
+        await onAnimalCadastrado();
+      }
+
+      alert("Animal cadastrado com sucesso!");
+      resetForm();
+
+      if (onClose) {
+        onClose();
       }
     } catch (error) {
       console.error("Erro ao cadastrar animal:", error);
-      alert("Ocorreu um erro na comunicação com o servidor!");
+
+      alert(error.message || "Ocorreu um erro na comunicação com o servidor.");
     } finally {
       setIsLoading(false);
     }
