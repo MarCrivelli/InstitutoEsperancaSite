@@ -1,0 +1,66 @@
+.blocoArquivos {
+  width: 100%;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #ffffff;
+}
+
+.areaUpload {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.areaUpload button,
+.paginacao button,
+.itemDocumento button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.listaDocumentos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.itemDocumento {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.itemDocumento div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.itemDocumento span {
+  font-size: 13px;
+  color: #666;
+}
+
+.paginacao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.paginacao button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mensagem {
+  margin: 10px 0;
+  font-weight: 500;
+}

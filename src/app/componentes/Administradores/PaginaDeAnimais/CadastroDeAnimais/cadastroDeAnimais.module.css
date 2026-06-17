@@ -1,0 +1,159 @@
+.formularioCadastro {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  width: 100%;
+  flex-grow: 1;
+}
+
+.inserirImagem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.inputDeImagem {
+  display: none;
+}
+
+.labelDeImagem {
+  background-color: #1e1e1e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  transition: opacity 0.3s ease;
+}
+
+.labelDeImagem:hover,
+.botaoInserir:hover {
+  opacity: 0.9;
+}
+
+.previaImagem {
+  width: 100%;
+  height: auto;
+  min-height: 270px;
+  max-height: 410px;
+  object-fit: cover;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+}
+
+.nomeArquivo {
+  font-size: 14px;
+  color: #333;
+  font-style: italic;
+  text-align: center;
+}
+
+.itemInserir {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
+  row-gap: 20px;
+  border: 1px solid #b3b3b3;
+}
+
+.inserirImagem,
+.itemInserir {
+  flex: 1 300px;
+}
+
+.tituloItemInserir {
+  font-size: 2rem;
+  text-align: center;
+  border-bottom: 1px solid #b3b3b3;
+  padding-block: 5px;
+}
+
+.alinharDadosDeInsercao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-inline: 30px;
+}
+
+.labelDadosSaude,
+.labelDeIdentificacao {
+  font-weight: 600;
+  font-size: 1.2rem;
+  text-align: start;
+  width: 100%;
+  padding-left: 3px;
+}
+
+.inputDadosIdentificacao {
+  padding-left: 8px;
+  border-radius: 4px;
+  border: 1px solid #b3b3b3;
+}
+
+.inputDadosIdentificacao,
+.selectInserirAnimal {
+  height: 36px;
+  width: 100%;
+}
+
+.alinharBotaoInserir {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: auto auto 0 auto;
+}
+
+.botaoInserir {
+  border-radius: 6px;
+  border: none;
+  background-color: #007bff;
+  transition: background-color 0.3s ease;
+  color: white;
+  padding: 7px 35px;
+}
+
+@media (max-width: 1100px) {
+  .tituloItemInserir {
+    font-size: 1.7rem;
+  }
+
+  .itemInserir {
+    padding: 0px 20px 20px 20px;
+  }
+
+  .alinharDadosDeInsercao {
+    align-items: flex-start;
+    padding-inline: 0;
+  }
+
+  
+}
+
+@media (max-width: 705px) {
+  .inputDadosIdentificacao,
+  .selectInserirAnimal {
+    font-size: 0.7rem;
+  }
+  .tituloItemInserir {
+    font-size: 1.4rem;
+  }
+  .labelDeImagem{
+    padding: 7px 15px;
+    font-size: .8rem;
+  }
+  .nomeArquivo{
+    font-size: .73rem;
+  }
+
+  .labelDadosSaude,
+  .labelDeIdentificacao {
+    font-size: 0.8rem;
+  }
+  .inputDadosIdentificacao,
+  .selectInserirAnimal {
+    font-size: 0.7rem;
+  }
+}

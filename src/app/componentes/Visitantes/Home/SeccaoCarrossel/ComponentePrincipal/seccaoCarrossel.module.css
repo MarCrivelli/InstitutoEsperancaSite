@@ -1,0 +1,106 @@
+.fundoSeccaoCarrossel {
+  background: linear-gradient(
+    to right,
+    #ffae00 0%,
+    #ffae00 25%,
+    #fbc02d 25%,
+    #fbc02d 50%,
+    #ffcf54 50%,
+    #ffcf54 75%,
+    #ffdb81 75%,
+    #ffdb81 100%
+  );
+  padding: 100px 60px;
+  width: 100%;
+}
+
+.painel {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  padding: 50px 20px 20px 20px;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  position: relative;
+  background-color: white;
+  border-radius: 10px;
+  touch-action: pan-y;
+  border: 3px solid black;
+}
+
+.alinharTituloECarrossel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tituloCarrossel {
+  font-size: 2rem;
+  text-align: center;
+}
+
+.botoesCarrossel {
+  position: absolute;
+  right: -18px;
+  top: 90px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 10;
+}
+
+.botaoCarrossel {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: var(--cor-fundo);
+  color: white;
+  border: 3px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.botaoCarrossel.ativo {
+  background-color: var(--cor-primaria);
+  transform: scale(1.1);
+}
+
+.botaoCarrossel:hover {
+  background-color: var(--cor-primaria);
+}
+
+.iconeWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.iconeCarrossel {
+  font-size: 1rem;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .fundoSeccaoCarrossel {
+    padding: 70px 20px 70px 20px;
+  }
+  .botoesCarrossel {
+    flex-direction: row;
+    right: 50%;
+    top: -20px;
+    transform: translateX(50%);
+  }
+  .tituloCarrossel {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+}
