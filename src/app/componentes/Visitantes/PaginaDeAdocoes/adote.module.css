@@ -4,26 +4,42 @@ section.secao.parallax {
   height: 100vh !important;
   width: 100%;
   position: relative;
-  overflow: hidden;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;
   z-index: 49;
 }
 
-section.secao.parallax::before {
+section.secao.parallax1::before,
+section.secao.parallax2::before,
+section.secao.parallax::after {
   content: "";
   height: 100%;
   width: 100%;
   position: absolute;
-  z-index: 10;
+  overflow: hidden;
+}
+
+section.secao.parallax1::before,
+section.secao.parallax2::before {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+section.secao.parallax1::before {
+  background-image: url(https://institutofaunabrasil.org.br/wp-content/uploads/2024/02/Banner-site-sem-granu4.jpg);
+}
+
+section.secao.parallax2::before {
+  background-image: url(https://institutofaunabrasil.org.br/wp-content/uploads/2024/02/Banner-site-sem-granu4.jpg);
+}
+
+section.secao.parallax::after {
   background: linear-gradient(
     to bottom,
-    #03051b76 0,
-    #03051b76 40%,
-    #03051bda 100%
+    rgba(0, 32, 100, 0.233),
+    rgba(0, 12, 37, 0.459)
   );
+  z-index: 10;
 }
 
 section.secao.parallax h1 {
@@ -47,18 +63,6 @@ section.secao.parallax h1 {
   }
 }
 
-section.secao.parallax1 {
-  background-image: url(https://institutofaunabrasil.org.br/wp-content/uploads/2024/02/Banner-site-sem-granu4.jpg);
-}
-
-section.secao.parallax2 {
-  background-image: url(https://institutofaunabrasil.org.br/wp-content/uploads/2024/02/Banner-site-sem-granu4.jpg);
-}
-
-section.secao.parallax3 {
-  background-image: url(https://institutopetbrasil.com/storage/438/Banner_B2C_01_1900x1300_01.jpg);
-}
-
 .carrossel,
 .mensagemCarrossel {
   display: flex;
@@ -74,7 +78,7 @@ section.secao.parallax3 {
   padding: 100px 0;
 }
 
-.mensagemCarrossel{
+.mensagemCarrossel {
   padding: 100px 20px;
   justify-content: center;
 }
@@ -105,7 +109,7 @@ section.secao.parallax3 {
   }
 }
 
-.painel{
+.painel {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -369,6 +373,14 @@ section.secao.parallax3 {
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.321);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+@supports (-webkit-touch-callout: none) {
+  section.secao.parallax1::before,
+  section.secao.parallax2::before {
+    background-attachment: scroll;
+    min-height: 100svh;
+  }
 }
 
 @media (max-width: 1780px) {

@@ -19,7 +19,7 @@
 
 .imagemDeFundo {
   width: 100%;
-  min-height: 70vh;
+  min-height: 70dvh;
   height: 100vh;
   background-image: url(https://institutopetbrasil.com/storage/438/Banner_B2C_01_1900x1300_01.jpg);
   background-position: center;
