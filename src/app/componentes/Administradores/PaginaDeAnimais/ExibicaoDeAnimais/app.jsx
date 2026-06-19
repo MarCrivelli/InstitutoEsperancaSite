@@ -81,7 +81,7 @@ export default function ExibicaoDeAnimais({
                 src={
                   animal.imagemEntrada
                     ? `${import.meta.env.VITE_API_URL}/uploads/${animal.imagemEntrada}`
-                    : `${import.meta.env.BASE_URL}pagFichasDAnimais/imagemTeste.jpg`
+                    : `${import.meta.env.VITE_API_URL}pagFichasDAnimais/imagemBase.png`
                 }
                 alt="Imagem do animal"
               />

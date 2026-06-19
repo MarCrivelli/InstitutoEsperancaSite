@@ -66,6 +66,8 @@ export default function CarrosselDoadoresVisitantes({ ehMobile }) {
       infiniteLoop={true}
       swipeable={true}
       emulateTouch={true}
+      preventMovementUntilSwipeScrollTolerance={true}
+      swipeScrollTolerance={40}
       renderArrowPrev={(onClickHandler, hasPrev, label) =>
         ehMobile ? null : (
           <button

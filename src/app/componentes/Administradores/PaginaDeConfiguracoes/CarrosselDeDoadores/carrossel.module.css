@@ -42,6 +42,7 @@
 .infoDoador p {
   width: 100%;
   max-width: 800px;
+  padding-inline: 10px;
   color: rgb(0, 0, 0);
 }
 
@@ -158,17 +159,17 @@
 }
 
 @media (max-width: 768px) {
-  .fundoCarrosselDoadores {
-    padding: 20% 5%;
-  }
-
   .slideFormulario,
   .itemCarrossel {
     padding: 30px 10px 50px 10px;
   }
 
+  .itemCarrossel {
+    justify-content: flex-start;
+  }
+
   .itemCarrossel h1 {
-    font-size: 1.1rem;
+    font-size: 1.7rem;
     margin-block: 3px 10px;
   }
 
@@ -190,7 +191,13 @@
   .contador {
     width: 100%;
   }
-  .botaoAdicionar {
-    padding: 10px 0 10px 0;
+  .botaoAdicionar,
+  .botaoRemover {
+    padding: 4px 10px;
+    max-width: 150px;
+    font-size: 0.9rem;
+  }
+  .botaoRemover {
+    margin-top: auto;
   }
 }

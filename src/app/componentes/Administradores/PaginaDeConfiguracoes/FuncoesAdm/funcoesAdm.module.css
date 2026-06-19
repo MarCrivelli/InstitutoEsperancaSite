@@ -29,7 +29,7 @@
   width: 35%;
   font-size: 1.5rem;
   flex: 1;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 500;
 }
 
@@ -54,16 +54,15 @@
 }
 
 .botaoPadraoConfig {
-  width: 200px;
+  padding: 4px 60px;
+  min-width: 200px;
   border: none;
-  height: 36px;
-  min-height: 36px;
   border-radius: 7px;
   color: white;
   cursor: pointer;
 }
 
-.botaoPadraoConfig:hover{
+.botaoPadraoConfig:hover {
   opacity: 0.7;
 }
 
@@ -83,7 +82,7 @@
   background-color: rgb(0, 179, 27);
 }
 
-.botaoInserirFacebook{
+.botaoInserirFacebook {
   background-color: #0866ff;
 }
 
@@ -106,7 +105,7 @@
   }
 
   .blocoFuncao {
-    gap: 10px;
+    gap: 0;
   }
 
   .blocoRedesSociais {
@@ -114,7 +113,9 @@
   }
 
   .funcao {
-    gap: 0px;
+    gap: 0;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .tituloConfig {
@@ -124,12 +125,16 @@
     font-weight: 600;
   }
 
+  .selectConfig,
   .input {
     margin-bottom: 10px;
+    width: auto;
+    max-width: 100%;
   }
 
   .botaoPadraoConfig {
-    width: 60%;
+    min-width: 130px;
+    padding: 2px 0; 
     margin-right: auto;
   }
 }

@@ -85,6 +85,8 @@ export default function CarrosselDeDoadores() {
           showStatus={false}
           showIndicators={true}
           infiniteLoop={false}
+          preventMovementUntilSwipeScrollTolerance={true}
+          swipeScrollTolerance={40}
           className={styles.carrossel}
         >
           {/* Slide do formulário */}
@@ -110,7 +112,9 @@ export default function CarrosselDeDoadores() {
                   />
                 ) : (
                   <div className={styles.iconePadrao}>
-                    <img src={`${import.meta.env.BASE_URL}pagConfiguracoes/adicionarImagem.png`}></img>
+                    <img
+                      src={`${import.meta.env.BASE_URL}pagConfiguracoes/adicionarImagem.png`}
+                    ></img>
                   </div>
                 )}
               </label>
@@ -170,7 +174,7 @@ export default function CarrosselDeDoadores() {
                 onClick={() => {
                   if (
                     window.confirm(
-                      "Tem certeza que deseja remover este doador?"
+                      "Tem certeza que deseja remover este doador?",
                     )
                   ) {
                     deletarDoador(doador.id);

@@ -725,6 +725,8 @@ export default function CarrosselAnimais() {
         showStatus={false}
         infiniteLoop={true}
         showIndicators={false}
+        preventMovementUntilSwipeScrollTolerance={true}
+        swipeScrollTolerance={40}
         renderArrowPrev={(onClickHandler, hasPrev) =>
           hasPrev && (
             <SetaCustomizadaDoCarrossel
