@@ -67,6 +67,12 @@ Sites que peguei alguns componentes utilizados:
 23. Borda floral
 <a href="https://www.flaticon.com/free-icons/floral" title="floral icons">Floral icons created by Freepik - Flaticon</a>
 
+24. Menos
+<a href="https://www.flaticon.com/free-icons/minus" title="minus icons">Minus icons created by Freepik - Flaticon</a>
+
+45 Mais
+<a href="https://www.flaticon.com/free-icons/plus" title="plus icons">Plus icons created by Freepik - Flaticon</a>
+
 https://react-select.com/home
 
 https://react-bootstrap.github.io/docs/components/tabs

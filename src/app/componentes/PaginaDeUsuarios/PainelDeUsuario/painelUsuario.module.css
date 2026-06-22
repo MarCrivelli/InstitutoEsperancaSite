@@ -99,7 +99,6 @@
   padding-block: 0 150px;
   z-index: 90;
   background-color: #ffe5b7;
-  
 }
 
 .fundoBloco2 .tituloPainel {
@@ -196,26 +195,49 @@
   align-items: center;
   gap: 10px;
   width: 180px;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(15, 26, 49);
   border: 1px solid #b3b3b3;
   border-radius: 7px;
-  padding: 3px 3px 3px 6px;
+  padding: 3px 5px 3px 3px;
 }
 
 .contaConectada {
-  border: 1px solid rgba(0, 0, 0, 0.298);
-  font-weight: 500;
+  border: 1px solid rgb(9, 255, 0);
 }
 
-.textoBotaoLog {
-  width: 100%;
-  text-align: center;
-  color: rgba(31, 31, 31, 0.71);
+.iconeLog,
+.iconeDeslog {
+  background-color: white;
 }
 
 .iconeLog {
-  width: 20px;
-  height: 20px;
+  border-radius: 7px;
+  padding: 2px;
+  width: 28px;
+}
+
+.iconeDeslog{
+  padding: 5px;
+  border-radius: 50%;
+  width: 22px;
+  transition: ease-in-out .1s;
+}
+
+.iconeDeslog:hover{
+  cursor: pointer;
+  transform: scale(1.1);
+}
+
+.textoBotaoLog {
+  flex: 4;
+  text-align: start;
+  color: rgb(255, 255, 255);
+  font-weight: 600;
+}
+
+.botãoDesconectar {
+  flex: 1;
+  background-color: white;
 }
 
 .seccaoContas {

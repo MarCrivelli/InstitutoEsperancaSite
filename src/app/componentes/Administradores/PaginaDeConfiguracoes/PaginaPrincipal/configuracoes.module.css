@@ -141,6 +141,23 @@
   animation: aparecerSuave 0.5s ease-in-out;
 }
 
+.conteudoTab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.iconeTab {
+  display: none;
+  width: 30px;
+  object-fit: contain;
+}
+
+.textoTab {
+  display: inline;
+}
+
 @keyframes aparecerSuave {
   from {
     opacity: 0;
@@ -218,8 +235,20 @@
   .tab {
     padding: 0 !important;
   }
-  .acessoNegado,
-  .acessoNegadoElegante {
+  @media (max-width: 768px) {
+  .iconeTab {
+    display: block;
+  }
+
+  .textoTab {
+    display: none;
+  }
+
+  .conteudoTab {
+    gap: 0;
+  }
+}
+  .acessoNegado{
     padding: 1.5rem;
     min-height: 120px;
   }

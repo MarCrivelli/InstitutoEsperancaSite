@@ -102,6 +102,7 @@
 @media (max-width: 768px) {
   .conteudoFuncoesAdm {
     padding: 20px;
+    row-gap: 0;
   }
 
   .blocoFuncao {

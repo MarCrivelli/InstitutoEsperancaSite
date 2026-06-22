@@ -156,7 +156,16 @@ export default function Configuracoes() {
           >
             <Tab
               eventKey="primeiroTopico"
-              title="Carrossel de animais"
+              title={
+                <div className={styles.conteudoTab}>
+                  <img
+                    src={`${import.meta.env.BASE_URL}pagConfiguracoes/animal.png`}
+                    alt=""
+                    className={styles.iconeTab}
+                  />
+                  <span className={styles.textoTab}>Carrossel de animais</span>
+                </div>
+              }
               tabClassName={`${styles.tabPadrao} ${
                 abaAtiva === "primeiroTopico" ? styles.tabAtivo : ""
               }`}
@@ -180,7 +189,16 @@ export default function Configuracoes() {
 
             <Tab
               eventKey="segundoTopico"
-              title="Carrossel de doadores"
+              title={
+                <div className={styles.conteudoTab}>
+                  <img
+                    src={`${import.meta.env.BASE_URL}pagConfiguracoes/carteira.png`}
+                    alt=""
+                    className={styles.iconeTab}
+                  />
+                  <span className={styles.textoTab}>Carrossel de doadores</span>
+                </div>
+              }
               disabled={!podeGerenciarCarrosseis}
               tabClassName={`${styles.tabPadrao} ${
                 abaAtiva === "segundoTopico" ? styles.tabAtivo : ""
@@ -192,7 +210,18 @@ export default function Configuracoes() {
 
             <Tab
               eventKey="terceiroTopico"
-              title="Funções de administrador"
+              title={
+                <div className={styles.conteudoTab}>
+                  <img
+                    src={`${import.meta.env.BASE_URL}pagConfiguracoes/funcoesAdm.png`}
+                    alt=""
+                    className={styles.iconeTab}
+                  />
+                  <span className={styles.textoTab}>
+                    Funções de administrador
+                  </span>
+                </div>
+              }
               disabled={!podeGerenciarUsuarios}
               tabClassName={`${styles.tabPadrao} ${
                 abaAtiva === "terceiroTopico" ? styles.tabAtivo : ""

@@ -415,10 +415,11 @@ export default function PainelUsuario({
         >
           <img
             className={styles.iconeLog}
-            src={`${import.meta.env.VITE_API_URL}pagAutenticacao/Google.png`}
+            src={`${import.meta.env.BASE_URL}pagAutenticacao/Google.png`}
             alt="Google"
           />
-          <label className={styles.textoBotaoLog}>Conectado</label>
+          <label className={styles.textoBotaoLog}>Google</label>
+          <img className={styles.iconeDeslog} src={`${import.meta.env.BASE_URL}adicionarOuRemover/remover.png`} alt="desconectar" />
         </button>
       );
     }
@@ -428,7 +429,7 @@ export default function PainelUsuario({
         <button className={styles.botaoDadoGoogle} disabled>
           <img
             className={styles.iconeLog}
-            src={`${import.meta.env.VITE_API_URL}pagAutenticacao/Google.png`}
+            src={`${import.meta.env.BASE_URL}pagAutenticacao/Google.png`}
             alt="Google"
           />
           <label className={styles.textoBotaoLog}>Conectando...</label>
@@ -444,7 +445,7 @@ export default function PainelUsuario({
             src={`${import.meta.env.BASE_URL}pagAutenticacao/Google.png`}
             alt="Google"
           />
-          <label className={styles.textoBotaoLog}>Carregando Google...</label>
+          <img src={`${import.meta.env.BASE_URL}paraErros/carregando.svg`}></img>
         </button>
       );
     }
@@ -466,7 +467,7 @@ export default function PainelUsuario({
         <div className={styles.espacamentoDado}>
           <img
             className={styles.iconeUsuario}
-            src={usuarioLogado.foto || `${import.meta.env.VITE_API_URL}paraErros/user.png`}
+            src={usuarioLogado.foto || `${import.meta.env.BASE_URL}paraErros/user.png`}
             alt="Avatar do usuário"
           />
         </div>
