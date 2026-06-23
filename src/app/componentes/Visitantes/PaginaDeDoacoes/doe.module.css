@@ -195,9 +195,26 @@ section.secao.parallax2 {
   height: 100px;
   width: 100px;
   padding: 15px;
-  background-color: #f0f0f0;
+}
+
+.containerIcones .containerImagem {
+  display: flex;
+  height: auto;
+  width: auto;
+  position: relative;
+}
+
+.containerIcones .containerImagem::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100px;
+  width: 100px;
+  background-color: #ffbb00;
   border-radius: 50%;
-  overflow: visible;
+  border: 2px solid black;
+  z-index: -1;
 }
 
 .containerIcones p {

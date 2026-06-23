@@ -102,7 +102,7 @@
 @media (max-width: 768px) {
   .conteudoFuncoesAdm {
     padding: 20px;
-    row-gap: 0;
+    row-gap: 20px;
   }
 
   .blocoFuncao {
@@ -129,8 +129,7 @@
   .selectConfig,
   .input {
     margin-bottom: 10px;
-    width: auto;
-    max-width: 100%;
+    width: 100%;
   }
 
   .botaoPadraoConfig {

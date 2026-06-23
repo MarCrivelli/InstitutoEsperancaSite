@@ -69,7 +69,9 @@ export default function ComoDoar() {
             </h2>
             <div className={styles.alinharContainerIcones}>
               <div className={styles.containerIcones}>
-                <img src="pagDoacao/caminha.png"></img>
+                <div className={styles.containerImagem}>
+                  <img src="pagDoacao/caminha.png"></img>
+                </div>
                 <p>
                   <strong>Caminha de animais:</strong> Todos os nossos animais
                   dormem em camas para animais com tamanhos de acordo com o
@@ -80,7 +82,9 @@ export default function ComoDoar() {
                 </p>
               </div>
               <div className={styles.containerIcones}>
-                <img src="pagDoacao/coleira.png"></img>
+                <div className={styles.containerImagem}>
+                  <img src="pagDoacao/coleira.png"></img>
+                </div>
                 <p>
                   <strong>Coleira:</strong> Coleiras são muito úteis no momento
                   de colocar o cone veterinário, pois elas dão sustentação ao
@@ -89,7 +93,9 @@ export default function ComoDoar() {
                 </p>
               </div>
               <div className={styles.containerIcones}>
-                <img src="pagDoacao/cone.png"></img>
+                <div className={styles.containerImagem}>
+                  <img src="pagDoacao/cone.png"></img>
+                </div>
                 <p>
                   <strong>Cone Veterinário:</strong> Eventualmente nós
                   resgatamos animais doentes, que por sua vez, precisam do cone
@@ -99,7 +105,9 @@ export default function ComoDoar() {
                 </p>
               </div>
               <div className={styles.containerIcones}>
-                <img src="pagDoacao/racao.png"></img>
+                <div className={styles.containerImagem}>
+                  <img src="pagDoacao/racao.png"></img>
+                </div>
                 <p>
                   <strong>Ração:</strong> Assim como nós, os animais também
                   precisam se alimentar e com tantos animais, a nossa demanda de

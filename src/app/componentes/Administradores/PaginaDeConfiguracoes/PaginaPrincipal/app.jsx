@@ -192,7 +192,7 @@ export default function Configuracoes() {
               title={
                 <div className={styles.conteudoTab}>
                   <img
-                    src={`${import.meta.env.BASE_URL}pagConfiguracoes/carteira.png`}
+                    src={`${import.meta.env.BASE_URL}pagConfiguracoes/doacoes.png`}
                     alt=""
                     className={styles.iconeTab}
                   />
@@ -213,7 +213,7 @@ export default function Configuracoes() {
               title={
                 <div className={styles.conteudoTab}>
                   <img
-                    src={`${import.meta.env.BASE_URL}pagConfiguracoes/funcoesAdm.png`}
+                    src={`${import.meta.env.BASE_URL}pagConfiguracoes/configuracoes.png`}
                     alt=""
                     className={styles.iconeTab}
                   />
