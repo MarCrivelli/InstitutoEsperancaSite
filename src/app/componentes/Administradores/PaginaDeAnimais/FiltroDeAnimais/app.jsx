@@ -2,7 +2,7 @@ import styles from "./filtroDeAnimais.module.css";
 import Select from "react-select";
 import { useState, useRef } from "react";
 import opcoes from "/src/app/componentes/Administradores/OpcoesDeSelecao/opcoes";
-import { criarFiltrosAnimaisPadrao } from "../../../GerenciarDadosAnimais/FiltrarAnimais/filtrarAnimais";
+import { criarFiltrosAnimaisPadrao } from "../../../../hooks/GerenciarDadosAnimais/FiltrarAnimais/filtrarAnimais";
 
 export default function FiltroDeAnimais({ filtros, setFiltros }) {
   const [termoPesquisa, setTermoPesquisa] = useState(filtros.nome || "");

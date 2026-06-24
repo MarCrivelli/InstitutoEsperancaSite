@@ -7,7 +7,7 @@ import { Tooltip } from "react-tooltip";
 
 import opcoes from "/src/app/componentes/Administradores/OpcoesDeSelecao/opcoes";
 import HeaderAdms from "../HeaderAdms/app";
-import RolarPCima from "../../BotaoScroll/app";
+import RolarPCima from "../../../hooks/BotaoScroll/app";
 import BotaoPagInicial from "../BotaoPagInicialAdms/app";
 import styles from "../PaginaDeVerMais/verMais.module.css";
 

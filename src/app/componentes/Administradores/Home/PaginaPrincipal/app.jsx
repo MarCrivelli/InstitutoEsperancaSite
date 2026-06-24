@@ -3,7 +3,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import styles from "./homeAdm.module.css";
 import HeaderAdms from "../../HeaderAdms/app";
 import BotaoPagInicial from "../../BotaoPagInicialAdms/app";
-import RolarPCima from "../../../BotaoScroll/app";
+import RolarPCima from "../../../../hooks/BotaoScroll/app";
 import { useState, useRef, useEffect } from "react";
 import Card1 from "../Card1/app";
 import Card2 from "../Card2/app";

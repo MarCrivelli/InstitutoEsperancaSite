@@ -1,13 +1,13 @@
 import styles from "./animais.module.css";
 import { useState, useEffect } from "react";
 import HeaderAdms from "../../HeaderAdms/app";
-import RolarPCima from "../../../BotaoScroll/app";
+import RolarPCima from "../../../../hooks/BotaoScroll/app";
 import BotaoPagInicial from "../../BotaoPagInicialAdms/app";
 import FiltroDeAnimais from "../FiltroDeAnimais/app";
 import CadastroDeAnimais from "../CadastroDeAnimais/app";
 import ExibicaoDeAnimais from "../ExibicaoDeAnimais/app";
-import carregarAnimais from "../../../GerenciarDadosAnimais/CarregarAnimais/carregarAnimais";
-import { criarFiltrosAnimaisPadrao } from "../../../GerenciarDadosAnimais/FiltrarAnimais/filtrarAnimais";
+import carregarAnimais from "../../../../hooks/GerenciarDadosAnimais/CarregarAnimais/carregarAnimais";
+import { criarFiltrosAnimaisPadrao } from "../../../../hooks/GerenciarDadosAnimais/FiltrarAnimais/filtrarAnimais";
 
 export default function FichasDeAnimais() {
   const [filtros, setFiltros] = useState(criarFiltrosAnimaisPadrao());

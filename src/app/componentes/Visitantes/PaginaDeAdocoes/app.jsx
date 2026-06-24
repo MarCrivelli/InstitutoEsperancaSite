@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "../HeaderVisitantes/app";
 import Footer from "../Footer/app";
-import carregarAnimais from "../../GerenciarDadosAnimais/CarregarAnimais/carregarAnimais";
+import carregarAnimais from "../../../hooks/GerenciarDadosAnimais/CarregarAnimais/carregarAnimais";
 import styles from "./adote.module.css";
 import opcoes from "/src/app/componentes/Administradores/OpcoesDeSelecao/opcoes";
 import { Carousel } from "react-responsive-carousel";

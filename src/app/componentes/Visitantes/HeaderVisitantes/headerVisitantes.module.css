@@ -44,14 +44,18 @@
   width: auto;
 }
 
+.linkBotao {
+  background-color: transparent;
+  border: none;
+}
+
 .linkSubPaginas,
 .linkMenuMobile {
   font-family: "Jockey One", sans-serif;
-  font-size: .9rem;
+  font-size: 0.9rem;
 }
 
 .linkSubPaginas {
-  text-decoration: none;
   margin-inline: 10px;
   transition: all ease-in-out 0.2s;
 }
@@ -231,7 +235,6 @@
 .hamburguerPreto {
   color: #676767;
   opacity: 0.5;
-  
 }
 
 .linksPreto:hover,

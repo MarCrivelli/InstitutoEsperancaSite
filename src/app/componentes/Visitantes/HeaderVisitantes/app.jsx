@@ -1,10 +1,11 @@
 import styles from "./headerVisitantes.module.css";
-import { Link } from "react-router-dom";
+import useNavegarComTransicao from "../../../hooks/transicaoEntrePaginas/app";
 import { useState, useEffect } from "react";
 
 export default function HeaderVisitantes({ tipo = "padrao" }) {
   const [menuAberto, setMenuAberto] = useState(false);
   const [usuarioLogado, setUsuarioLogado] = useState(null);
+  const navegarComTransicao = useNavegarComTransicao();
 
   // Configurações para cada tipo de header
   const tiposConfig = {
@@ -75,52 +76,62 @@ export default function HeaderVisitantes({ tipo = "padrao" }) {
   return (
     <>
       <header className={`${styles.headerVisitantes} ${config.headerClass}`}>
-        <Link className={styles.linkLogo} to="/" title="Instituto Esperança">
+        <button
+          type="button"
+          className={`${styles.linkLogo}  ${styles.linkBotao}`}
+          title="Instituto Esperança"
+          onClick={() => navegarComTransicao("/")}
+        >
           <img
             src={config.logoSrc}
             className={styles.logo}
             alt="Logo do Instituto Esperança"
           />
-        </Link>
+        </button>
 
         <nav className={styles.nav}>
           <ul className={styles.menu} role="menu">
             <li>
-              <Link
-                to="/quero_adotar"
-                className={`${styles.linkSubPaginas} ${config.linksClass}`}
+              <button
+                type="button"
+                className={`${styles.linkSubPaginas} ${styles.linkBotao} ${config.linksClass}`}
+                onClick={() => navegarComTransicao("/quero_adotar")}
               >
                 Quero adotar!
-              </Link>
+              </button>
             </li>
             <li>
-              <Link
-                to="/como_doar"
-                className={`${styles.linkSubPaginas} ${config.linksClass}`}
+              <button
+                type="button"
+                className={`${styles.linkSubPaginas} ${styles.linkBotao} ${config.linksClass}`}
+                onClick={() => navegarComTransicao("/como_doar")}
               >
                 Como doar?
-              </Link>
+              </button>
             </li>
             <li>
-              <Link
-                to="/denuncie"
-                className={`${styles.linkSubPaginas} ${config.linksClass}`}
+              <button
+                type="button"
+                className={`${styles.linkSubPaginas} ${styles.linkBotao} ${config.linksClass}`}
+                onClick={() => navegarComTransicao("/denuncie")}
               >
                 Denuncie
-              </Link>
+              </button>
             </li>
             <li>
-              <Link
-                to="/saude_unica"
-                className={`${styles.linkSubPaginas} ${config.linksClass}`}
+              <button
+                type="button"
+                className={`${styles.linkSubPaginas} ${styles.linkBotao} ${config.linksClass}`}
+                onClick={() => navegarComTransicao("/saude_unica")}
               >
                 Saúde única
-              </Link>
+              </button>
             </li>
             <li>
-              <Link
-                className={styles.linkUsuario}
-                to="/autenticar"
+              <button
+                type="button"
+                className={`${styles.linkUsuario}  ${styles.linkBotao}`}
+                onClick={() => navegarComTransicao("/autenticar")}
                 title={
                   usuarioLogado
                     ? `Logado como: ${usuarioLogado.nome}`
@@ -128,11 +139,14 @@ export default function HeaderVisitantes({ tipo = "padrao" }) {
                 }
               >
                 <img
-                  src={usuarioLogado?.foto || `${import.meta.env.BASE_URL}paraErros/user.png`}
+                  src={
+                    usuarioLogado?.foto ||
+                    `${import.meta.env.BASE_URL}paraErros/user.png`
+                  }
                   alt="perfil"
                   className={styles.iconeUsuario}
                 />
-              </Link>
+              </button>
             </li>
             <li>
               <button
@@ -172,40 +186,52 @@ export default function HeaderVisitantes({ tipo = "padrao" }) {
         <nav>
           <ul>
             <li>
-              <Link
-                to="/quero_adotar"
-                className={styles.linkMenuMobile}
-                onClick={() => setMenuAberto(false)}
+              <button
+                type="button"
+                className={`${styles.linkMenuMobile}  ${styles.linkBotao}`}
+                onClick={() => {
+                  setMenuAberto(false);
+                  navegarComTransicao("/quero_adotar");
+                }}
               >
                 Quero adotar!
-              </Link>
+              </button>
             </li>
             <li>
-              <Link
-                to="/como_doar"
-                className={styles.linkMenuMobile}
-                onClick={() => setMenuAberto(false)}
+              <button
+                type="button"
+                className={`${styles.linkMenuMobile}  ${styles.linkBotao}`}
+                onClick={() => {
+                  setMenuAberto(false);
+                  navegarComTransicao("/como_doar");
+                }}
               >
                 Como doar?
-              </Link>
+              </button>
             </li>
             <li>
-              <Link
-                to="/denuncie"
-                className={styles.linkMenuMobile}
-                onClick={() => setMenuAberto(false)}
+              <button
+                type="button"
+                className={`${styles.linkMenuMobile}  ${styles.linkBotao}`}
+                onClick={() => {
+                  setMenuAberto(false);
+                  navegarComTransicao("/denuncie");
+                }}
               >
                 Denuncie
-              </Link>
+              </button>
             </li>
             <li>
-              <Link
-                to="/saude_unica"
-                className={styles.linkMenuMobile}
-                onClick={() => setMenuAberto(false)}
+              <button
+                type="button"
+                className={`${styles.linkMenuMobile}`}
+                onClick={() => {
+                  setMenuAberto(false);
+                  navegarComTransicao("/denuncie");
+                }}
               >
-                Saúde única
-              </Link>
+                Denuncie
+              </button>
             </li>
           </ul>
         </nav>
