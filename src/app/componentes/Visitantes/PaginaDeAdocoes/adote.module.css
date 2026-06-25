@@ -48,19 +48,7 @@ section.secao.parallax h1 {
   color: white;
   font-size: 5rem;
   z-index: 50;
-  animation: efeitoDeslizanteTitulo 0.8s ease-out forwards;
   padding: 20px;
-}
-
-@keyframes efeitoDeslizanteTitulo {
-  from {
-    transform: translateY(30vw);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0vw);
-    opacity: 1;
-  }
 }
 
 .carrossel,
@@ -98,6 +86,7 @@ section.secao.parallax h1 {
   z-index: -1;
   opacity: 1;
   animation: aumentarPatas ease-in-out 10s infinite alternate;
+  animation-delay: 1.5s;
 }
 
 @keyframes aumentarPatas {

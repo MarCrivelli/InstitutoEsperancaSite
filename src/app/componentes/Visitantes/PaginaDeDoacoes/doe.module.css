@@ -4,26 +4,42 @@ section.secao.parallax {
   height: 100vh !important;
   width: 100%;
   position: relative;
-  overflow: hidden;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;
   z-index: 49;
 }
 
-section.secao.parallax::before {
+section.secao.parallax1::before,
+section.secao.parallax2::before,
+section.secao.parallax::after {
   content: "";
   height: 100%;
   width: 100%;
   position: absolute;
-  z-index: 10;
+  overflow: hidden;
+}
+
+section.secao.parallax1::before,
+section.secao.parallax2::before {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+section.secao.parallax1::before {
+  background-image: url(https://institutofaunabrasil.org.br/wp-content/uploads/2024/02/Banner-site-sem-granu4.jpg);
+}
+
+section.secao.parallax2::before {
+  background-image: url(https://institutofaunabrasil.org.br/wp-content/uploads/2024/02/Banner-site-sem-granu4.jpg);
+}
+
+section.secao.parallax::after {
   background: linear-gradient(
     to bottom,
-    #03051b76 0,
-    #03051b76 40%,
-    #03051bda 100%
+    rgba(0, 32, 100, 0.233),
+    rgba(0, 12, 37, 0.459)
   );
+  z-index: 10;
 }
 
 section.secao.parallax h1 {
@@ -32,27 +48,7 @@ section.secao.parallax h1 {
   color: white;
   font-size: 5rem;
   z-index: 50;
-  animation: efeitoDeslizanteTitulo 0.8s ease-out forwards;
   padding: 20px;
-}
-
-@keyframes efeitoDeslizanteTitulo {
-  from {
-    transform: translateY(30vw);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0vw);
-    opacity: 1;
-  }
-}
-
-section.secao.parallax1 {
-  background-image: url(https://institutofaunabrasil.org.br/wp-content/uploads/2024/02/Banner-site-sem-granu4.jpg);
-}
-
-section.secao.parallax2 {
-  background-image: url(https://institutofaunabrasil.org.br/wp-content/uploads/2024/02/Banner-site-sem-granu4.jpg);
 }
 
 .conteudo {
@@ -280,6 +276,9 @@ section.secao.parallax2 {
   .conteudo1 .painel h1,
   .conteudo2 .painel h1 {
     font-size: 2.5rem;
+  }
+  .conteudo2{
+    padding: 20px;
   }
   .conteudo2 .painel h2 {
     font-size: 1rem;

@@ -4,7 +4,7 @@
   transform: translateY(-50%);
   z-index: 90000000;
   pointer-events: none;
-  width: 30px;
+  width: 85px;
 }
 
 .botaoPagInicial {
@@ -41,7 +41,7 @@
   opacity: 1;
 }
 
-@media (max-width: 310px) {
+@media (max-width: 768px) {
   .botaoPagInicial {
     left: -85px;
   }

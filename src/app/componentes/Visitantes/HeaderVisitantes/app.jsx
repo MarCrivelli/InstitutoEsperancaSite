@@ -224,13 +224,13 @@ export default function HeaderVisitantes({ tipo = "padrao" }) {
             <li>
               <button
                 type="button"
-                className={`${styles.linkMenuMobile}`}
+                className={`${styles.linkMenuMobile} ${styles.linkBotao}`}
                 onClick={() => {
                   setMenuAberto(false);
-                  navegarComTransicao("/denuncie");
+                  navegarComTransicao("/saude_unica");
                 }}
               >
-                Denuncie
+                Saúde única
               </button>
             </li>
           </ul>

@@ -121,7 +121,7 @@ export default function ComoDoar() {
               precisa estar totalmente fechada e na embalagem original, pois do
               contrário não aceitaremos &#40;risco de contaminação ou
               envenenamento&#41;. Além disso, não doe caminhas ou cobertores
-              usados pets que estejam ou estiveram recentemente com doenças ou
+              usados por pets que estejam ou estiveram recentemente com doenças ou
               infecções contagiosas, como sarna ou cinomose, por exemplo.
               Pedimos a sua compreenção.
             </h2>

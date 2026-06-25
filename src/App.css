@@ -36,6 +36,7 @@ p {
 
 html{
   scroll-behavior: smooth;
+  background-color: #202024;
 }
 
 body{
@@ -61,10 +62,32 @@ body::-webkit-scrollbar-thumb:hover {
   background-color: #fcfcfc;
 }
 
-@view-transition{
-  navigation: auto
+::view-transition-group(){
+  animation-duration: 1s;
 }
 
-::view-transition-group(root){
-  animation-duration: 1s;
+::view-transition-old(root) {
+  animation: sairPagina .6s ease-out forwards;
+}
+
+::view-transition-new(root) {
+  animation: entrarPagina .7s ease-out forwards;
+}
+
+@keyframes sairPagina {
+  from{
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes entrarPagina {
+  from{
+    opacity: .4;
+  }
+  to {
+    opacity: 1;
+  }
 }
