@@ -6,9 +6,9 @@ import Select from "react-select";
 import { Tooltip } from "react-tooltip";
 
 import opcoes from "/src/app/componentes/Administradores/OpcoesDeSelecao/opcoes";
-import HeaderAdms from "../HeaderAdms/app";
+import Header from "../../Header/app";
 import RolarPCima from "../../../hooks/BotaoScroll/app";
-import BotaoPagInicial from "../BotaoPagInicialAdms/app";
+import BotaoDeTrocaDePaginas from "../../BotaoParaPaginaDeAdms/app";
 import styles from "../PaginaDeVerMais/verMais.module.css";
 
 export default function VerMais() {
@@ -554,8 +554,8 @@ export default function VerMais() {
 
   return (
     <div className={styles.fundoPagina}>
-      <HeaderAdms />
-      <BotaoPagInicial />
+      <Header destino="adms"/>
+      <BotaoDeTrocaDePaginas destino="adms" />
       <RolarPCima />
       <ModalAmpliarImagem />
 

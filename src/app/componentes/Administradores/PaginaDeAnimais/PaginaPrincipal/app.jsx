@@ -1,8 +1,8 @@
 import styles from "./animais.module.css";
 import { useState, useEffect } from "react";
-import HeaderAdms from "../../HeaderAdms/app";
+import Header from "../../../Header/app";
 import RolarPCima from "../../../../hooks/BotaoScroll/app";
-import BotaoPagInicial from "../../BotaoPagInicialAdms/app";
+import BotaoDeTrocaDePaginas from "../../../BotaoParaPaginaDeAdms/app";
 import FiltroDeAnimais from "../FiltroDeAnimais/app";
 import CadastroDeAnimais from "../CadastroDeAnimais/app";
 import ExibicaoDeAnimais from "../ExibicaoDeAnimais/app";
@@ -134,8 +134,8 @@ export default function FichasDeAnimais() {
         modoSelecaoPostagem ? styles.modoSelecaoAtivo : ""
       }`}
     >
-      <HeaderAdms />
-      <BotaoPagInicial />
+      <Header destino="adms"/>
+      <BotaoDeTrocaDePaginas destino="adms" />
       <RolarPCima />
 
       <div className={styles.botoesFlutuantes}>

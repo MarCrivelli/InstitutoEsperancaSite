@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import styles from "./cadastroELogin.module.css";
-import HeaderVisitantes from "../../Visitantes/HeaderVisitantes/app";
+import Header from "../../Header/app";
 
 export default function CadastroELogin({ onLoginSucesso }) {
   const googleButtonCadastroRef = useRef(null);
@@ -251,7 +251,7 @@ export default function CadastroELogin({ onLoginSucesso }) {
 
   return (
     <>
-      <HeaderVisitantes tipo="modoDark" />
+      <Header destino="visitantes" tipo="modoDark" />
       <div className={styles.alinharFormulario}>
         <div
           className={`${styles.containerAutenticacao} ${

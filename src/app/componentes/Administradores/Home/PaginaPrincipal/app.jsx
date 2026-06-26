@@ -1,8 +1,8 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import styles from "./homeAdm.module.css";
-import HeaderAdms from "../../HeaderAdms/app";
-import BotaoPagInicial from "../../BotaoPagInicialAdms/app";
+import Header from "../../../Header/app";
+import BotaoDeTrocaDePaginas from "../../../BotaoParaPaginaDeAdms/app";
 import RolarPCima from "../../../../hooks/BotaoScroll/app";
 import { useState, useRef, useEffect } from "react";
 import Card1 from "../Card1/app";
@@ -203,8 +203,8 @@ export default function PaginaInicialAdministradores() {
 
   return (
     <div className={styles.fundoPagina}>
-      <HeaderAdms />
-      <BotaoPagInicial />
+      <Header destino="adms"/>
+      <BotaoDeTrocaDePaginas destino="adms" />
       <RolarPCima />
 
       {exibirErro()}

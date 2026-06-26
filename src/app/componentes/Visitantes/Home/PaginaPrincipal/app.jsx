@@ -1,7 +1,7 @@
 import styles from "./home.module.css";
-import Header from "../../HeaderVisitantes/app";
+import Header from "../../../Header/app";
 import Footer from "../../Footer/app";
-import BotaoParaPaginaDeAdms from "../../BotaoParaPaginaDeAdms/app";
+import BotaoDeTrocaDePaginas from "../../../BotaoParaPaginaDeAdms/app";
 import SeccaoCarrossel from "../SeccaoCarrossel/ComponentePrincipal/app";
 import QuadroDeAvisos from "../../QuadroDeAvisos/app";
 
@@ -28,11 +28,11 @@ export default function PaginaInicialVisitantes() {
 
   return (
     <div className={styles.paginaInicialVisitantes}>
-      <BotaoParaPaginaDeAdms />
+      <BotaoDeTrocaDePaginas destino="adms" />
       <QuadroDeAvisos/>
 
       <div className={styles.imagemDeFundo}>
-        <Header tipo="padrao" />
+        <Header tipo="padrao" destino="visitantes"/>
         <div className={styles.logoPreLogin}>
 
           <img

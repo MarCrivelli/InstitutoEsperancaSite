@@ -1,4 +1,4 @@
-.headerAdms {
+.header {
   display: flex;
   width: 100%;
   padding: 10px;
@@ -6,6 +6,11 @@
   justify-content: space-between;
   z-index: 100;
   position: relative;
+  transition: all 0.3s ease-out;
+}
+
+.headerPadrao {
+  background-color: transparent;
 }
 
 .linkLogo {
@@ -35,6 +40,7 @@
   width: 100%;
   gap: 10px;
   padding: 0;
+  margin: 0;
 }
 
 .menu li {
@@ -43,27 +49,33 @@
   width: auto;
 }
 
-.linkSubPaginas {
-  text-decoration: none;
-  font-size: 1rem;
-  margin-inline: 10px;
-  font-family: "Jockey One", sans-serif;
+.linkBotao {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
 }
 
 .linkSubPaginas,
-.hamburguerAdms {
-  color: rgb(240, 240, 240);
-  transition: transform ease-in-out 0.2s;
+.linkMenuMobile {
+  font-family: "Jockey One", sans-serif;
+  font-size: 0.9rem;
 }
 
-.linkSubPaginas:hover {
-  transform: scale(1.03);
+.linkSubPaginas {
+  margin-inline: 10px;
+  transition: all ease-in-out 0.2s;
 }
 
 .linkUsuario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 100%;
-  width: 10%;
+  width: auto;
   z-index: 2;
+  position: relative;
 }
 
 .linkUsuario::before {
@@ -87,6 +99,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -108,17 +121,17 @@
   border: none;
   background: none;
   cursor: pointer;
-  
 }
 
-.hamburguerAdms {
+.hamburguer {
   display: block;
   border-top: 2px solid;
   width: 35px;
+  transition: all 0.3s ease;
 }
 
-.hamburguerAdms::after,
-.hamburguerAdms:before {
+.hamburguer::after,
+.hamburguer::before {
   content: "";
   display: block;
   width: 35px;
@@ -129,7 +142,6 @@
   position: relative;
 }
 
-/* Overlay escuro */
 .overlay {
   position: fixed;
   top: 0;
@@ -140,13 +152,12 @@
   z-index: 998;
 }
 
-/* Menu lateral */
 .menuLateral {
   display: flex;
   flex-direction: column;
   position: fixed;
   top: 0;
-  right: -300px; /* Começa escondido */
+  right: -300px;
   width: 200px;
   height: 100%;
   background-color: #0d0907;
@@ -168,7 +179,7 @@
   color: rgb(173, 173, 173);
   font-size: 2rem;
   cursor: pointer;
-  padding: 3px 10px 3cqw 10px;
+  padding: 3px 10px;
   transition: color 0.2s;
 }
 
@@ -191,7 +202,7 @@
 }
 
 .menuLateral nav li {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .linkMenuMobile {
@@ -199,13 +210,12 @@
   align-items: center;
   color: #ffffff;
   text-decoration: none;
-  font-size: 1rem;
-  font-family: "Jockey One", sans-serif;
   padding: 5px 5px 5px 10px;
   transition: opacity 0.2s;
   gap: 7px;
-  background-color: rgb(22, 22, 22);
-  opacity: .6;
+  opacity: 0.6;
+  width: 100%;
+  text-align: left;
 }
 
 .linkMenuMobile:hover {
@@ -216,36 +226,84 @@
   width: 30px;
 }
 
-/* Animação do botão hamburguer para X */
-.menuAberto ~ .headerAdms .hamburguerAdms {
-  border-top-color: transparent;
+/* ========== TIPO PADRÃO ========== */
+
+.linksPadrao,
+.hamburguerPadrao {
+  color: rgb(240, 240, 240);
 }
 
-.menuAberto ~ .headerAdms .hamburguerAdms::before {
-  transform: rotate(135deg);
-  top: -12px;
+.linksPadrao:hover {
+  transform: scale(1.03);
 }
 
-.menuAberto ~ .headerAdms .hamburguerAdms::after {
-  transform: rotate(-135deg);
-  top: -12px;
+/* ========== TIPO LINK PRETO ========== */
+
+.headerLinkPreto {
+  background-color: #f0f4f9;
+}
+
+.headerLinkPreto:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.linksPreto,
+.hamburguerPreto {
+  color: #676767;
+  opacity: 0.5;
+}
+
+.linksPreto:hover,
+.hamburguerPreto:hover {
+  transform: scale(1.03);
+  opacity: 1;
+}
+
+/* ========== TIPO MODO DARK ========== */
+
+.headerModoDark {
+  background-color: rgba(13, 9, 7, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.linksModoDark {
+  color: rgb(220, 220, 220);
+}
+
+.linksModoDark:hover {
+  color: rgb(255, 255, 255);
+  transform: scale(1.05);
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+.hamburguerModoDark {
+  color: rgb(220, 220, 220);
+}
+
+.hamburguerModoDark:hover {
+  color: rgb(255, 255, 255);
+  transform: scale(1.03);
+}
+
+.menuLateralDark {
+  background-color: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(15px);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menuLateralDark .linkMenuMobile {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menuLateralDark .linkMenuMobile:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  opacity: 1;
 }
 
 @media (max-width: 700px) {
-  .menu li:nth-child(-n + 3) {
+  .menu li:nth-child(-n + 4) {
     display: none;
-  }
-  .linkMenuMobile {
-    display: flex;
-    font-size: 0.9rem;
-    display: block;
-    padding: 5px 5px 5px 10px;
-    transition: color 0.2s;
-    background-color: rgb(22, 22, 22);
-  }
-
-  .linkMenuMobile img {
-    width: 20px;
-    margin-right: 7px;
   }
 }

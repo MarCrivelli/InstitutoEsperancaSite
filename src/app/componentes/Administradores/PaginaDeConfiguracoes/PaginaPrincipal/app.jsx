@@ -6,8 +6,8 @@ import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 
 //================ Minhas importações ================//
-import HeaderAdms from "../../HeaderAdms/app";
-import BotaoPagInicial from "../../BotaoPagInicialAdms/app";
+import Header from "../../../Header/app";
+import BotaoDeTrocaDePaginas from "../../../BotaoParaPaginaDeAdms/app";
 import FuncoesDeAdministrador from "../FuncoesAdm/app";
 import CarrosselDeDoadores from "../CarrosselDeDoadores/app";
 import CarrosselAnimaisAutonomo from "../CarrosselDeAnimais/app";
@@ -101,8 +101,8 @@ export default function Configuracoes() {
 
   return (
     <div className={styles.fundoPagina}>
-      <HeaderAdms />
-      <BotaoPagInicial />
+      <Header destino="adms"/>
+      <BotaoDeTrocaDePaginas destino="adms" />
       <div className={styles.fundoPainel}>
         <div className={styles.painel}>
           <div className={styles.inicioPainel}>

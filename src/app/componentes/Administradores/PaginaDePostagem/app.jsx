@@ -1,6 +1,6 @@
 import styles from "./postagem.module.css";
-import CabecalhoAdministrativo from "../HeaderAdms/app";
-import BotaoPaginaInicial from "../BotaoPagInicialAdms/app";
+import Header from "../../Header/app";
+import BotaoDeTrocaDePaginas from "../../BotaoParaPaginaDeAdms/app";
 import opcoesSelect from "../OpcoesDeSelecao/opcoes";
 import Select from "react-select";
 import { useState } from "react";
@@ -61,8 +61,8 @@ export default function ProgramarPostagem() {
 
   return (
     <div className={styles.fundoPagina}>
-      <CabecalhoAdministrativo />
-      <BotaoPaginaInicial />
+      <Header destino="adms"/>
+      <BotaoDeTrocaDePaginas destino="adms" />
       <div className={styles.fundoPainel}>
         <div className={styles.painel}>
           <div className={styles.introducaoPagina}>

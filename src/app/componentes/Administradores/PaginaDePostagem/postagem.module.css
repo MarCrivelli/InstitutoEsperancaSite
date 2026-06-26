@@ -140,11 +140,11 @@
 
 @media (max-width: 768px) {
   .fundoPainel {
-    padding: 50px 25px;
+    padding: 50px 5px;
   }
 
   .painel {
-    padding: 20px 30px;
+    padding: 20px;
   }
 
   .introducaoPagina h1,

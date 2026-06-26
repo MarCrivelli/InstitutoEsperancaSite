@@ -1,4 +1,4 @@
-.linkBotaoSolto {
+.botaoSolto {
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
@@ -7,13 +7,14 @@
   width: 30px;
 }
 
-.botaoPagInicial {
+.botaoTrocaPagina {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100px;
   height: 100px;
   background-color: rgba(39, 39, 39, 0.89);
+  border: none;
   border-radius: 50%;
   position: relative;
   left: -70px;
@@ -22,32 +23,33 @@
   pointer-events: all;
 }
 
-.botaoPagInicial img {
+.botaoTrocaPagina img {
   width: 45%;
   height: 45%;
+  object-fit: contain;
   opacity: 0;
   transition: opacity 0.6s ease-in-out;
 }
 
-.botaoPagInicial:hover,
-.botaoPagInicial.active {
+.botaoTrocaPagina:hover,
+.botaoTrocaPagina.active {
   cursor: pointer;
-  left: -10px; 
+  left: -10px;
   background-color: rgb(39, 39, 39);
 }
 
-.botaoPagInicial:hover img,
-.botaoPagInicial.active img {
+.botaoTrocaPagina:hover img,
+.botaoTrocaPagina.active img {
   opacity: 1;
 }
 
 @media (max-width: 310px) {
-  .botaoPagInicial {
+  .botaoTrocaPagina {
     left: -85px;
   }
-  
-  .botaoPagInicial:hover,
-  .botaoPagInicial.active {
+
+  .botaoTrocaPagina:hover,
+  .botaoTrocaPagina.active {
     left: -25px;
   }
 }

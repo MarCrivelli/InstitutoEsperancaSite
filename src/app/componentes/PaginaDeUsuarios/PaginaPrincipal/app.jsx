@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import BotaoParaPaginaDeAdms from "../../Visitantes/BotaoParaPaginaDeAdms/app";
+import BotaoDeTrocaDePaginas from "../../BotaoParaPaginaDeAdms/app";
 import QuadroDeAvisos from "../../Visitantes/QuadroDeAvisos/app";
 import CadastroELogin from "../CadastroELogin/app";
 import PainelUsuario from "../PainelDeUsuario/app";
@@ -200,7 +200,7 @@ export default function GerenciarUsuario() {
   if (carregandoVerificacao) {
     return (
       <div className={styles.fundoCarregando}>
-        <BotaoParaPaginaDeAdms />
+        <BotaoDeTrocaDePaginas destino="adms" />
         <div className={styles.alinharCarregando}>
           <img
             className={styles.iconeCarregando}
@@ -214,7 +214,7 @@ export default function GerenciarUsuario() {
 
   return (
     <div>
-      <BotaoParaPaginaDeAdms />
+      <BotaoDeTrocaDePaginas destino="adms" />
       <QuadroDeAvisos />
 
       {usuarioLogado ? (

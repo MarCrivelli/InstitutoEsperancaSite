@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 
 //================ Minhas importações ================//
 import styles from "./painelUsuario.module.css";
-import HeaderVisitantes from "../../Visitantes/HeaderVisitantes/app";
+import Header from "../../Header/app";
 
 export default function PainelUsuario({
   usuarioLogado,
@@ -578,7 +578,7 @@ export default function PainelUsuario({
   return (
     <>
       <div className={styles.fundoDaPagina}>
-        <HeaderVisitantes />
+        <Header destino="visitantes" />
         <div className={`${styles.fundoBloco} ${styles.fundoBloco1}`}>
           <h1 className={styles.tituloPainel}>Dados de usuário</h1>
           <div className={styles.bloco}>

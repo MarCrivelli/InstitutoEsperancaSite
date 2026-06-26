@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Header from "../HeaderVisitantes/app";
+import Header from "../../Header/app";
 import Footer from "../Footer/app";
-import BotaoParaPaginaDeAdms from "../BotaoParaPaginaDeAdms/app";
+import BotaoDeTrocaDePaginas from "../../BotaoParaPaginaDeAdms/app";
 import QuadroDeAvisos from "../QuadroDeAvisos/app";
 import styles from "./doe.module.css";
 
@@ -17,13 +17,13 @@ export default function ComoDoar() {
 
   return (
     <>
-      <BotaoParaPaginaDeAdms />
+      <BotaoDeTrocaDePaginas destino="visitantes" />
       <QuadroDeAvisos />
       <main>
         <section
           className={`${styles.secao} ${styles.parallax} ${styles.parallax1}`}
         >
-          <Header />
+          <Header destino="visitantes"/>
           <h1>Tem interesse em fazer uma doação monetária?</h1>
         </section>
 

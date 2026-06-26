@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import Header from "../HeaderVisitantes/app";
+import Header from "../../Header/app";
 import Footer from "../Footer/app";
 import carregarAnimais from "../../../hooks/GerenciarDadosAnimais/CarregarAnimais/carregarAnimais";
 import styles from "./adote.module.css";
 import opcoes from "/src/app/componentes/Administradores/OpcoesDeSelecao/opcoes";
 import { Carousel } from "react-responsive-carousel";
-import BotaoParaPaginaDeAdms from "../BotaoParaPaginaDeAdms/app";
+import BotaoDeTrocaDePaginas from "../../BotaoParaPaginaDeAdms/app";
 import QuadroDeAvisos from "../QuadroDeAvisos/app";
 
 export default function QueroAdotar() {
@@ -231,13 +231,13 @@ export default function QueroAdotar() {
 
   return (
     <>
-      <BotaoParaPaginaDeAdms />
+      <BotaoDeTrocaDePaginas destino="visitantes" />
       <QuadroDeAvisos />
       <main>
         <section
           className={`${styles.secao} ${styles.parallax} ${styles.parallax1}`}
         >
-          <Header />
+          <Header destino="visitantes"/>
           <h1>Animais disponíveis para a adoção</h1>
         </section>
 
