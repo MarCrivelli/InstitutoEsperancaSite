@@ -135,7 +135,7 @@ export default function FichasDeAnimais() {
       }`}
     >
       <Header destino="adms"/>
-      <BotaoDeTrocaDePaginas destino="adms" />
+      <BotaoDeTrocaDePaginas destino="visitantes" />
       <RolarPCima />
 
       <div className={styles.botoesFlutuantes}>

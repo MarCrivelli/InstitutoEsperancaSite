@@ -17,7 +17,7 @@ export default function ComoDoar() {
 
   return (
     <>
-      <BotaoDeTrocaDePaginas destino="visitantes" />
+      <BotaoDeTrocaDePaginas destino="adms" />
       <QuadroDeAvisos />
       <main>
         <section

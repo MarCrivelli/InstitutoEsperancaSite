@@ -102,7 +102,7 @@ export default function Configuracoes() {
   return (
     <div className={styles.fundoPagina}>
       <Header destino="adms"/>
-      <BotaoDeTrocaDePaginas destino="adms" />
+      <BotaoDeTrocaDePaginas destino="visitantes" />
       <div className={styles.fundoPainel}>
         <div className={styles.painel}>
           <div className={styles.inicioPainel}>

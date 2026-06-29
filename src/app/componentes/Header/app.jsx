@@ -1,6 +1,7 @@
 import styles from "./header.module.css";
 import useNavegarComTransicao from "../../hooks/transicaoEntrePaginas/app";
 import { useState, useEffect } from "react";
+import { Tooltip } from "react-tooltip";
 
 export default function Header({ destino = "visitantes", tipo = "padrao" }) {
   const [menuAberto, setMenuAberto] = useState(false);
@@ -157,12 +158,15 @@ export default function Header({ destino = "visitantes", tipo = "padrao" }) {
                 type="button"
                 className={`${styles.linkUsuario} ${styles.linkBotao}`}
                 onClick={() => navegar("/autenticar")}
-                title={
-                  usuarioLogado
-                    ? `Logado como: ${usuarioLogado.nome}`
-                    : "Fazer login"
-                }
+                data-tooltip-id="balaoNomeUsuario"
               >
+                <Tooltip
+                  className={styles.tooltip}
+                  id="balaoNomeUsuario"
+                  place="bottom"
+                >
+                  {usuarioLogado ? `${usuarioLogado.nome}` : "Fazer login"}
+                </Tooltip>
                 <img
                   src={
                     usuarioLogado?.foto ||

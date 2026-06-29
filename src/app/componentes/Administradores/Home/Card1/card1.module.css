@@ -128,7 +128,10 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: #0077ff;
+  background-image: url(/homeAdms/adicionar.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top left;
   color: white;
   border: none;
   cursor: pointer;
@@ -145,7 +148,7 @@
 }
 
 .botaoAdicionar::before{
-  content: "+";
+  content: "";
   position: absolute;
   font-size: 2.5rem;
   -webkit-text-stroke-color: #00489a;

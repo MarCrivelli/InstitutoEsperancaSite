@@ -797,7 +797,10 @@ export default function CarrosselAnimais() {
                     data-tooltip-id="idSelectNome"
                     className={styles.botaoAjuda}
                   >
-                    ?
+                    <img
+                      src={`${import.meta.env.BASE_URL}pagConfiguracoes/explicacao.png`}
+                      alt=""
+                    />
                   </button>
                   <Tooltip
                     className={styles.tooltip}
@@ -805,8 +808,8 @@ export default function CarrosselAnimais() {
                     place="top"
                   >
                     Selecione um animal que possui todos os dados necessários
-                    para o carrossel (nome, descrição de entrada e saída, e
-                    imagem de entrada e saída).
+                    para o carrossel &#40;nome, descrição de entrada e saída, e
+                    imagem de entrada e saída&#41;.
                   </Tooltip>
                 </div>
                 <Select
@@ -853,7 +856,10 @@ export default function CarrosselAnimais() {
                     data-tooltip-id="idDescricoesAnimal"
                     className={styles.botaoAjuda}
                   >
-                    ?
+                    <img
+                      src={`${import.meta.env.BASE_URL}pagConfiguracoes/explicacao.png`}
+                      alt=""
+                    />
                   </button>
                   <Tooltip
                     className={styles.tooltip}

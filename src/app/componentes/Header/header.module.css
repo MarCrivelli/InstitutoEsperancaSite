@@ -13,6 +13,12 @@
   background-color: transparent;
 }
 
+.tooltip {
+  max-width: 250px !important;
+  text-align: center !important;
+  word-break: break-word !important;
+}
+
 .linkLogo {
   display: flex;
   align-items: center;

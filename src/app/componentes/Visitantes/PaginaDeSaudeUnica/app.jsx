@@ -31,7 +31,7 @@ export default function SaudeUnica() {
 
   return (
     <>
-      <BotaoDeTrocaDePaginas destino="visitantes" />
+      <BotaoDeTrocaDePaginas destino="adms" />
       <QuadroDeAvisos />
       <main>
         <section

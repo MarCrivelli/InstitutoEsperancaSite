@@ -55,16 +55,11 @@ export default function VerMais() {
     };
   }, [existemAlteracoes]);
 
-  // CARREGAMENTO INICIAL
   useEffect(() => {
     const buscarDadosDoAnimal = async () => {
       try {
         const resposta = await fetch(`${import.meta.env.VITE_API_URL}/animais/${id}`);
         const dados = await resposta.json();
-
-        console.log("=== DADOS CARREGADOS DO BANCO ===");
-        console.log("descricao (entrada):", dados.descricao);
-        console.log("descricaoSaida:", dados.descricaoSaida);
 
         if (!dados.hasOwnProperty("descricao")) {
           dados.descricao = "";
@@ -103,11 +98,6 @@ export default function VerMais() {
 
     setDadosEditados((anterior) => {
       const novoEstado = { ...anterior, [campoAtual]: value };
-
-      console.log(`=== ALTERAÇÃO NA DESCRIÇÃO ===`);
-      console.log(`Campo sendo alterado: ${campoAtual}`);
-      console.log(`Novo valor: "${value}"`);
-      console.log(`Estado completo após alteração:`, novoEstado);
 
       verificarSeExistemAlteracoes(dadosOriginais, novoEstado);
       return novoEstado;
@@ -155,12 +145,6 @@ export default function VerMais() {
     if (!original || !editado) return false;
 
     const camposIgnorados = ["createdAt", "updatedAt"];
-
-    console.log(`=== VERIFICANDO SE EXISTEM ALTERAÇÕES ===`);
-    console.log(`Original descricao: "${original.descricao || ""}"`);
-    console.log(`Editado descricao: "${editado.descricao || ""}"`);
-    console.log(`Original descricaoSaida: "${original.descricaoSaida || ""}"`);
-    console.log(`Editado descricaoSaida: "${editado.descricaoSaida || ""}"`);
 
     // Verificar se há imagens pendentes
     const temImagensPendentes = imagemEntradaPendente !== null || imagemSaidaPendente !== null;
@@ -399,15 +383,6 @@ export default function VerMais() {
   const obterValorDescricaoAtual = () => {
     const campo = obterCampoDescricaoAtual();
     const valor = dadosEditados[campo] || "";
-
-    console.log(`=== OBTENDO VALOR DA DESCRIÇÃO ===`);
-    console.log(`Seleção no dropdown: ${descricaoSelecionada.value}`);
-    console.log(`Campo mapeado: ${campo}`);
-    console.log(`Valor atual: "${valor}"`);
-    console.log(`Todas as descrições:`);
-    console.log(`  - descricao: "${dadosEditados.descricao || ""}"`);
-    console.log(`  - descricaoSaida: "${dadosEditados.descricaoSaida || ""}"`);
-
     return valor;
   };
 
@@ -447,7 +422,7 @@ export default function VerMais() {
     }
     return dadosOriginais.imagemEntrada
       ? `${import.meta.env.VITE_API_URL}/uploads/${dadosOriginais.imagemEntrada}`
-      : "/pagFichasDAnimais/imagemTeste.jpg";
+      : `${import.meta.env.BASE_URL}pagFichasDAnimais/imagemTeste.jpg`
   };
 
   // Função para obter a URL da imagem de saída (com preview se pendente)
@@ -457,12 +432,16 @@ export default function VerMais() {
     }
     return dadosOriginais.imagemSaida
       ? `${import.meta.env.VITE_API_URL}/uploads/${dadosOriginais.imagemSaida}`
-      : null;
+      : `${import.meta.env.BASE_URL}pagFichasDAnimais/imagemTeste.jpg`
   };
 
   // LOADING
   if (!dadosOriginais || !dadosEditados) {
-    return <div>Carregando dados do animal...</div>;
+    return (
+    <div className={styles.fundoCarregando}>
+      <img className={styles.iconeCarregando} src={`${import.meta.env.BASE_URL}paraErros/carregando.svg`}/>
+    </div>
+  )
   }
 
   // MODAL PARA AMPLIAR IMAGEM
@@ -555,7 +534,7 @@ export default function VerMais() {
   return (
     <div className={styles.fundoPagina}>
       <Header destino="adms"/>
-      <BotaoDeTrocaDePaginas destino="adms" />
+      <BotaoDeTrocaDePaginas destino="visitantes" />
       <RolarPCima />
       <ModalAmpliarImagem />
 

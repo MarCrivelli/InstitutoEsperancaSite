@@ -231,7 +231,7 @@ export default function QueroAdotar() {
 
   return (
     <>
-      <BotaoDeTrocaDePaginas destino="visitantes" />
+      <BotaoDeTrocaDePaginas destino="adms" />
       <QuadroDeAvisos />
       <main>
         <section

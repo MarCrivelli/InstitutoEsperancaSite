@@ -101,7 +101,7 @@ export default function Denuncie() {
 
   return (
     <>
-      <BotaoDeTrocaDePaginas destino="visitantes" />
+      <BotaoDeTrocaDePaginas destino="adms" />
       <QuadroDeAvisos />
       <main>
         <section

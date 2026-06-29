@@ -10,6 +10,7 @@ import Card2 from "../Card2/app";
 import Card3 from "../Card3/app";
 
 // Configuração da API - ajuste conforme seu ambiente
+const token = localStorage.getItem("token");
 const API_BASE_URL = import.meta.env.VITE_API_URL; 
 
 export default function PaginaInicialAdministradores() {
@@ -119,6 +120,7 @@ export default function PaginaInicialAdministradores() {
       const response = await fetch(`${API_BASE_URL}/avisos`, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -204,7 +206,7 @@ export default function PaginaInicialAdministradores() {
   return (
     <div className={styles.fundoPagina}>
       <Header destino="adms"/>
-      <BotaoDeTrocaDePaginas destino="adms" />
+      <BotaoDeTrocaDePaginas destino="visitantes" />
       <RolarPCima />
 
       {exibirErro()}
