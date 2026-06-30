@@ -224,11 +224,17 @@ section.secao.parallax h1 {
   color: rgba(255, 255, 255, 0.841);
 }
 
+@supports (-webkit-touch-callout: none) {
+  section.secao.parallax1::before,
+  section.secao.parallax2::before {
+    background-attachment: scroll;
+    min-height: 100svh;
+  }
+}
+
 @media (max-width: 1400px) {
   section.secao.parallax h1 {
     font-size: 4rem;
-  }
-  .conteudo2 .painel h1 {
   }
   .conteudo2 {
     padding: 100px 50px;

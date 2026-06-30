@@ -154,6 +154,7 @@
 }
 
 .iconeOverlay {
+  object-fit: contain;
   width: 50px;
   height: 50px;
   filter: brightness(0) invert(1); /* Torna o ícone branco */
@@ -203,13 +204,14 @@
   border: none;
   width: 20px;
   height: 20px;
+  border-radius: 50%;
 }
 
 .alinharLabelComAjuda .botaoAjuda:hover {
   cursor: help;
 }
 
-.alinharLabelComAjuda .botaoAjuda img{
+.alinharLabelComAjuda .botaoAjuda img {
   object-fit: contain;
   width: 100%;
   height: 100%;
@@ -255,6 +257,7 @@
 }
 
 .tooltip {
+  z-index: 1000 !important;
   max-width: 250px !important;
   text-align: center !important;
   word-break: break-word !important;
@@ -271,9 +274,6 @@
 .divBotaoSlide button {
   padding: 10px 25px;
   border-radius: 7px;
-  border: none;
-  color: white;
-  transition: opacity ease-in-out 0.2s;
 }
 
 .divBotaoSlide button:hover {
@@ -287,28 +287,64 @@
 
 .botaoInserir {
   background-color: #001b2b;
+  color: white;
+}
+
+.botaoEditar,
+.botaoRemover,
+.botaoCancelar,
+.botaoSalvar{
+  transition: background ease-in-out .3s;
+  font-weight: 700;
+  background: transparent;
+}
+
+.botaoEditar:hover,
+.botaoRemover:hover,
+.botaoCancelar:hover,
+.botaoSalvar:hover{
+  color: white;
 }
 
 .botaoEditar {
-  transition: background ease-in-out 0.2s;
+  color: #00a2ff;
+  border: 2px solid #00a2ff;
+}
+
+.botaoEditar:hover {
+  background-color: #00a2ff;
+}
+
+.botaoRemover {
+  color: rgb(255, 0, 128);
+  border: 2px solid rgb(255, 0, 128);
+}
+
+.botaoRemover:hover {
+  background-color: rgb(255, 0, 128);
 }
 
 .botaoSalvar {
-  background-color: #00a118;
+  color: #00cf1f;
+  border: 2px solid #00cf1f;
 }
 
 .botaoSalvar:hover {
-  cursor: pointer;
+  background-color: #00cf1f;
 }
 
 .botaoSalvar.desativado {
-  background-color: #ccc;
   cursor: not-allowed;
-  opacity: 0.6;
+  filter: grayscale(1);
 }
 
 .botaoCancelar {
-  background-color: red;
+  border: 2px solid rgb(255, 0, 64);
+  color: rgb(255, 0, 64);
+}
+
+.botaoCancelar:hover{
+  background-color: rgb(255, 0, 64);
 }
 
 .carregando,

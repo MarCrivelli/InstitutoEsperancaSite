@@ -794,7 +794,7 @@ export default function CarrosselAnimais() {
                 <div className={styles.alinharLabelComAjuda}>
                   <label>Nome do animal</label>
                   <button
-                    data-tooltip-id="idSelectNome"
+                    data-tooltip-id="selectNome"
                     className={styles.botaoAjuda}
                   >
                     <img
@@ -804,7 +804,7 @@ export default function CarrosselAnimais() {
                   </button>
                   <Tooltip
                     className={styles.tooltip}
-                    id="idSelectNome"
+                    id="selectNome"
                     place="top"
                   >
                     Selecione um animal que possui todos os dados necessários
@@ -853,7 +853,7 @@ export default function CarrosselAnimais() {
                     Descrição de {mostrarSaidaFormulario ? "saída" : "entrada"}
                   </label>
                   <button
-                    data-tooltip-id="idDescricoesAnimal"
+                    data-tooltip-id="descricoesAnimal"
                     className={styles.botaoAjuda}
                   >
                     <img
@@ -863,7 +863,7 @@ export default function CarrosselAnimais() {
                   </button>
                   <Tooltip
                     className={styles.tooltip}
-                    id="idDescricoesAnimal"
+                    id="descricoesAnimal"
                     place="top"
                   >
                     {mostrarSaidaFormulario
@@ -1018,7 +1018,10 @@ export default function CarrosselAnimais() {
                           data-tooltip-id={`tooltip-${slide.id}`}
                           className={styles.botaoAjuda}
                         >
-                          ?
+                          <img
+                            src={`${import.meta.env.BASE_URL}pagConfiguracoes/explicacao.png`}
+                            alt="Icone explicação"
+                          />
                         </button>
                         <Tooltip
                           className={styles.tooltip}
@@ -1086,9 +1089,6 @@ export default function CarrosselAnimais() {
                       <button
                         className={styles.botaoEditar}
                         onClick={() => iniciarEdicaoSlide(slide)}
-                        style={{
-                          backgroundColor: "#0066ff",
-                        }}
                       >
                         Editar slide
                       </button>
@@ -1099,11 +1099,6 @@ export default function CarrosselAnimais() {
                         }
                         disabled={removendoAnimal === slide.id}
                         style={{
-                          backgroundColor: "#ff4444",
-                          color: "white",
-                          border: "none",
-                          padding: "8px 16px",
-                          borderRadius: "4px",
                           cursor:
                             removendoAnimal === slide.id
                               ? "not-allowed"

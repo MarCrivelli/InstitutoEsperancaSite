@@ -222,6 +222,14 @@ section.secao.parallax h1 {
   text-align: justify;
 }
 
+@supports (-webkit-touch-callout: none) {
+  section.secao.parallax1::before,
+  section.secao.parallax2::before {
+    background-attachment: scroll;
+    min-height: 100svh;
+  }
+}
+
 @media (max-width: 1400px) {
   section.secao.parallax h1 {
     font-size: 4rem;
