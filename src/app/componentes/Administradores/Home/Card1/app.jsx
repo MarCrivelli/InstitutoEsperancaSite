@@ -27,7 +27,7 @@ const Lembrete = ({ data, descricao, corData, onRemover, isNovo = false }) => {
   );
 };
 
-export default function Card1() {
+export default function Card1({ onQuantidadeAvisosChange }) {
   const [lembretes, setLembretes] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -47,6 +47,12 @@ export default function Card1() {
   useEffect(() => {
     carregarAvisos();
   }, []);
+
+  useEffect(() => {
+    if (onQuantidadeAvisosChange) {
+      onQuantidadeAvisosChange(lembretes.length);
+    }
+  }, [lembretes.length, onQuantidadeAvisosChange]);
 
   useEffect(() => {
     return () => {
@@ -238,14 +244,22 @@ export default function Card1() {
       {exibirErro()}
 
       <div className={styles.containerWrapper}>
-        <div className={`${styles.containerLembretes} ${lembretes.length === 0 ? styles.containerLembretesVazio : ""}`} ref={containerRef}>
+        <div
+          className={`${styles.containerLembretes} ${
+            lembretes.length === 0 ? styles.containerLembretesVazio : ""
+          }`}
+          ref={containerRef}
+        >
           {loading && lembretes.length === 0 && (
             <p className={styles.mensagemCarregando}>Carregando avisos...</p>
           )}
 
           {!loading && lembretes.length === 0 && (
             <div className={styles.mensagemVazia}>
-              <img src={`${import.meta.env.BASE_URL}card1/homemConfuso.png`} alt="Icone Aviso" />
+              <img
+                src={`${import.meta.env.BASE_URL}card1/homemConfuso.png`}
+                alt="Ícone Aviso"
+              />
               <p>Sem avisos por enquanto...</p>
             </div>
           )}
@@ -345,11 +359,19 @@ export default function Card1() {
             </div>
 
             <div className={styles.botoesForm}>
-              <button type="button" onClick={fecharFormulario} disabled={loading}>
+              <button
+                type="button"
+                onClick={fecharFormulario}
+                disabled={loading}
+              >
                 Cancelar
               </button>
 
-              <button type="button" onClick={adicionarLembrete} disabled={loading}>
+              <button
+                type="button"
+                onClick={adicionarLembrete}
+                disabled={loading}
+              >
                 {loading ? "Salvando..." : "Adicionar"}
               </button>
             </div>
