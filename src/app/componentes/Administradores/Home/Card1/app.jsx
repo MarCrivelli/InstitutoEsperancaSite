@@ -3,7 +3,14 @@ import styles from "./card1.module.css";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-const Lembrete = ({ data, descricao, corData, onRemover, isNovo = false }) => {
+const Lembrete = ({
+  data,
+  descricao,
+  corData,
+  onRemover,
+  isNovo = false,
+  usuarioAdministrador = false,
+}) => {
   return (
     <div
       className={`${styles.lembreteItem} ${
@@ -15,14 +22,16 @@ const Lembrete = ({ data, descricao, corData, onRemover, isNovo = false }) => {
         <span className={styles.lembreteDescricao}>{descricao}</span>
       </span>
 
-      <button
-        className={styles.lembreteLixeira}
-        onClick={onRemover}
-        type="button"
-        title="Remover aviso"
-      >
-        🗑️
-      </button>
+      {usuarioAdministrador && (
+        <button
+          className={styles.lembreteLixeira}
+          onClick={onRemover}
+          type="button"
+          title="Remover aviso"
+        >
+          🗑️
+        </button>
+      )}
     </div>
   );
 };
@@ -33,6 +42,7 @@ export default function Card1({ onQuantidadeAvisosChange }) {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState(null);
   const [ultimoLembreteId, setUltimoLembreteId] = useState(null);
+  const [usuarioAdministrador, setUsuarioAdministrador] = useState(false);
 
   const [novoLembrete, setNovoLembrete] = useState({
     dataInicio: "",
@@ -46,6 +56,35 @@ export default function Card1({ onQuantidadeAvisosChange }) {
 
   useEffect(() => {
     carregarAvisos();
+  }, []);
+
+  useEffect(() => {
+    const verificarPermissao = () => {
+      try {
+        const dadosUsuario = localStorage.getItem("usuario");
+        const token = localStorage.getItem("token");
+
+        if (!dadosUsuario || !token) {
+          setUsuarioAdministrador(false);
+          return;
+        }
+
+        const usuario = JSON.parse(dadosUsuario);
+
+        const autorizado = usuario.nivelDeAcesso === "administrador";
+
+        setUsuarioAdministrador(autorizado);
+      } catch (error) {
+        console.error("Erro ao verificar permissão do usuário:", error);
+        setUsuarioAdministrador(false);
+      }
+    };
+
+    verificarPermissao();
+
+    const intervalo = setInterval(verificarPermissao, 5000);
+
+    return () => clearInterval(intervalo);
   }, []);
 
   useEffect(() => {
@@ -87,6 +126,11 @@ export default function Card1({ onQuantidadeAvisosChange }) {
   };
 
   const abrirFormulario = () => {
+    if (!usuarioAdministrador) {
+      setErro("Apenas administradores podem adicionar avisos.");
+      return;
+    }
+
     setMostrarFormulario(true);
     setErro(null);
     document.body.classList.add("modal-aberto");
@@ -117,6 +161,11 @@ export default function Card1({ onQuantidadeAvisosChange }) {
   };
 
   const adicionarLembrete = async () => {
+    if (!usuarioAdministrador) {
+      setErro("Apenas administradores podem adicionar avisos.");
+      return;
+    }
+
     if (!novoLembrete.descricao || !novoLembrete.dataInicio) {
       setErro("Preencha todos os campos obrigatórios");
       return;
@@ -142,6 +191,11 @@ export default function Card1({ onQuantidadeAvisosChange }) {
       setErro(null);
 
       const token = localStorage.getItem("token");
+
+      if (!token) {
+        setErro("Você precisa estar logado como administrador.");
+        return;
+      }
 
       const response = await fetch(`${API_BASE_URL}/avisos`, {
         method: "POST",
@@ -183,11 +237,21 @@ export default function Card1({ onQuantidadeAvisosChange }) {
   };
 
   const removerLembrete = async (id) => {
+    if (!usuarioAdministrador) {
+      setErro("Apenas administradores podem remover avisos.");
+      return;
+    }
+
     try {
       setLoading(true);
       setErro(null);
 
       const token = localStorage.getItem("token");
+
+      if (!token) {
+        setErro("Você precisa estar logado como administrador.");
+        return;
+      }
 
       const response = await fetch(`${API_BASE_URL}/avisos/${id}`, {
         method: "DELETE",
@@ -272,20 +336,23 @@ export default function Card1({ onQuantidadeAvisosChange }) {
               corData={lembrete.corData}
               onRemover={() => removerLembrete(lembrete.id)}
               isNovo={lembrete.id === ultimoLembreteId}
+              usuarioAdministrador={usuarioAdministrador}
             />
           ))}
         </div>
 
-        <button
-          className={styles.botaoAdicionar}
-          onClick={abrirFormulario}
-          type="button"
-          disabled={loading}
-          title="Adicionar novo aviso"
-        ></button>
+        {usuarioAdministrador && (
+          <button
+            className={styles.botaoAdicionar}
+            onClick={abrirFormulario}
+            type="button"
+            disabled={loading}
+            title="Adicionar novo aviso"
+          ></button>
+        )}
       </div>
 
-      {mostrarFormulario && (
+      {mostrarFormulario && usuarioAdministrador && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
             <h1>Novo Lembrete</h1>

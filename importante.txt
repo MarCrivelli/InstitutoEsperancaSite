@@ -88,6 +88,9 @@ Sites que peguei alguns componentes utilizados:
 30. Sino
 <a href="https://www.flaticon.com/free-icons/notification" title="notification icons">Notification icons created by kliwir art - Flaticon</a>
 
+31. X
+<a href="https://www.flaticon.com/free-icons/letter-x" title="letter x icons">Letter x icons created by Md Tanvirul Haque - Flaticon</a>
+
 https://react-select.com/home
 
 https://react-bootstrap.github.io/docs/components/tabs

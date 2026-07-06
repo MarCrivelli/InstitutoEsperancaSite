@@ -48,10 +48,11 @@ export default function QuadroDeAvisos() {
         className={styles.botaoAviso}
         title="Quadro de avisos"
       >
-        <img
-          src={`${import.meta.env.BASE_URL}quadroDeAvisos/sino.png`}
-          alt="Ícone Aviso"
-        />
+        {mostrarAviso ? (
+          <img src={`${import.meta.env.BASE_URL}iconeSair/sair.png`} />
+        ) : (
+          <img src={`${import.meta.env.BASE_URL}quadroDeAvisos/sino.png`} />
+        )}
 
         {deveMostrarContador && (
           <span className={styles.contadorAvisos}>

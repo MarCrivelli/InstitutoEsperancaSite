@@ -419,7 +419,11 @@ export default function PainelUsuario({
             alt="Google"
           />
           <label className={styles.textoBotaoLog}>Google</label>
-          <img className={styles.iconeDeslog} src={`${import.meta.env.BASE_URL}adicionarOuRemover/remover.png`} alt="desconectar" />
+          <img
+            className={styles.iconeDeslog}
+            src={`${import.meta.env.BASE_URL}adicionarOuRemover/remover.png`}
+            alt="desconectar"
+          />
         </button>
       );
     }
@@ -445,7 +449,9 @@ export default function PainelUsuario({
             src={`${import.meta.env.BASE_URL}pagAutenticacao/Google.png`}
             alt="Google"
           />
-          <img src={`${import.meta.env.BASE_URL}paraErros/carregando.svg`}></img>
+          <img
+            src={`${import.meta.env.BASE_URL}paraErros/carregando.svg`}
+          ></img>
         </button>
       );
     }
@@ -467,7 +473,10 @@ export default function PainelUsuario({
         <div className={styles.espacamentoDado}>
           <img
             className={styles.iconeUsuario}
-            src={usuarioLogado.foto || `${import.meta.env.BASE_URL}paraErros/user.png`}
+            src={
+              usuarioLogado.foto ||
+              `${import.meta.env.BASE_URL}paraErros/user.png`
+            }
             alt="Avatar do usuário"
           />
         </div>
@@ -581,16 +590,12 @@ export default function PainelUsuario({
         <Header destino="visitantes" />
         <div className={`${styles.fundoBloco} ${styles.fundoBloco1}`}>
           <h1 className={styles.tituloPainel}>Dados de usuário</h1>
-          <div className={styles.bloco}>
-            {ConteudoDadosUsuario}
-          </div>
+          <div className={styles.bloco}>{ConteudoDadosUsuario}</div>
         </div>
-      </div>
 
-      <div className={`${styles.fundoBloco} ${styles.fundoBloco2}`}>
-        <h1 className={styles.tituloPainel}>Configurações</h1>
-        <div className={styles.bloco}>
-          {ConteudoConfiguracoes}
+        <div className={`${styles.fundoBloco} ${styles.fundoBloco2}`}>
+          <h1 className={styles.tituloPainel}>Configurações</h1>
+          <div className={styles.bloco}>{ConteudoConfiguracoes}</div>
         </div>
       </div>
 
