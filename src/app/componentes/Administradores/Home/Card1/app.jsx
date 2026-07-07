@@ -36,7 +36,7 @@ const Lembrete = ({
   );
 };
 
-export default function Card1({ onQuantidadeAvisosChange }) {
+export default function Card1({ onAvisosChange }) {
   const [lembretes, setLembretes] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -88,10 +88,10 @@ export default function Card1({ onQuantidadeAvisosChange }) {
   }, []);
 
   useEffect(() => {
-    if (onQuantidadeAvisosChange) {
-      onQuantidadeAvisosChange(lembretes.length);
-    }
-  }, [lembretes.length, onQuantidadeAvisosChange]);
+  if (onAvisosChange) {
+    onAvisosChange(lembretes);
+  }
+}, [lembretes, onAvisosChange]);
 
   useEffect(() => {
     return () => {

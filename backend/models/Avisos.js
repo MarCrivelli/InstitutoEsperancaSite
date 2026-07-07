@@ -12,7 +12,7 @@ const Avisos = connection.sequelize.define("avisos", {
     allowNull: false,
   },
   dataInicio: {
-    type: connection.Sequelize.DATEONLY, // Apenas data, sem horário
+    type: connection.Sequelize.DATEONLY, 
     allowNull: false,
   },
   dataFim: {

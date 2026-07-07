@@ -4,8 +4,6 @@ import BotaoDeTrocaDePaginas from "../../BotaoParaPaginaDeAdms/app";
 import opcoesSelect from "../OpcoesDeSelecao/opcoes";
 import Select from "react-select";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { Link } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
@@ -23,7 +21,7 @@ export default function ProgramarPostagem() {
     statusAdocao: null,
     statusMicrochipagem: null,
     statusVermifugacao: null,
-    dataPostagem: null,
+    dataPostagem: "",
     opcaoPublicacao: null,
   });
 
@@ -47,21 +45,27 @@ export default function ProgramarPostagem() {
       ...prev,
       opcaoPublicacao: opcaoSelecionada,
       dataPostagem:
-        opcaoSelecionada.value === "agora" ? null : prev.dataPostagem,
+        opcaoSelecionada?.value === "agora" ? "" : prev.dataPostagem,
     }));
   };
 
   // Manipulador para a data selecionada
-  const handleChangeData = (dataSelecionada) => {
+  const handleChangeData = (e) => {
     setFiltrosSelecionados((prev) => ({
       ...prev,
-      dataPostagem: dataSelecionada,
+      dataPostagem: e.target.value,
     }));
   };
 
+  const obterDataHoraLocalAtual = () => {
+  const agora = new Date();
+  agora.setMinutes(agora.getMinutes() - agora.getTimezoneOffset());
+  return agora.toISOString().slice(0, 16);
+};
+
   return (
     <div className={styles.fundoPagina}>
-      <Header destino="adms"/>
+      <Header destino="adms" />
       <BotaoDeTrocaDePaginas destino="visitantes" />
       <div className={styles.fundoPainel}>
         <div className={styles.painel}>
@@ -198,24 +202,13 @@ export default function ProgramarPostagem() {
                   {filtrosSelecionados.opcaoPublicacao?.value === "agendar" && (
                     <div className={styles.seletorDataContainer}>
                       <input
-                        type="date"
-                        name="dataInicio"
+                        type="datetime-local"
+                        name="dataPostagem"
                         value={filtrosSelecionados.dataPostagem}
                         onChange={handleChangeData}
+                        min={obterDataHoraLocalAtual()}
                         required
-                      />
-                      <DatePicker
-                        selected={filtrosSelecionados.dataPostagem}
-                        onChange={handleChangeData}
-                        showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={15}
-                        dateFormat="dd/MM/yyyy HH:mm"
-                        minDate={new Date()}
-                        placeholderText="Selecione data e hora"
                         className={styles.seletorDataInput}
-                        withPortal
-                        isClearable
                       />
                     </div>
                   )}
