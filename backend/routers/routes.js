@@ -3,257 +3,568 @@ const routes = express.Router();
 const multer = require("multer");
 const path = require("path");
 
-// Importar controllers
-const animalController = require('../controllers/animalController');
-const carrosselAnimaisController = require('../controllers/carrosselDeAnimaisController');
-const doadorController = require('../controllers/doadorController')
-const avisoController = require('../controllers/avisoController'); 
-const usuarioController = require('../controllers/usuarioController');
-const documentosController = require("../controllers/documentosController");
+// ============================================================================
+// CONTROLLERS
+// ============================================================================
 
-// Importar middlewares de autenticação
+const animalController = require(
+  "../controllers/animalController",
+);
+
+const carrosselAnimaisController = require(
+  "../controllers/carrosselDeAnimaisController",
+);
+
+const doadorController = require(
+  "../controllers/doadorController",
+);
+
+const avisoController = require(
+  "../controllers/avisoController",
+);
+
+const usuarioController = require(
+  "../controllers/usuarioController",
+);
+
+const documentosController = require(
+  "../controllers/documentosController",
+);
+
+// ============================================================================
+// MIDDLEWARES DE AUTENTICAÇÃO
+// ============================================================================
+
 const {
-    verificarToken,
-    apenasAdministrador,
-    administradorOuSub,
-    contribuinteOuSuperior,
-    verificarProprioUsuarioOuAdmin
-} = require('../middlewares/auth');
+  verificarToken,
+  apenasAdministrador,
+  administradorOuSub,
+  contribuinteOuSuperior,
+  verificarProprioUsuarioOuAdmin,
+} = require("../middlewares/auth");
 
 // ============================================================================
-// MIDDLEWARE DE DEBUG - DEVE ESTAR NO INÍCIO!
+// DEBUG
 // ============================================================================
+
 routes.use((req, res, next) => {
-  console.log(`🔍 [${new Date().toISOString()}] Requisição: ${req.method} ${req.path}`);
-  if (Object.keys(req.body).length > 0) {
-    console.log(`📦 Body:`, req.body);
+  console.log(
+    `🔍 [${new Date().toISOString()}] Requisição: ${req.method} ${req.path}`,
+  );
+
+  if (
+    req.body &&
+    Object.keys(req.body).length > 0
+  ) {
+    console.log("📦 Body:", req.body);
   }
+
   next();
 });
 
-// Configuração do multer
+// ============================================================================
+// MULTER
+// ============================================================================
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '../uploads'));
+    cb(
+      null,
+      path.join(__dirname, "../uploads"),
+    );
   },
+
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
+    const uniqueSuffix =
+      Date.now() +
+      "-" +
+      Math.round(Math.random() * 1e9);
+
+    cb(
+      null,
+      file.fieldname +
+        "-" +
+        uniqueSuffix +
+        path.extname(file.originalname),
+    );
+  },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage,
+});
 
 // ============================================================================
-// ROTA DE TESTE PARA VERIFICAR SE O SERVIDOR ESTÁ FUNCIONANDO
+// ROTA DE TESTE
 // ============================================================================
-routes.get('/teste', (req, res) => {
+
+routes.get("/teste", (req, res) => {
   res.json({
     erro: false,
-    mensagem: 'Servidor funcionando corretamente!',
+
+    mensagem:
+      "Servidor funcionando corretamente!",
+
     timestamp: new Date().toISOString(),
+
     permissoes: {
       administrador: {
-        descricao: "Acesso total a todas as funcionalidades",
+        descricao:
+          "Acesso total a todas as funcionalidades",
+
         pode: [
-          "Gerenciar usuários (criar, editar, deletar)",
-          "Gerenciar animais (criar, editar, visualizar)",
-          "Gerenciar carrossel (criar, editar, deletar)",
-          "Gerenciar doadores (criar, editar, deletar)", 
-          "Gerenciar avisos (criar, editar, deletar)",
-          "Visualizar todas as informações"
-        ]
-      },
-      subAdministrador: {
-        descricao: "Acesso administrativo exceto avisos e funções exclusivas de admin",
-        pode: [
-          "Gerenciar animais (criar, editar, visualizar)",
-          "Gerenciar carrossel (criar, editar, deletar)",
-          "Gerenciar doadores (criar, editar, deletar)",
-          "Editar usuários de nível inferior",
-          "Visualizar todas as informações"
-        ],
-        nao_pode: [
+          "Gerenciar usuários",
+          "Gerenciar animais",
+          "Gerenciar carrossel",
+          "Gerenciar doadores",
           "Gerenciar avisos",
-          "Deletar usuários",
-          "Editar administradores"
-        ]
+          "Gerenciar documentos",
+          "Visualizar todas as informações",
+        ],
       },
+
+      subAdministrador: {
+        descricao:
+          "Acesso administrativo com algumas limitações",
+
+        pode: [
+          "Gerenciar animais",
+          "Gerenciar carrossel",
+          "Gerenciar doadores",
+          "Editar usuários de nível inferior",
+          "Visualizar informações administrativas",
+        ],
+
+        nao_pode: [
+          "Gerenciar avisos exclusivos de administrador",
+          "Excluir outros usuários",
+          "Editar administradores",
+        ],
+      },
+
       contribuinte: {
-        descricao: "Apenas visualização de conteúdos",
+        descricao:
+          "Acesso limitado a visualização e próprio perfil",
+
         pode: [
           "Visualizar animais",
-          "Visualizar carrossel", 
+          "Visualizar carrossel",
           "Visualizar doadores",
           "Visualizar avisos",
-          "Editar próprio perfil"
+          "Editar próprio perfil",
+          "Excluir própria conta",
         ],
-        nao_pode: [
-          "Criar/editar/deletar qualquer conteúdo",
-          "Gerenciar outros usuários"
-        ]
       },
+
       usuario: {
-        descricao: "Usuário básico sem acesso a funcionalidades administrativas",
+        descricao:
+          "Usuário básico",
+
         pode: [
           "Visualizar conteúdo público",
-          "Editar próprio perfil"
-        ]
-      }
-    }
+          "Editar próprio perfil",
+          "Excluir própria conta",
+        ],
+      },
+    },
   });
 });
 
 // ============================================================================
-// ROTAS PÚBLICAS DE AUTENTICAÇÃO (SEM AUTENTICAÇÃO)
-// ============================================================================
-routes.post('/cadastro', usuarioController.cadastrarUsuario);
-routes.post('/login', usuarioController.autenticarUsuario);
-routes.post('/login-google', usuarioController.loginComGoogle);
-
-
-routes.get('/verificar-token', verificarToken, (req, res) => {
-  res.json({ 
-    erro: false, 
-    valido: true, 
-    usuario: {
-      id: req.user.id,
-      email: req.user.email,
-      nivelDeAcesso: req.user.nivelDeAcesso
-    }
-  });
-});
-
-// ============================================================================
-// ROTAS DE USUÁRIOS (COM AUTENTICAÇÃO)
+// ROTAS PÚBLICAS DE AUTENTICAÇÃO
 // ============================================================================
 
-// ADMINISTRADOR: Listar todos os usuários
-routes.get('/usuarios', verificarToken, apenasAdministrador, usuarioController.procurarUsuarios);
+routes.post(
+  "/cadastro",
+  usuarioController.cadastrarUsuario,
+);
 
-// CONTRIBUINTE+: Buscar usuário específico (próprio ou superior pode ver outros)
-routes.get('/usuarios/:id', verificarToken, verificarProprioUsuarioOuAdmin, usuarioController.encontrarUsuario);
+routes.post(
+  "/login",
+  usuarioController.autenticarUsuario,
+);
 
-// CONTRIBUINTE+: Atualizar usuário (próprio ou superior pode editar outros)
-routes.put('/usuarios/:id', verificarToken, verificarProprioUsuarioOuAdmin, usuarioController.modificarDadosUsuario);
+routes.post(
+  "/login-google",
+  usuarioController.loginComGoogle,
+);
 
-// ADMINISTRADOR: Deletar usuário
-routes.delete('/usuarios/:id', verificarToken, apenasAdministrador, usuarioController.deletarUsuario);
+/*
+  Esta rota é pública porque a autenticação ocorre
+  usando o token temporário enviado no próprio convite.
+*/
+
+routes.post(
+  "/convites/aceitar",
+  usuarioController.aceitarConvite,
+);
+
+// ============================================================================
+// VERIFICAÇÃO DE TOKEN
+// ============================================================================
+
+routes.get(
+  "/verificar-token",
+  verificarToken,
+
+  (req, res) => {
+    res.json({
+      erro: false,
+      valido: true,
+
+      usuario: {
+        id: req.user.id,
+        email: req.user.email,
+        nivelDeAcesso:
+          req.user.nivelDeAcesso,
+      },
+    });
+  },
+);
+
+// ============================================================================
+// ROTAS DE USUÁRIOS
+// ============================================================================
+
+/*
+  IMPORTANTE:
+
+  /usuarios/convidar deve ficar antes de /usuarios/:id.
+
+  Assim, o Express não interpreta "convidar"
+  como se fosse o valor do parâmetro :id.
+*/
+
+routes.post(
+  "/usuarios/convidar",
+  verificarToken,
+  apenasAdministrador,
+  usuarioController.convidarUsuario,
+);
+
+// ADMINISTRADOR: listar usuários
+
+routes.get(
+  "/usuarios",
+  verificarToken,
+  apenasAdministrador,
+  usuarioController.procurarUsuarios,
+);
+
+// PRÓPRIO USUÁRIO OU ADMINISTRADOR
+
+routes.get(
+  "/usuarios/:id",
+  verificarToken,
+  verificarProprioUsuarioOuAdmin,
+  usuarioController.encontrarUsuario,
+);
+
+// PRÓPRIO USUÁRIO OU ADMINISTRADOR
+
+routes.put(
+  "/usuarios/:id",
+  verificarToken,
+  verificarProprioUsuarioOuAdmin,
+  usuarioController.modificarDadosUsuario,
+);
+
+/*
+  CORREÇÃO:
+
+  Antes esta rota usava apenasAdministrador.
+
+  Agora qualquer usuário pode chegar ao controller
+  quando tenta acessar a própria conta.
+
+  O próprio controller também verifica se:
+
+  - é a própria conta; ou
+  - quem está logado é administrador.
+
+  Portanto, existe proteção tanto no middleware
+  quanto no controller.
+*/
+
+routes.delete(
+  "/usuarios/:id",
+  verificarToken,
+  verificarProprioUsuarioOuAdmin,
+  usuarioController.deletarUsuario,
+);
 
 // ============================================================================
 // ROTAS DO CARROSSEL
 // ============================================================================
 
-// PÚBLICO: Visualização do carrossel
-routes.get('/carrossel/animais/selecao', (req, res, next) => {
-  console.log('🎠 Rota /carrossel/animais/selecao chamada');
-  carrosselAnimaisController.listarAnimaisParaSelecao(req, res, next);
-});
+routes.get(
+  "/carrossel/animais/selecao",
 
-routes.get('/carrossel/animais/:id', (req, res, next) => {
-  console.log(`🎠 Rota /carrossel/animais/${req.params.id} chamada`);
-  carrosselAnimaisController.buscarAnimalPorId(req, res, next);
-});
+  (req, res, next) => {
+    console.log(
+      "🎠 Rota /carrossel/animais/selecao chamada",
+    );
 
-routes.get('/carrossel/animais', (req, res, next) => {
-  console.log('🎠 Rota /carrossel/animais (lista) chamada');
-  carrosselAnimaisController.listarAnimaisDoCarrossel(req, res, next);
-});
+    carrosselAnimaisController.listarAnimaisParaSelecao(
+      req,
+      res,
+      next,
+    );
+  },
+);
 
-// ADMIN + SUB-ADMIN: Gerenciar carrossel
-routes.post('/carrossel/animais', verificarToken, administradorOuSub, (req, res, next) => {
-  console.log('🎠 Rota POST /carrossel/animais chamada');
-  carrosselAnimaisController.adicionarAnimalAoCarrossel(req, res, next);
-});
+routes.get(
+  "/carrossel/animais/:id",
 
-routes.delete('/carrossel/animais/:id', verificarToken, administradorOuSub, (req, res, next) => {
-  console.log(`🎠 Rota DELETE /carrossel/animais/${req.params.id} chamada`);
-  carrosselAnimaisController.removerAnimalDoCarrossel(req, res, next);
-});
+  (req, res, next) => {
+    console.log(
+      `🎠 Rota /carrossel/animais/${req.params.id} chamada`,
+    );
 
-routes.put('/carrossel/animais/:id', verificarToken, administradorOuSub, (req, res, next) => {
-  console.log(`🎠 Rota PUT /carrossel/animais/${req.params.id} chamada`);
-  carrosselAnimaisController.atualizarDescricaoSaida(req, res, next);
-});
+    carrosselAnimaisController.buscarAnimalPorId(
+      req,
+      res,
+      next,
+    );
+  },
+);
+
+routes.get(
+  "/carrossel/animais",
+
+  (req, res, next) => {
+    console.log(
+      "🎠 Rota /carrossel/animais chamada",
+    );
+
+    carrosselAnimaisController.listarAnimaisDoCarrossel(
+      req,
+      res,
+      next,
+    );
+  },
+);
+
+routes.post(
+  "/carrossel/animais",
+  verificarToken,
+  administradorOuSub,
+
+  (req, res, next) => {
+    console.log(
+      "🎠 Rota POST /carrossel/animais chamada",
+    );
+
+    carrosselAnimaisController.adicionarAnimalAoCarrossel(
+      req,
+      res,
+      next,
+    );
+  },
+);
+
+routes.delete(
+  "/carrossel/animais/:id",
+  verificarToken,
+  administradorOuSub,
+
+  (req, res, next) => {
+    console.log(
+      `🎠 Rota DELETE /carrossel/animais/${req.params.id} chamada`,
+    );
+
+    carrosselAnimaisController.removerAnimalDoCarrossel(
+      req,
+      res,
+      next,
+    );
+  },
+);
+
+routes.put(
+  "/carrossel/animais/:id",
+  verificarToken,
+  administradorOuSub,
+
+  (req, res, next) => {
+    console.log(
+      `🎠 Rota PUT /carrossel/animais/${req.params.id} chamada`,
+    );
+
+    carrosselAnimaisController.atualizarDescricaoSaida(
+      req,
+      res,
+      next,
+    );
+  },
+);
 
 // ============================================================================
 // ROTAS DE ANIMAIS
 // ============================================================================
 
-// PÚBLICO: Visualização de animais
-routes.get('/animais', animalController.procurarAnimais);
-routes.get("/animais/:id", animalController.buscarAnimalPorId);
+routes.get(
+  "/animais",
+  animalController.procurarAnimais,
+);
 
-// ADMIN + SUB-ADMIN: Gerenciar animais
-routes.post("/animais", verificarToken, administradorOuSub, upload.single("imagem"), animalController.cadastrarAnimal);
-routes.put("/animais/:id", verificarToken, administradorOuSub, animalController.atualizarAnimal);
-routes.put("/animais/:id/imagem", verificarToken, administradorOuSub, upload.single("imagem"), animalController.atualizarImagemEntrada);
-routes.put("/animais/:id/imagem-saida", verificarToken, administradorOuSub, upload.single("imagemSaida"), animalController.atualizarImagemSaida);
-routes.put('/animais/:id/descricao-saida', verificarToken, administradorOuSub, animalController.atualizarDescricaoSaida);
+routes.get(
+  "/animais/:id",
+  animalController.buscarAnimalPorId,
+);
+
+routes.post(
+  "/animais",
+  verificarToken,
+  administradorOuSub,
+  upload.single("imagem"),
+  animalController.cadastrarAnimal,
+);
+
+routes.put(
+  "/animais/:id",
+  verificarToken,
+  administradorOuSub,
+  animalController.atualizarAnimal,
+);
+
+routes.put(
+  "/animais/:id/imagem",
+  verificarToken,
+  administradorOuSub,
+  upload.single("imagem"),
+  animalController.atualizarImagemEntrada,
+);
+
+routes.put(
+  "/animais/:id/imagem-saida",
+  verificarToken,
+  administradorOuSub,
+  upload.single("imagemSaida"),
+  animalController.atualizarImagemSaida,
+);
+
+routes.put(
+  "/animais/:id/descricao-saida",
+  verificarToken,
+  administradorOuSub,
+  animalController.atualizarDescricaoSaida,
+);
 
 // ============================================================================
 // ROTAS DE DOADORES
 // ============================================================================
 
-// PÚBLICO: Visualização de doadores
-routes.get('/doadores', doadorController.listarDoadores);
-routes.get('/doadores/:id', doadorController.buscarDoadorPorId);
+routes.get(
+  "/doadores",
+  doadorController.listarDoadores,
+);
 
-// ADMIN + SUB-ADMIN: Gerenciar doadores
-routes.post('/doadores', verificarToken, administradorOuSub, upload.single('imagem'), doadorController.cadastrarDoador);
-routes.put('/doadores/:id', verificarToken, administradorOuSub, upload.single('imagem'), doadorController.atualizarDoador);
+routes.get(
+  "/doadores/:id",
+  doadorController.buscarDoadorPorId,
+);
 
-// ADMINISTRADOR: Deletar doadores
-routes.delete('/doadores/:id', verificarToken, apenasAdministrador, doadorController.deletarDoador);
+routes.post(
+  "/doadores",
+  verificarToken,
+  administradorOuSub,
+  upload.single("imagem"),
+  doadorController.cadastrarDoador,
+);
+
+routes.put(
+  "/doadores/:id",
+  verificarToken,
+  administradorOuSub,
+  upload.single("imagem"),
+  doadorController.atualizarDoador,
+);
+
+routes.delete(
+  "/doadores/:id",
+  verificarToken,
+  apenasAdministrador,
+  doadorController.deletarDoador,
+);
 
 // ============================================================================
-// ROTAS DE AVISOS - EXCLUSIVO PARA ADMINISTRADORES
+// ROTAS DE AVISOS
 // ============================================================================
 
-// PÚBLICO: Visualização de avisos
-routes.get('/avisos', avisoController.listarAvisos);
-routes.get('/avisos/:id', avisoController.buscarAvisoPorId);
+routes.get(
+  "/avisos",
+  avisoController.listarAvisos,
+);
 
-// ADMINISTRADOR: Gerenciar avisos (Sub-admin NÃO tem acesso)
-routes.post('/avisos', verificarToken, apenasAdministrador, avisoController.criarAviso);
-routes.put('/avisos/:id', verificarToken, apenasAdministrador, avisoController.atualizarAviso);
-routes.delete('/avisos/:id', verificarToken, apenasAdministrador, avisoController.deletarAviso);
+routes.get(
+  "/avisos/:id",
+  avisoController.buscarAvisoPorId,
+);
+
+routes.post(
+  "/avisos",
+  verificarToken,
+  apenasAdministrador,
+  avisoController.criarAviso,
+);
+
+routes.put(
+  "/avisos/:id",
+  verificarToken,
+  apenasAdministrador,
+  avisoController.atualizarAviso,
+);
+
+routes.delete(
+  "/avisos/:id",
+  verificarToken,
+  apenasAdministrador,
+  avisoController.deletarAviso,
+);
 
 // ============================================================================
 // ROTAS DE DOCUMENTOS
 // ============================================================================
 
-// Listar documentos com paginação
 routes.get(
   "/documentos",
   verificarToken,
   administradorOuSub,
-  documentosController.listarDocumentos
+  documentosController.listarDocumentos,
 );
 
-// Cadastrar documento Word ou Excel
 routes.post(
   "/documentos",
   verificarToken,
   administradorOuSub,
   upload.single("arquivo"),
-  documentosController.cadastrarDocumento
+  documentosController.cadastrarDocumento,
 );
 
-// Deletar documento
 routes.delete(
   "/documentos/:id",
   verificarToken,
   administradorOuSub,
-  documentosController.deletarDocumento
+  documentosController.deletarDocumento,
 );
 
-routes.use('*', (req, res) => {
-  console.log(`❌ Rota não encontrada: ${req.method} ${req.originalUrl}`);
-  res.status(404).json({
+// ============================================================================
+// ROTA NÃO ENCONTRADA
+// ============================================================================
+
+routes.use("*", (req, res) => {
+  console.log(
+    `❌ Rota não encontrada: ${req.method} ${req.originalUrl}`,
+  );
+
+  return res.status(404).json({
     erro: true,
-    mensagem: `Rota ${req.method} ${req.originalUrl} não encontrada`,
-    timestamp: new Date().toISOString()
+
+    mensagem:
+      `Rota ${req.method} ${req.originalUrl} não encontrada`,
+
+    timestamp: new Date().toISOString(),
   });
 });
 

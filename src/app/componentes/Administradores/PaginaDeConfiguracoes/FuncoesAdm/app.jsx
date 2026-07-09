@@ -3,131 +3,296 @@ import Select from "react-select";
 import styles from "./funcoesAdm.module.css";
 
 export default function FuncoesDeAdministrador() {
-  // Estados para gerenciar dados e carregamento
+  // ==========================================================================
+  // ESTADOS GERAIS
+  // ==========================================================================
+
   const [usuarios, setUsuarios] = useState([]);
-  const [carregando, setCarregando] = useState(false);
 
-  // Estados para os formulários
-  const [usuarioSelecionadoExcluir, setUsuarioSelecionadoExcluir] =
-    useState(null);
-  const [usuarioSelecionadoAlterar, setUsuarioSelecionadoAlterar] =
-    useState(null);
-  const [novoNivelAcesso, setNovoNivelAcesso] = useState(null);
-  const [emailConvite, setEmailConvite] = useState("");
-  const [nivelAcessoConvite, setNivelAcessoConvite] = useState(null);
+  const [carregando, setCarregando] =
+    useState(false);
 
-  // Estados para redes sociais (se necessário no futuro)
-  const [credenciaisInstagram, setCredenciaisInstagram] = useState({
+  // ==========================================================================
+  // ESTADOS DOS FORMULÁRIOS
+  // ==========================================================================
+
+  const [
+    usuarioSelecionadoExcluir,
+    setUsuarioSelecionadoExcluir,
+  ] = useState(null);
+
+  const [
+    usuarioSelecionadoAlterar,
+    setUsuarioSelecionadoAlterar,
+  ] = useState(null);
+
+  const [
+    novoNivelAcesso,
+    setNovoNivelAcesso,
+  ] = useState(null);
+
+  const [
+    emailConvite,
+    setEmailConvite,
+  ] = useState("");
+
+  const [
+    nivelAcessoConvite,
+    setNivelAcessoConvite,
+  ] = useState(null);
+
+  // ==========================================================================
+  // REDES SOCIAIS
+  // ==========================================================================
+
+  const [
+    credenciaisInstagram,
+    setCredenciaisInstagram,
+  ] = useState({
     usuario: "",
     senha: "",
   });
-  const [credenciaisFacebook, setCredenciaisFacebook] = useState({
+
+  const [
+    credenciaisFacebook,
+    setCredenciaisFacebook,
+  ] = useState({
     email: "",
     senha: "",
   });
 
+  // ==========================================================================
+  // OPÇÕES DE NÍVEL DE ACESSO
+  // ==========================================================================
+
   const nivelDeAcesso = [
-    { value: "administrador", label: "Administrador" },
-    { value: "subAdministrador", label: "Sub-administrador" },
-    { value: "contribuinte", label: "Contribuinte" },
+    {
+      value: "administrador",
+      label: "Administrador",
+    },
+
+    {
+      value: "subAdministrador",
+      label: "Sub-administrador",
+    },
+
+    {
+      value: "contribuinte",
+      label: "Contribuinte",
+    },
   ];
 
-  // Carregar lista de usuários quando o componente é montado
-  useEffect(() => {
-    carregarUsuarios();
-  }, []);
+  // ==========================================================================
+  // OBTER TOKEN
+  // ==========================================================================
+
+  const obterToken = () => {
+    return (
+      localStorage.getItem("token") ||
+      sessionStorage.getItem("token")
+    );
+  };
+
+  // ==========================================================================
+  // CARREGAR USUÁRIOS
+  // ==========================================================================
 
   const carregarUsuarios = async () => {
     try {
       setCarregando(true);
 
-      const token = localStorage.getItem("token");
+      const token = obterToken();
 
-      const resposta = await fetch(`${import.meta.env.VITE_API_URL}/usuarios`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      if (!token) {
+        alert(
+          "Sua sessão expirou. Faça login novamente.",
+        );
+
+        return;
+      }
+
+      const resposta = await fetch(
+        `${import.meta.env.VITE_API_URL}/usuarios`,
+
+        {
+          method: "GET",
+
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         },
-      });
+      );
 
       const dados = await resposta.json();
 
-      if (resposta.ok && !dados.erro) {
-        const usuarioLogadoSalvo = localStorage.getItem("usuario");
+      if (!resposta.ok || dados.erro) {
+        alert(
+          `Erro ao carregar usuários: ${
+            dados.mensagem ||
+            "Erro desconhecido"
+          }`,
+        );
 
-        let usuarioLogado = null;
+        return;
+      }
 
-        try {
-          usuarioLogado = usuarioLogadoSalvo
+      const usuarioLogadoSalvo =
+        localStorage.getItem("usuario");
+
+      let usuarioLogado = null;
+
+      try {
+        usuarioLogado =
+          usuarioLogadoSalvo
             ? JSON.parse(usuarioLogadoSalvo)
             : null;
-        } catch (error) {
-          console.error("Erro ao ler usuário logado:", error);
-        }
+      } catch (error) {
+        console.error(
+          "Erro ao ler usuário logado:",
+          error,
+        );
+      }
 
-        const usuariosFormatados = dados.usuarios
+      const usuariosFormatados =
+        dados.usuarios
           .filter((usuario) => {
-            const ehAdministradorFixo =
-              usuario.email.toLowerCase() === "admin@instituto.com";
+            /*
+              Não mostramos usuários comuns nesta tela,
+              mantendo o comportamento original.
+            */
 
-            const ehUsuarioComum = usuario.nivelDeAcesso === "usuario";
+            const ehUsuarioComum =
+              usuario.nivelDeAcesso ===
+              "usuario";
+
+            /*
+              Não mostramos o próprio usuário logado
+              nos selects de exclusão e alteração.
+            */
 
             const ehProprioUsuario =
               usuarioLogado &&
-              (Number(usuario.id) === Number(usuarioLogado.id) ||
-                usuario.email.toLowerCase() ===
-                  usuarioLogado.email?.toLowerCase());
+              (
+                Number(usuario.id) ===
+                  Number(usuarioLogado.id) ||
 
-            return !ehAdministradorFixo && !ehUsuarioComum && !ehProprioUsuario;
+                usuario.email
+                  ?.toLowerCase()
+                  .trim() ===
+                  usuarioLogado.email
+                    ?.toLowerCase()
+                    .trim()
+              );
+
+            /*
+              O frontend não conhece o e-mail
+              do administrador principal.
+
+              O backend apenas informa:
+              protegido: true
+            */
+
+            const ehProtegido =
+              usuario.protegido === true;
+
+            return (
+              !ehUsuarioComum &&
+              !ehProprioUsuario &&
+              !ehProtegido
+            );
           })
+
           .map((usuario) => ({
             value: usuario.id,
-            label: `${usuario.nome} (${usuario.email})`,
-            nivelDeAcesso: usuario.nivelDeAcesso,
+
+            label:
+              `${usuario.nome} (${usuario.email})`,
+
+            nivelDeAcesso:
+              usuario.nivelDeAcesso,
+
             ativo: usuario.ativo,
           }));
 
-        setUsuarios(usuariosFormatados);
-      } else {
-        alert(`Erro ao carregar usuários: ${dados.mensagem}`);
-      }
+      setUsuarios(usuariosFormatados);
     } catch (error) {
-      console.error("Erro ao carregar usuários:", error);
+      console.error(
+        "Erro ao carregar usuários:",
+        error,
+      );
 
-      alert("Erro de conexão ao carregar usuários.");
+      alert(
+        "Erro de conexão ao carregar usuários.",
+      );
     } finally {
       setCarregando(false);
     }
   };
 
-  // Função para excluir usuário
+  // ==========================================================================
+  // CARREGAR AO MONTAR O COMPONENTE
+  // ==========================================================================
+
+  useEffect(() => {
+    carregarUsuarios();
+  }, []);
+
+  // ==========================================================================
+  // EXCLUIR USUÁRIO
+  // ==========================================================================
+
   const handleExcluirUsuario = async () => {
     if (!usuarioSelecionadoExcluir) {
-      alert("Por favor, selecione um usuário para excluir.");
+      alert(
+        "Por favor, selecione um usuário para excluir.",
+      );
+
       return;
     }
 
-    const usuarioParaExcluir = usuarios.find(
-      (u) => u.value === usuarioSelecionadoExcluir.value,
+    const usuarioParaExcluir =
+      usuarios.find(
+        (usuario) =>
+          usuario.value ===
+          usuarioSelecionadoExcluir.value,
+      );
+
+    if (!usuarioParaExcluir) {
+      alert(
+        "Não foi possível encontrar o usuário selecionado.",
+      );
+
+      return;
+    }
+
+    const confirmou = window.confirm(
+      `Tem certeza que deseja excluir o usuário "${usuarioParaExcluir.label}"?\n\nEsta ação é irreversível!`,
     );
 
-    if (
-      !window.confirm(
-        `Tem certeza que deseja excluir o usuário "${usuarioParaExcluir.label}"? Esta ação é irreversível!`,
-      )
-    ) {
+    if (!confirmou) {
       return;
     }
 
     try {
       setCarregando(true);
-      const token = localStorage.getItem("token");
+
+      const token = obterToken();
+
+      if (!token) {
+        alert(
+          "Sua sessão expirou. Faça login novamente.",
+        );
+
+        return;
+      }
 
       const resposta = await fetch(
         `${import.meta.env.VITE_API_URL}/usuarios/${usuarioSelecionadoExcluir.value}`,
+
         {
           method: "DELETE",
+
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -138,353 +303,694 @@ export default function FuncoesDeAdministrador() {
       const dados = await resposta.json();
 
       if (resposta.ok && !dados.erro) {
-        alert("Usuário excluído com sucesso!");
+        alert(
+          dados.mensagem ||
+            "Usuário excluído com sucesso!",
+        );
+
         setUsuarioSelecionadoExcluir(null);
-        await carregarUsuarios(); // Recarregar lista
-      } else {
-        alert(`Erro ao excluir usuário: ${dados.mensagem}`);
+
+        await carregarUsuarios();
+
+        return;
       }
+
+      alert(
+        `Erro ao excluir usuário: ${
+          dados.mensagem ||
+          "Erro desconhecido"
+        }`,
+      );
     } catch (error) {
-      console.error("Erro ao excluir usuário:", error);
-      alert("Erro de conexão ao excluir usuário.");
+      console.error(
+        "Erro ao excluir usuário:",
+        error,
+      );
+
+      alert(
+        "Erro de conexão ao excluir usuário.",
+      );
     } finally {
       setCarregando(false);
     }
   };
 
-  // Função para alterar nível de acesso
-  const handleAlterarNivelAcesso = async () => {
-    if (!usuarioSelecionadoAlterar || !novoNivelAcesso) {
-      alert("Por favor, selecione um usuário e o novo nível de acesso.");
+  // ==========================================================================
+  // ALTERAR NÍVEL DE ACESSO
+  // ==========================================================================
+
+  const handleAlterarNivelAcesso =
+    async () => {
+      if (
+        !usuarioSelecionadoAlterar ||
+        !novoNivelAcesso
+      ) {
+        alert(
+          "Por favor, selecione um usuário e o novo nível de acesso.",
+        );
+
+        return;
+      }
+
+      const usuarioParaAlterar =
+        usuarios.find(
+          (usuario) =>
+            usuario.value ===
+            usuarioSelecionadoAlterar.value,
+        );
+
+      if (!usuarioParaAlterar) {
+        alert(
+          "Não foi possível encontrar o usuário selecionado.",
+        );
+
+        return;
+      }
+
+      if (
+        usuarioParaAlterar.nivelDeAcesso ===
+        novoNivelAcesso.value
+      ) {
+        alert(
+          "O usuário já possui este nível de acesso.",
+        );
+
+        return;
+      }
+
+      const confirmou = window.confirm(
+        `Alterar o nível de acesso de "${usuarioParaAlterar.label}" para "${novoNivelAcesso.label}"?`,
+      );
+
+      if (!confirmou) {
+        return;
+      }
+
+      try {
+        setCarregando(true);
+
+        const token = obterToken();
+
+        if (!token) {
+          alert(
+            "Sua sessão expirou. Faça login novamente.",
+          );
+
+          return;
+        }
+
+        const resposta = await fetch(
+          `${import.meta.env.VITE_API_URL}/usuarios/${usuarioSelecionadoAlterar.value}`,
+
+          {
+            method: "PUT",
+
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type":
+                "application/json",
+            },
+
+            body: JSON.stringify({
+              nivelDeAcesso:
+                novoNivelAcesso.value,
+            }),
+          },
+        );
+
+        const dados = await resposta.json();
+
+        if (resposta.ok && !dados.erro) {
+          alert(
+            "Nível de acesso alterado com sucesso!",
+          );
+
+          setUsuarioSelecionadoAlterar(null);
+          setNovoNivelAcesso(null);
+
+          await carregarUsuarios();
+
+          return;
+        }
+
+        alert(
+          `Erro ao alterar nível de acesso: ${
+            dados.mensagem ||
+            "Erro desconhecido"
+          }`,
+        );
+      } catch (error) {
+        console.error(
+          "Erro ao alterar nível de acesso:",
+          error,
+        );
+
+        alert(
+          "Erro de conexão ao alterar nível de acesso.",
+        );
+      } finally {
+        setCarregando(false);
+      }
+    };
+
+  // ==========================================================================
+  // CONVIDAR NOVO MEMBRO
+  // ==========================================================================
+
+  const handleConvidarMembro = async () => {
+    if (
+      !emailConvite ||
+      !nivelAcessoConvite
+    ) {
+      alert(
+        "Por favor, preencha o e-mail e selecione o nível de acesso.",
+      );
+
       return;
     }
 
-    const usuarioParaAlterar = usuarios.find(
-      (u) => u.value === usuarioSelecionadoAlterar.value,
-    );
+    const emailNormalizado =
+      emailConvite
+        .toLowerCase()
+        .trim();
 
-    if (usuarioParaAlterar.nivelDeAcesso === novoNivelAcesso.value) {
-      alert("O usuário já possui este nível de acesso.");
-      return;
-    }
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (
-      !window.confirm(
-        `Alterar nível de acesso de "${usuarioParaAlterar.label}" para "${novoNivelAcesso.label}"?`,
-      )
+      !emailRegex.test(emailNormalizado)
     ) {
+      alert(
+        "Por favor, insira um e-mail válido.",
+      );
+
+      return;
+    }
+
+    const confirmou = window.confirm(
+      `Enviar um convite para "${emailNormalizado}" com o nível de acesso "${nivelAcessoConvite.label}"?`,
+    );
+
+    if (!confirmou) {
       return;
     }
 
     try {
       setCarregando(true);
-      const token = localStorage.getItem("token");
 
-      console.log("🔄 Alterando nível de acesso:", {
-        usuarioId: usuarioSelecionadoAlterar.value,
-        novoNivel: novoNivelAcesso.value,
-      });
+      const token = obterToken();
+
+      if (!token) {
+        alert(
+          "Sua sessão expirou. Faça login novamente.",
+        );
+
+        return;
+      }
 
       const resposta = await fetch(
-        `${import.meta.env.VITE_API_URL}/usuarios/${usuarioSelecionadoAlterar.value}`,
+        `${import.meta.env.VITE_API_URL}/usuarios/convidar`,
+
         {
-          method: "PUT",
+          method: "POST",
+
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            "Content-Type":
+              "application/json",
           },
+
           body: JSON.stringify({
-            nivelDeAcesso: novoNivelAcesso.value,
+            email: emailNormalizado,
+
+            nivelDeAcesso:
+              nivelAcessoConvite.value,
           }),
         },
       );
 
       const dados = await resposta.json();
-      console.log("📥 Resposta do servidor:", dados);
-
-      if (resposta.ok && !dados.erro) {
-        alert("Nível de acesso alterado com sucesso!");
-        setUsuarioSelecionadoAlterar(null);
-        setNovoNivelAcesso(null);
-        await carregarUsuarios(); // Recarregar lista
-      } else {
-        console.error("❌ Erro na resposta:", dados);
-        alert(
-          `Erro ao alterar nível de acesso: ${dados.mensagem || "Erro desconhecido"}`,
-        );
-      }
-    } catch (error) {
-      console.error("❌ Erro ao alterar nível de acesso:", error);
-      alert("Erro de conexão ao alterar nível de acesso.");
-    } finally {
-      setCarregando(false);
-    }
-  };
-
-  // Função para convidar novo membro (criar usuário)
-  const handleConvidarMembro = async () => {
-    if (!emailConvite || !nivelAcessoConvite) {
-      alert("Por favor, preencha o e-mail e selecione o nível de acesso.");
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailConvite)) {
-      alert("Por favor, insira um e-mail válido.");
-      return;
-    }
-
-    // Gerar senha temporária
-    const senhaTemporaria =
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15);
-
-    if (
-      !window.confirm(
-        `Criar usuário para "${emailConvite}" como "${nivelAcessoConvite.label}"?\nSenha temporária: ${senhaTemporaria}\n\nO usuário deverá alterar a senha no primeiro login.`,
-      )
-    ) {
-      return;
-    }
-
-    try {
-      setCarregando(true);
-
-      const resposta = await fetch(`${import.meta.env.VITE_API_URL}/cadastro`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nome: emailConvite.split("@")[0], // Usar parte antes do @ como nome temporário
-          email: emailConvite,
-          senha: senhaTemporaria,
-          nivelDeAcesso: nivelAcessoConvite.value,
-        }),
-      });
-
-      const dados = await resposta.json();
 
       if (resposta.ok && !dados.erro) {
         alert(
-          `Usuário criado com sucesso!\nE-mail: ${emailConvite}\nSenha temporária: ${senhaTemporaria}\n\nEnvie estas credenciais ao novo usuário.`,
+          dados.mensagem ||
+            "Convite enviado com sucesso!",
         );
+
         setEmailConvite("");
         setNivelAcessoConvite(null);
-        await carregarUsuarios(); // Recarregar lista
-      } else {
-        alert(`Erro ao criar usuário: ${dados.mensagem}`);
+
+        return;
       }
+
+      alert(
+        `Erro ao enviar convite: ${
+          dados.mensagem ||
+          "Erro desconhecido"
+        }`,
+      );
     } catch (error) {
-      console.error("Erro ao criar usuário:", error);
-      alert("Erro de conexão ao criar usuário.");
+      console.error(
+        "Erro ao enviar convite:",
+        error,
+      );
+
+      alert(
+        "Erro de conexão ao enviar convite.",
+      );
     } finally {
       setCarregando(false);
     }
   };
 
-  // Funções placeholder para redes sociais (implementar conforme necessário)
+  // ==========================================================================
+  // REDES SOCIAIS
+  // ==========================================================================
+
   const handleInserirInstagram = () => {
-    alert("Funcionalidade de integração com Instagram ainda não implementada.");
+    alert(
+      "Funcionalidade de integração com Instagram ainda não implementada.",
+    );
   };
 
   const handleInserirFacebook = () => {
-    alert("Funcionalidade de integração com Facebook ainda não implementada.");
+    alert(
+      "Funcionalidade de integração com Facebook ainda não implementada.",
+    );
   };
+
+  // ==========================================================================
+  // RENDERIZAÇÃO
+  // ==========================================================================
 
   return (
     <div className={styles.conteudoFuncoesAdm}>
-      {/* Excluir usuário */}
+
+      {/* ================================================================
+          EXCLUIR USUÁRIO
+      ================================================================= */}
+
       <div className={styles.blocoFuncao}>
+
         <div className={styles.funcao}>
-          <h1 className={styles.tituloConfig}>Excluir usuário:</h1>
+
+          <h1 className={styles.tituloConfig}>
+            Excluir usuário:
+          </h1>
+
           <Select
             options={usuarios}
             value={usuarioSelecionadoExcluir}
-            onChange={setUsuarioSelecionadoExcluir}
-            placeholder={
-              carregando ? "Carregando usuários..." : "Digite ou selecione"
+
+            onChange={
+              setUsuarioSelecionadoExcluir
             }
+
+            placeholder={
+              carregando
+                ? "Carregando usuários..."
+                : "Digite ou selecione"
+            }
+
             className={styles.selectConfig}
+
             isDisabled={carregando}
+
             isClearable
           />
+
         </div>
+
         <div className={styles.divBotaoFuncao}>
+
           <button
-            className={`${styles.botaoPadraoConfig} ${styles.botaoExcluirUsuario}`}
+            className={
+              `${styles.botaoPadraoConfig} ` +
+              `${styles.botaoExcluirUsuario}`
+            }
+
             onClick={handleExcluirUsuario}
-            disabled={carregando || !usuarioSelecionadoExcluir}
+
+            disabled={
+              carregando ||
+              !usuarioSelecionadoExcluir
+            }
           >
-            {carregando ? "Excluindo..." : "Excluir"}
+            {carregando
+              ? "Excluindo..."
+              : "Excluir"}
           </button>
+
         </div>
+
       </div>
 
-      {/* Alterar nível de acesso */}
+      {/* ================================================================
+          ALTERAR NÍVEL DE ACESSO
+      ================================================================= */}
+
       <div className={styles.blocoFuncao}>
+
         <div className={styles.funcao}>
+
           <h1 className={styles.tituloConfig}>
             Alterar nível de acesso de um usuário:
           </h1>
+
           <Select
             options={usuarios}
+
             value={usuarioSelecionadoAlterar}
-            onChange={setUsuarioSelecionadoAlterar}
-            placeholder={
-              carregando ? "Carregando usuários..." : "Digite ou selecione"
+
+            onChange={
+              setUsuarioSelecionadoAlterar
             }
+
+            placeholder={
+              carregando
+                ? "Carregando usuários..."
+                : "Digite ou selecione"
+            }
+
             className={styles.selectConfig}
+
             isDisabled={carregando}
+
             isClearable
           />
+
         </div>
+
         <div className={styles.funcao}>
+
           <h1 className={styles.tituloConfig}>
             Escolha o novo nível de acesso:
           </h1>
+
           <Select
             options={nivelDeAcesso}
+
             value={novoNivelAcesso}
+
             onChange={setNovoNivelAcesso}
+
             placeholder="Selecione"
+
             className={styles.selectConfig}
+
             isDisabled={carregando}
+
             isClearable
           />
+
         </div>
+
         <div className={styles.divBotaoFuncao}>
+
           <button
-            className={`${styles.botaoPadraoConfig} ${styles.botaoAlterarNvlAcesso}`}
+            className={
+              `${styles.botaoPadraoConfig} ` +
+              `${styles.botaoAlterarNvlAcesso}`
+            }
+
             onClick={handleAlterarNivelAcesso}
+
             disabled={
-              carregando || !usuarioSelecionadoAlterar || !novoNivelAcesso
+              carregando ||
+              !usuarioSelecionadoAlterar ||
+              !novoNivelAcesso
             }
           >
-            {carregando ? "Alterando..." : "Alterar"}
+            {carregando
+              ? "Alterando..."
+              : "Alterar"}
           </button>
+
         </div>
+
       </div>
 
-      {/* Convidar novo membro */}
+      {/* ================================================================
+          CONVIDAR NOVO MEMBRO
+      ================================================================= */}
+
       <div className={styles.blocoFuncao}>
+
         <div className={styles.funcao}>
-          <h1 className={styles.tituloConfig}>Convidar novo membro:</h1>
+
+          <h1 className={styles.tituloConfig}>
+            Convidar novo membro:
+          </h1>
+
           <input
             className={styles.input}
+
             type="email"
+
             placeholder="Insira um e-mail"
+
             value={emailConvite}
-            onChange={(e) => setEmailConvite(e.target.value)}
+
+            onChange={(evento) =>
+              setEmailConvite(
+                evento.target.value,
+              )
+            }
+
             disabled={carregando}
           />
+
         </div>
+
         <div className={styles.funcao}>
-          <h1 className={styles.tituloConfig}>Escolha o nível de acesso:</h1>
+
+          <h1 className={styles.tituloConfig}>
+            Escolha o nível de acesso:
+          </h1>
+
           <Select
             options={nivelDeAcesso}
+
             value={nivelAcessoConvite}
-            onChange={setNivelAcessoConvite}
+
+            onChange={
+              setNivelAcessoConvite
+            }
+
             placeholder="Selecione"
+
             className={styles.selectConfig}
+
             isDisabled={carregando}
+
             isClearable
           />
+
         </div>
+
         <div className={styles.divBotaoFuncao}>
+
           <button
-            className={`${styles.botaoPadraoConfig} ${styles.botaoConvidar}`}
+            className={
+              `${styles.botaoPadraoConfig} ` +
+              `${styles.botaoConvidar}`
+            }
+
             onClick={handleConvidarMembro}
-            disabled={carregando || !emailConvite || !nivelAcessoConvite}
+
+            disabled={
+              carregando ||
+              !emailConvite ||
+              !nivelAcessoConvite
+            }
           >
-            {carregando ? "Convidando..." : "Convidar"}
+            {carregando
+              ? "Enviando..."
+              : "Convidar"}
           </button>
+
         </div>
+
       </div>
 
-      {/* Instagram do Instituto */}
-      <div className={`${styles.blocoFuncao} ${styles.blocoRedesSociais}`}>
+      {/* ================================================================
+          INSTAGRAM
+      ================================================================= */}
+
+      <div
+        className={
+          `${styles.blocoFuncao} ` +
+          `${styles.blocoRedesSociais}`
+        }
+      >
+
         <div className={styles.funcao}>
-          <h1 className={styles.tituloConfig}>Instagram do Instituto:</h1>
+
+          <h1 className={styles.tituloConfig}>
+            Instagram do Instituto:
+          </h1>
+
           <input
             className={styles.input}
+
             type="text"
-            placeholder="Telefone, nome de usuário ou e-mail"
-            value={credenciaisInstagram.usuario}
-            onChange={(e) =>
+
+            placeholder={
+              "Telefone, nome de usuário ou e-mail"
+            }
+
+            value={
+              credenciaisInstagram.usuario
+            }
+
+            onChange={(evento) =>
               setCredenciaisInstagram({
                 ...credenciaisInstagram,
-                usuario: e.target.value,
+
+                usuario:
+                  evento.target.value,
               })
             }
+
             disabled={carregando}
           />
+
           <input
             className={styles.input}
+
             type="password"
+
             placeholder="Senha"
-            value={credenciaisInstagram.senha}
-            onChange={(e) =>
+
+            value={
+              credenciaisInstagram.senha
+            }
+
+            onChange={(evento) =>
               setCredenciaisInstagram({
                 ...credenciaisInstagram,
-                senha: e.target.value,
+
+                senha:
+                  evento.target.value,
               })
             }
+
             disabled={carregando}
           />
-          <div className={styles.divBotaoFuncao}>
+
+          <div
+            className={styles.divBotaoFuncao}
+          >
+
             <button
-              className={`${styles.botaoPadraoConfig} ${styles.botaoInserirInstagram}`}
-              onClick={handleInserirInstagram}
+              className={
+                `${styles.botaoPadraoConfig} ` +
+                `${styles.botaoInserirInstagram}`
+              }
+
+              onClick={
+                handleInserirInstagram
+              }
+
               disabled={carregando}
             >
               Inserir
             </button>
+
           </div>
+
         </div>
+
       </div>
 
-      {/* Facebook do Instituto */}
-      <div className={`${styles.blocoFuncao} ${styles.blocoRedesSociais}`}>
+      {/* ================================================================
+          FACEBOOK
+      ================================================================= */}
+
+      <div
+        className={
+          `${styles.blocoFuncao} ` +
+          `${styles.blocoRedesSociais}`
+        }
+      >
+
         <div className={styles.funcao}>
-          <h1 className={styles.tituloConfig}>Facebook do Instituto:</h1>
+
+          <h1 className={styles.tituloConfig}>
+            Facebook do Instituto:
+          </h1>
+
           <input
             className={styles.input}
+
             type="text"
+
             placeholder="E-mail ou telefone"
-            value={credenciaisFacebook.email}
-            onChange={(e) =>
+
+            value={
+              credenciaisFacebook.email
+            }
+
+            onChange={(evento) =>
               setCredenciaisFacebook({
                 ...credenciaisFacebook,
-                email: e.target.value,
+
+                email:
+                  evento.target.value,
               })
             }
+
             disabled={carregando}
           />
+
           <input
             className={styles.input}
+
             type="password"
+
             placeholder="Senha"
-            value={credenciaisFacebook.senha}
-            onChange={(e) =>
+
+            value={
+              credenciaisFacebook.senha
+            }
+
+            onChange={(evento) =>
               setCredenciaisFacebook({
                 ...credenciaisFacebook,
-                senha: e.target.value,
+
+                senha:
+                  evento.target.value,
               })
             }
+
             disabled={carregando}
           />
-          <div className={styles.divBotaoFuncao}>
+
+          <div
+            className={styles.divBotaoFuncao}
+          >
+
             <button
-              className={`${styles.botaoPadraoConfig} ${styles.botaoInserirFacebook}`}
-              onClick={handleInserirFacebook}
+              className={
+                `${styles.botaoPadraoConfig} ` +
+                `${styles.botaoInserirFacebook}`
+              }
+
+              onClick={
+                handleInserirFacebook
+              }
+
               disabled={carregando}
             >
               Inserir
             </button>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
   );
 }
