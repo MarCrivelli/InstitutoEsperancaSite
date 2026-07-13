@@ -109,6 +109,7 @@ export default function QuadroDeAvisos() {
           }
         `}
       >
+        <h1 className={styles.tituloQuadroDeAvisos}>Quadro de Avisos</h1>
         <Card1 onAvisosChange={atualizarAvisos} />
       </div>
     </>

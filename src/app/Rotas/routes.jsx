@@ -53,7 +53,9 @@ export default function Rotas() {
         {/* Página responsável por aceitar convite e fazer login automático */}
         <Route
           path="/convite"
-          element={<ConviteLogin />}
+          element={<ConviteLogin />
+            
+          }
         />
 
         {/* Área administrativa */}

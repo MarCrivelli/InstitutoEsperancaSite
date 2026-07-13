@@ -187,7 +187,7 @@ export default function Denuncie() {
                   <br />
                   <strong>Polícia Militar:</strong> disque 190.
                   <br />
-                  <strong>Polícia Militar Ambiental:</strong> 67 3443-1095
+                  <strong>Polícia Militar Ambiental &#40;Batayporã&#41;:</strong> 67 3443-1095
                   <br />
                   <strong>Polícia Civil &#40;Taquarussu&#41;:</strong> 67
                   3443-1095

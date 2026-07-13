@@ -28,7 +28,7 @@
   top: -13px;
   right: -13px;
   padding: 2px;
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: 600;
   z-index: 2;
   width: 28px;
@@ -36,7 +36,7 @@
   border-radius: 50%;
   background: linear-gradient(
     140deg,
-     rgb(255, 140, 140),
+    rgb(255, 140, 140),
     rgb(255, 0, 0),
     rgb(112, 0, 0)
   );
@@ -63,6 +63,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   animation-duration: 0.8s;
   animation-fill-mode: forwards;
   animation-timing-function: ease-in-out;
@@ -107,11 +108,22 @@
   }
 }
 
+.tituloQuadroDeAvisos {
+  margin-bottom: 10px;
+  font-size: 3rem;
+  color: white;
+}
+
 @media (max-width: 500px) {
   .botaoAviso {
     bottom: 10px;
     right: 10px;
     width: 35px;
     height: 35px;
+  }
+  .tituloQuadroDeAvisos {
+    margin-bottom: 10px;
+    font-size: 2rem;
+    color: white;
   }
 }
