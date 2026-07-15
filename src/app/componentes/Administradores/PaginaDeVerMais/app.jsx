@@ -203,7 +203,7 @@ export default function VerMais() {
         setSalvandoDados(true);
         
         const token = localStorage.getItem('token');
-        const endpoint = `${import.meta.env.VITE_API_URL}/animais/${id}/imagem-saida`;
+        const endpoint = `${import.meta.env.VITE_API_URL}/animais/${id}/imagemSaida`;
         const dadosFormulario = new FormData();
         dadosFormulario.append(tipoCampo, arquivo);
 
@@ -287,8 +287,8 @@ export default function VerMais() {
   const uploadImagemParaServidor = async (imagemPendente, tipoCampo) => {
     const endpoint =
       tipoCampo === "imagemSaida"
-        ? `${import.meta.env.VITE_API_URL}/animais/${id}/imagem-saida`
-        : `${import.meta.env.VITE_API_URL}/animais/${id}/imagem-entrada`;
+        ? `${import.meta.env.VITE_API_URL}/animais/${id}/imagemSaida`
+        : `${import.meta.env.VITE_API_URL}/animais/${id}/imagemEntrada`;
 
     const dadosFormulario = new FormData();
     dadosFormulario.append(tipoCampo, imagemPendente.arquivo);

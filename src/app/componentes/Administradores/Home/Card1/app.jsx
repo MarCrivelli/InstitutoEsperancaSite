@@ -88,10 +88,10 @@ export default function Card1({ onAvisosChange }) {
   }, []);
 
   useEffect(() => {
-  if (onAvisosChange) {
-    onAvisosChange(lembretes);
-  }
-}, [lembretes, onAvisosChange]);
+    if (onAvisosChange) {
+      onAvisosChange(lembretes);
+    }
+  }, [lembretes, onAvisosChange]);
 
   useEffect(() => {
     return () => {
@@ -104,22 +104,31 @@ export default function Card1({ onAvisosChange }) {
       setLoading(true);
       setErro(null);
 
+      if (!API_BASE_URL) {
+        throw new Error("VITE_API_URL não está definida.");
+      }
+
       const response = await fetch(`${API_BASE_URL}/avisos`);
 
       if (!response.ok) {
-        const errorData = await response.json();
-        setErro(errorData.erro || "Erro ao carregar avisos");
-        console.error("Erro ao carregar avisos:", errorData);
-        return;
+        const errorData = await response.json().catch(() => ({}));
+
+        throw new Error(
+          errorData.mensagem ||
+            errorData.erro ||
+            `Erro HTTP ${response.status}`,
+        );
       }
 
       const avisos = await response.json();
 
-      setLembretes(avisos);
+      setLembretes(Array.isArray(avisos) ? avisos : []);
+
       setUltimoLembreteId(null);
     } catch (error) {
-      setErro("Erro de conexão com o servidor");
-      console.error("Erro na requisição:", error);
+      setErro(error.message || "Erro de conexão com o servidor");
+
+      console.error("Erro ao carregar avisos:", error);
     } finally {
       setLoading(false);
     }

@@ -3,8 +3,13 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const { OAuth2Client } = require("google-auth-library");
 
 require("dotenv").config();
+
+const googleClient = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID,
+);
 
 // ============================================================================
 // CONFIGURAÇÕES DO ADMINISTRADOR PRINCIPAL
@@ -378,31 +383,126 @@ const autenticarUsuario = async (req, res) => {
 
 const loginComGoogle = async (req, res) => {
   try {
-    const { nome, email, googleId, foto } = req.body;
+    const { googleToken } = req.body;
 
-    if (!nome || !email) {
+    // ============================================================
+    // VALIDAR SE O TOKEN FOI ENVIADO
+    // ============================================================
+
+    if (!googleToken) {
       return res.status(400).json({
         erro: true,
-        mensagem: "Nome e e-mail são obrigatórios.",
+        mensagem: "Token do Google não foi enviado.",
       });
     }
 
-    const emailNormalizado = email.toLowerCase().trim();
+    if (!process.env.GOOGLE_CLIENT_ID) {
+      console.error(
+        "❌ GOOGLE_CLIENT_ID não foi definido nas variáveis de ambiente.",
+      );
+
+      return res.status(500).json({
+        erro: true,
+        mensagem:
+          "A autenticação com Google não está configurada corretamente.",
+      });
+    }
+
+    // ============================================================
+    // VALIDAR TOKEN DIRETAMENTE COM O GOOGLE
+    // ============================================================
+
+    let ticket;
+
+    try {
+      ticket = await googleClient.verifyIdToken({
+        idToken: googleToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+    } catch (erroGoogle) {
+      console.error(
+        "❌ Token do Google inválido:",
+        erroGoogle.message,
+      );
+
+      return res.status(401).json({
+        erro: true,
+        mensagem:
+          "Não foi possível validar sua identidade com o Google.",
+      });
+    }
+
+    // ============================================================
+    // EXTRAIR DADOS VERIFICADOS DO TOKEN
+    // ============================================================
+
+    const payload = ticket.getPayload();
+
+    if (!payload) {
+      return res.status(401).json({
+        erro: true,
+        mensagem:
+          "O Google não retornou informações válidas do usuário.",
+      });
+    }
+
+    const googleId = payload.sub;
+    const nome = payload.name;
+    const email = payload.email?.toLowerCase().trim();
+    const foto = payload.picture || null;
+    const emailVerificado = payload.email_verified;
+
+    // ============================================================
+    // VALIDAR DADOS OBRIGATÓRIOS
+    // ============================================================
+
+    if (!googleId || !email) {
+      return res.status(401).json({
+        erro: true,
+        mensagem:
+          "O Google não retornou os dados necessários para autenticação.",
+      });
+    }
+
+    if (!emailVerificado) {
+      return res.status(401).json({
+        erro: true,
+        mensagem:
+          "O e-mail da conta Google ainda não foi verificado.",
+      });
+    }
+
+    console.log(
+      `✅ Token Google validado para: ${email}`,
+    );
+
+    // ============================================================
+    // PROCURAR USUÁRIO EXISTENTE
+    // ============================================================
 
     let usuario = await Usuario.findOne({
       where: {
-        email: emailNormalizado,
+        email,
       },
     });
 
-    if (!usuario) {
-      const senhaAleatoria = crypto.randomBytes(32).toString("hex");
+    // ============================================================
+    // CRIAR NOVO USUÁRIO
+    // ============================================================
 
-      const senhaCriptografada = await bcrypt.hash(senhaAleatoria, 10);
+    if (!usuario) {
+      const senhaAleatoria = crypto
+        .randomBytes(32)
+        .toString("hex");
+
+      const senhaCriptografada = await bcrypt.hash(
+        senhaAleatoria,
+        10,
+      );
 
       usuario = await Usuario.create({
-        nome: nome.trim(),
-        email: emailNormalizado,
+        nome: nome || email.split("@")[0],
+        email,
         senha: senhaCriptografada,
         googleId,
         foto,
@@ -413,25 +513,43 @@ const loginComGoogle = async (req, res) => {
         dataUltimoLogin: new Date(),
       });
 
-      console.log("✅ Novo usuário criado via Google:", usuario.email);
+      console.log(
+        "✅ Novo usuário criado via Google:",
+        usuario.email,
+      );
     } else {
+      // ============================================================
+      // VERIFICAR SE A CONTA ESTÁ ATIVA
+      // ============================================================
+
       if (!usuario.ativo) {
         return res.status(403).json({
           erro: true,
-          mensagem: "Esta conta não está ativa no sistema.",
+          mensagem:
+            "Esta conta não está ativa no sistema.",
         });
       }
+
+      // ============================================================
+      // ATUALIZAR DADOS DO GOOGLE
+      // ============================================================
 
       const atualizacoes = {
         dataUltimoLogin: new Date(),
       };
 
-      if (foto && foto !== usuario.foto) {
-        atualizacoes.foto = foto;
+      if (
+        googleId &&
+        googleId !== usuario.googleId
+      ) {
+        atualizacoes.googleId = googleId;
       }
 
-      if (googleId && googleId !== usuario.googleId) {
-        atualizacoes.googleId = googleId;
+      if (
+        foto &&
+        foto !== usuario.foto
+      ) {
+        atualizacoes.foto = foto;
       }
 
       await usuario.update(atualizacoes);
@@ -439,24 +557,36 @@ const loginComGoogle = async (req, res) => {
       await usuario.reload();
     }
 
+    // ============================================================
+    // GERAR O JWT DA SUA PRÓPRIA APLICAÇÃO
+    // ============================================================
+
     const token = gerarTokenUsuario(usuario);
+
+    // ============================================================
+    // ENVIAR RESPOSTA PARA O FRONTEND
+    // ============================================================
 
     return res.json({
       erro: false,
 
-      mensagem: "Login com Google realizado com sucesso!",
+      mensagem:
+        "Login com Google realizado com sucesso!",
 
       usuario: formatarUsuarioParaResposta(usuario),
 
       token,
     });
   } catch (error) {
-    console.error("❌ Erro no login Google:", error);
+    console.error(
+      "❌ Erro no login Google:",
+      error,
+    );
 
     return res.status(500).json({
       erro: true,
-
-      mensagem: "Erro interno do servidor: " + error.message,
+      mensagem:
+        "Erro interno ao realizar login com Google.",
     });
   }
 };

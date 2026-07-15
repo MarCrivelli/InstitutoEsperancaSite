@@ -10,7 +10,8 @@
 }
 
 .headerPadrao {
-  background-color: transparent;
+  /* background-color: transparent; */
+  background-color: #c300ff;
 }
 
 .tooltip {

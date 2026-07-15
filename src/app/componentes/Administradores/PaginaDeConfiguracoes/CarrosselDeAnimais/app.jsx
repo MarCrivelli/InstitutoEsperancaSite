@@ -414,22 +414,31 @@ export default function CarrosselAnimais() {
     const endpoint =
       tipoCampo === "imagemSaida"
         ? `${import.meta.env.VITE_API_URL}/animais/${animalId}/imagem-saida`
-        : `${import.meta.env.VITE_API_URL}/animais/${animalId}/imagem-entrada`;
+        : `${import.meta.env.VITE_API_URL}/animais/${animalId}/imagem`;
 
     const dadosFormulario = new FormData();
+
     dadosFormulario.append(tipoCampo, imagemPendente.arquivo);
 
     const resposta = await fetch(endpoint, {
       method: "PUT",
+
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+
       body: dadosFormulario,
     });
 
     if (!resposta.ok) {
-      const dadosErro = await resposta.json();
-      throw new Error(dadosErro.message || "Erro ao atualizar imagem");
+      const dadosErro = await resposta.json().catch(() => ({}));
+
+      throw new Error(
+        dadosErro.mensagem || dadosErro.message || "Erro ao atualizar imagem",
+      );
     }
 
-    return await resposta.json();
+    return resposta.json();
   };
 
   const salvarEdicaoSlide = async (slideId) => {

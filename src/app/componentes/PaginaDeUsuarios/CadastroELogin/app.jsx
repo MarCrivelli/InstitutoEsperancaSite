@@ -19,115 +19,169 @@ export default function CadastroELogin({ onLoginSucesso }) {
 
   // Inicializar Google Login
   useEffect(() => {
+    const CLIENT_ID =
+      "173898638940-la9trlrtts8ngmsj8t2mv455og5s8g86.apps.googleusercontent.com";
+
+    const inicializarGoogle = () => {
+      if (!window.google) {
+        console.error("Google Identity Services não foi carregado.");
+        return;
+      }
+
+      console.log("🌐 Origem atual:", window.location.origin);
+      console.log("🔑 Client ID:", CLIENT_ID);
+
+      window.google.accounts.id.initialize({
+        client_id: CLIENT_ID,
+        callback: handleGoogleResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+
+      if (googleButtonCadastroRef.current) {
+        googleButtonCadastroRef.current.innerHTML = "";
+
+        window.google.accounts.id.renderButton(
+          googleButtonCadastroRef.current,
+          {
+            theme: "outline",
+            size: "large",
+            text: "signup_with",
+            shape: "rectangular",
+            width: 280,
+          },
+        );
+      }
+
+      if (googleButtonLoginRef.current) {
+        googleButtonLoginRef.current.innerHTML = "";
+
+        window.google.accounts.id.renderButton(googleButtonLoginRef.current, {
+          theme: "outline",
+          size: "large",
+          text: "signin_with",
+          shape: "rectangular",
+          width: 280,
+        });
+      }
+
+      console.log("✅ Google Identity Services inicializado.");
+    };
+
+    const scriptExistente = document.querySelector(
+      'script[src="https://accounts.google.com/gsi/client"]',
+    );
+
+    if (scriptExistente) {
+      if (window.google) {
+        inicializarGoogle();
+      } else {
+        scriptExistente.addEventListener("load", inicializarGoogle);
+      }
+
+      return () => {
+        scriptExistente.removeEventListener("load", inicializarGoogle);
+      };
+    }
+
     const script = document.createElement("script");
+
     script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
-    document.body.appendChild(script);
 
-    console.log("🌐 URL atual:", window.location.origin);
-    console.log(
-      "🔑 Client ID:",
-      "173898638940-la9trlrtts8ngmsj8t2mv455og5s8g86.apps.googleusercontent.com"
-    );
+    script.onload = inicializarGoogle;
 
-    script.onload = () => {
-      if (window.google) {
-        window.google.accounts.id.initialize({
-          client_id:
-            "173898638940-la9trlrtts8ngmsj8t2mv455og5s8g86.apps.googleusercontent.com",
-          callback: handleGoogleResponse,
-        });
-
-        if (googleButtonCadastroRef.current) {
-          window.google.accounts.id.renderButton(
-            googleButtonCadastroRef.current,
-            {
-              theme: "outline",
-              size: "large",
-              text: "signup_with",
-              shape: "rectangular",
-              width: 280,
-            }
-          );
-        }
-
-        if (googleButtonLoginRef.current) {
-          window.google.accounts.id.renderButton(googleButtonLoginRef.current, {
-            theme: "outline",
-            size: "large",
-            text: "signin_with",
-            shape: "rectangular",
-            width: 280,
-          });
-        }
-      }
+    script.onerror = () => {
+      console.error("❌ Não foi possível carregar o Google Identity Services.");
     };
+
+    document.head.appendChild(script);
 
     return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
+      script.onload = null;
+      script.onerror = null;
     };
-  }, [painelDireitoAtivo]);
+  }, []);
 
   // Função para lidar com a resposta do Google
   const handleGoogleResponse = async (response) => {
     try {
-      const decoded = parseJwt(response.credential);
-      console.log("Dados do Google:", decoded);
+      if (!response?.credential) {
+        throw new Error("O Google não retornou uma credencial válida.");
+      }
 
-      const dadosGoogle = {
-        nome: decoded.name,
-        email: decoded.email,
-        foto: decoded.picture,
-        googleId: decoded.sub,
-      };
+      console.log("✅ Credencial recebida do Google.");
 
-      await processarLoginGoogle(dadosGoogle, response.credential);
+      await processarLoginGoogle(response.credential);
     } catch (error) {
-      console.error("Erro ao processar login do Google:", error);
-      alert("Erro ao fazer login com Google");
+      console.error("❌ Erro ao processar login do Google:", error);
+
+      alert(error.message || "Erro ao fazer login com Google.");
     }
   };
 
-  const processarLoginGoogle = async (dadosGoogle, token) => {
+  const processarLoginGoogle = async (googleToken) => {
     setCarregando(true);
 
     try {
-      const urlApi = `${import.meta.env.VITE_API_URL}`;
+      const urlApi = import.meta.env.VITE_API_URL;
+
+      if (!urlApi) {
+        throw new Error("VITE_API_URL não está configurada.");
+      }
+
+      console.log("📤 Enviando credencial Google para o backend...");
 
       const resposta = await fetch(`${urlApi}/login-google`, {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
         },
+
         body: JSON.stringify({
-          nome: dadosGoogle.nome,
-          email: dadosGoogle.email,
-          googleId: dadosGoogle.googleId,
-          foto: dadosGoogle.foto,
-          googleToken: token,
+          googleToken,
         }),
       });
 
-      const dados = await resposta.json();
+      const contentType = resposta.headers.get("content-type") || "";
 
-      if (resposta.ok && !dados.erro) {
-        alert("Login com Google realizado com sucesso!");
+      let dados;
 
-        const dadosParaSalvar = {
-          ...dados.usuario,
-          foto: dadosGoogle.foto,
-        };
-
-        onLoginSucesso(dadosParaSalvar, dados.token);
+      if (contentType.includes("application/json")) {
+        dados = await resposta.json();
       } else {
-        alert(`Erro: ${dados.mensagem || "Erro ao fazer login com Google"}`);
+        const texto = await resposta.text();
+
+        console.error("❌ Resposta inesperada do servidor:", texto);
+
+        throw new Error(
+          `O servidor retornou uma resposta inesperada. Status: ${resposta.status}`,
+        );
       }
+
+      if (!resposta.ok || dados.erro) {
+        throw new Error(dados.mensagem || `Erro HTTP ${resposta.status}`);
+      }
+
+      if (!dados.token) {
+        throw new Error("O backend não retornou o token da sessão.");
+      }
+
+      if (!dados.usuario) {
+        throw new Error("O backend não retornou os dados do usuário.");
+      }
+
+      // Este é o JWT do Instituto Esperança,
+      // não o token do Google.
+      onLoginSucesso(dados.usuario, dados.token);
+
+      alert("Login com Google realizado com sucesso!");
     } catch (erro) {
-      console.error("Erro ao processar login do Google:", erro);
-      alert("Erro de conexão. Tente novamente.");
+      console.error("❌ Erro no login Google:", erro);
+
+      alert(erro.message || "Erro de conexão. Tente novamente.");
     } finally {
       setCarregando(false);
     }
@@ -136,8 +190,37 @@ export default function CadastroELogin({ onLoginSucesso }) {
   // Decodificar JWT do Google
   const parseJwt = (token) => {
     try {
-      return JSON.parse(atob(token.split(".")[1]));
-    } catch (e) {
+      if (!token || typeof token !== "string") {
+        return null;
+      }
+
+      const partes = token.split(".");
+
+      if (partes.length !== 3) {
+        console.error("JWT inválido: formato incorreto.");
+        return null;
+      }
+
+      let base64 = partes[1].replace(/-/g, "+").replace(/_/g, "/");
+
+      while (base64.length % 4) {
+        base64 += "=";
+      }
+
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map((caractere) => {
+            return (
+              "%" + ("00" + caractere.charCodeAt(0).toString(16)).slice(-2)
+            );
+          })
+          .join(""),
+      );
+
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error("Erro ao decodificar JWT do Google:", error);
       return null;
     }
   };
@@ -262,10 +345,7 @@ export default function CadastroELogin({ onLoginSucesso }) {
           <div
             className={`${styles.painelFormulario} ${styles.painelCadastro}`}
           >
-            <form
-              className={styles.formulario}
-              onSubmit={manipularCadastro}
-            >
+            <form className={styles.formulario} onSubmit={manipularCadastro}>
               <h1 className={styles.tituloFormulario}>Crie sua Conta</h1>
 
               <div
@@ -293,9 +373,7 @@ export default function CadastroELogin({ onLoginSucesso }) {
                     borderTop: "1px solid #ccc",
                   }}
                 />
-                <span style={{ padding: "0 15px", fontSize: "14px" }}>
-                  ou
-                </span>
+                <span style={{ padding: "0 15px", fontSize: "14px" }}>ou</span>
                 <hr
                   style={{
                     flex: 1,
@@ -349,9 +427,7 @@ export default function CadastroELogin({ onLoginSucesso }) {
           </div>
 
           {/* Formulário de login */}
-          <div
-            className={`${styles.painelFormulario} ${styles.painelLogin}`}
-          >
+          <div className={`${styles.painelFormulario} ${styles.painelLogin}`}>
             <form className={styles.formulario} onSubmit={manipularLogin}>
               <h1 className={styles.tituloFormulario}>Fazer Login</h1>
 
@@ -380,9 +456,7 @@ export default function CadastroELogin({ onLoginSucesso }) {
                     borderTop: "1px solid #ccc",
                   }}
                 />
-                <span style={{ padding: "0 15px", fontSize: "14px" }}>
-                  ou
-                </span>
+                <span style={{ padding: "0 15px", fontSize: "14px" }}>ou</span>
                 <hr
                   style={{
                     flex: 1,
@@ -427,12 +501,9 @@ export default function CadastroELogin({ onLoginSucesso }) {
               <div
                 className={`${styles.painelOverlay} ${styles.painelOverlayEsquerdo}`}
               >
-                <h1 className={styles.tituloFormulario}>
-                  Bem Vindo De Volta!
-                </h1>
+                <h1 className={styles.tituloFormulario}>Bem Vindo De Volta!</h1>
                 <p className={styles.textoFormulario}>
-                  Para se manter conectado conosco, faça login com sua
-                  conta.
+                  Para se manter conectado conosco, faça login com sua conta.
                 </p>
                 <button
                   className={`${styles.botaoPrincipal} ${styles.botaoSecundario}`}
@@ -451,9 +522,8 @@ export default function CadastroELogin({ onLoginSucesso }) {
                   Ainda não tem conta?
                 </h1>
                 <p className={styles.textoFormulario}>
-                  Cadastre-se e seja automaticamente logado! Fique por
-                  dentro de todas as dicas e informações que o Instituto tem
-                  a oferecer!
+                  Cadastre-se e seja automaticamente logado! Fique por dentro de
+                  todas as dicas e informações que o Instituto tem a oferecer!
                 </p>
                 <button
                   className={`${styles.botaoPrincipal} ${styles.botaoSecundario}`}

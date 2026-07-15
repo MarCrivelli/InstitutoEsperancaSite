@@ -226,15 +226,6 @@ routes.get(
 // ROTAS DE USUÁRIOS
 // ============================================================================
 
-/*
-  IMPORTANTE:
-
-  /usuarios/convidar deve ficar antes de /usuarios/:id.
-
-  Assim, o Express não interpreta "convidar"
-  como se fosse o valor do parâmetro :id.
-*/
-
 routes.post(
   "/usuarios/convidar",
   verificarToken,
@@ -269,22 +260,7 @@ routes.put(
   usuarioController.modificarDadosUsuario,
 );
 
-/*
-  CORREÇÃO:
 
-  Antes esta rota usava apenasAdministrador.
-
-  Agora qualquer usuário pode chegar ao controller
-  quando tenta acessar a própria conta.
-
-  O próprio controller também verifica se:
-
-  - é a própria conta; ou
-  - quem está logado é administrador.
-
-  Portanto, existe proteção tanto no middleware
-  quanto no controller.
-*/
 
 routes.delete(
   "/usuarios/:id",
@@ -417,7 +393,7 @@ routes.post(
   "/animais",
   verificarToken,
   administradorOuSub,
-  upload.single("imagem"),
+  upload.single("imagemEntrada"),
   animalController.cadastrarAnimal,
 );
 
@@ -429,15 +405,15 @@ routes.put(
 );
 
 routes.put(
-  "/animais/:id/imagem",
+  "/animais/:id/imagemEntrada",
   verificarToken,
   administradorOuSub,
-  upload.single("imagem"),
+  upload.single("imagemEntrada"),
   animalController.atualizarImagemEntrada,
 );
 
 routes.put(
-  "/animais/:id/imagem-saida",
+  "/animais/:id/imagemSaida",
   verificarToken,
   administradorOuSub,
   upload.single("imagemSaida"),
@@ -445,7 +421,7 @@ routes.put(
 );
 
 routes.put(
-  "/animais/:id/descricao-saida",
+  "/animais/:id/descricaoSaida",
   verificarToken,
   administradorOuSub,
   animalController.atualizarDescricaoSaida,
