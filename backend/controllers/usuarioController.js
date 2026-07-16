@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Usuario = require("../models/Usuarios");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -7,27 +8,18 @@ const { OAuth2Client } = require("google-auth-library");
 
 require("dotenv").config();
 
-const googleClient = new OAuth2Client(
-  process.env.GOOGLE_CLIENT_ID,
-);
-
-// ============================================================================
-// CONFIGURAÇÕES DO ADMINISTRADOR PRINCIPAL
-// ============================================================================
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const ADMIN_NOME = process.env.ADMIN_NOME?.trim();
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL?.toLowerCase().trim();
 const ADMIN_SENHA = process.env.ADMIN_SENHA;
 
-// ============================================================================
-// FUNÇÕES AUXILIARES
-// ============================================================================
+const validarObjectId = (id) => mongoose.isValidObjectId(id);
 
 const obterSegredoJwt = () => {
   if (!process.env.SECRET) {
     throw new Error("SECRET não foi definido no arquivo .env");
   }
-
   return process.env.SECRET;
 };
 
@@ -35,94 +27,67 @@ const obterSegredoConvite = () => {
   if (!process.env.SECRET_CONVITE) {
     throw new Error("SECRET_CONVITE não foi definido no arquivo .env");
   }
-
   return process.env.SECRET_CONVITE;
 };
 
-const gerarTokenUsuario = (usuario) => {
-  return jwt.sign(
+const gerarTokenUsuario = (usuario) =>
+  jwt.sign(
     {
       id: usuario.id,
       email: usuario.email,
       nivelDeAcesso: usuario.nivelDeAcesso,
     },
     obterSegredoJwt(),
-    {
-      expiresIn: "168h",
-    },
+    { expiresIn: "168h" }
+  );
+
+const formatarUsuarioParaResposta = (usuario) => ({
+  id: usuario.id,
+  nome: usuario.nome,
+  email: usuario.email,
+  telefone: usuario.telefone,
+  receberEmailEventos: usuario.receberEmailEventos,
+  receberMensagensEventos: usuario.receberMensagensEventos,
+  nivelDeAcesso: usuario.nivelDeAcesso,
+  foto: usuario.foto,
+  ativo: usuario.ativo,
+});
+
+const validarEmail = (email) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+const validarTelefone = (telefone) => {
+  if (!telefone || telefone.trim() === "") return true;
+  return /^(\+55\s?)?\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/.test(
+    telefone.replace(/\s/g, "")
   );
 };
 
-const formatarUsuarioParaResposta = (usuario) => {
-  return {
-    id: usuario.id,
-    nome: usuario.nome,
-    email: usuario.email,
-    telefone: usuario.telefone,
-    receberEmailEventos: usuario.receberEmailEventos,
-    receberMensagensEventos: usuario.receberMensagensEventos,
-    nivelDeAcesso: usuario.nivelDeAcesso,
-    foto: usuario.foto,
-    ativo: usuario.ativo,
-  };
-};
+const limparTelefone = (telefone) =>
+  telefone ? telefone.replace(/[^\d+()-\s]/g, "").trim() : null;
 
-const validarEmail = (email) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  return emailRegex.test(email);
-};
-
-const validarTelefone = (telefone) => {
-  if (!telefone || telefone.trim() === "") {
-    return true;
-  }
-
-  const phoneRegex = /^(\+55\s?)?\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
-
-  return phoneRegex.test(telefone.replace(/\s/g, ""));
-};
-
-const limparTelefone = (telefone) => {
-  if (!telefone) {
-    return null;
-  }
-
-  return telefone.replace(/[^\d+()-\s]/g, "").trim();
-};
-
-const ehAdministradorPrincipal = (usuario) => {
-  if (!usuario || !ADMIN_EMAIL) {
-    return false;
-  }
-
-  return usuario.email?.toLowerCase().trim() === ADMIN_EMAIL;
-};
-
-// ============================================================================
-// CONFIGURAÇÃO DO E-MAIL
-// ============================================================================
+const ehAdministradorPrincipal = (usuario) =>
+  Boolean(
+    usuario &&
+      ADMIN_EMAIL &&
+      usuario.email?.toLowerCase().trim() === ADMIN_EMAIL
+  );
 
 const criarTransportadorEmail = () => {
   if (!process.env.SMTP_HOST) {
     throw new Error("SMTP_HOST não foi definido no .env");
   }
-
   if (!process.env.SMTP_USER) {
     throw new Error("SMTP_USER não foi definido no .env");
   }
-
   if (!process.env.SMTP_PASS) {
     throw new Error("SMTP_PASS não foi definido no .env");
   }
 
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST,
-
     port: Number(process.env.SMTP_PORT || 587),
-
     secure: Number(process.env.SMTP_PORT) === 465,
-
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
@@ -130,79 +95,53 @@ const criarTransportadorEmail = () => {
   });
 };
 
-// ============================================================================
-// GARANTIR ADMINISTRADOR PRINCIPAL
-// ============================================================================
-
 const garantirAdminFixo = async () => {
-  try {
-    if (!ADMIN_NOME) {
-      throw new Error("ADMIN_NOME não foi definido no .env");
-    }
-
-    if (!ADMIN_EMAIL) {
-      throw new Error("ADMIN_EMAIL não foi definido no .env");
-    }
-
-    if (!ADMIN_SENHA) {
-      throw new Error("ADMIN_SENHA não foi definido no .env");
-    }
-
-    let administrador = await Usuario.findOne({
-      where: {
-        email: ADMIN_EMAIL,
-      },
-    });
-
-    if (administrador) {
-      const dadosParaAtualizar = {};
-
-      if (administrador.nivelDeAcesso !== "administrador") {
-        dadosParaAtualizar.nivelDeAcesso = "administrador";
-      }
-
-      if (!administrador.ativo) {
-        dadosParaAtualizar.ativo = true;
-      }
-
-      if (Object.keys(dadosParaAtualizar).length > 0) {
-        await administrador.update(dadosParaAtualizar);
-
-        console.log("🔄 Dados do administrador principal atualizados.");
-      }
-
-      console.log("✅ Administrador principal já existe no sistema.");
-
-      return administrador;
-    }
-
-    const senhaCriptografada = await bcrypt.hash(ADMIN_SENHA, 10);
-
-    administrador = await Usuario.create({
-      nome: ADMIN_NOME,
-      email: ADMIN_EMAIL,
-      senha: senhaCriptografada,
-      nivelDeAcesso: "administrador",
-      telefone: null,
-      receberEmailEventos: false,
-      receberMensagensEventos: false,
-      ativo: true,
-      dataUltimoLogin: null,
-    });
-
-    console.log("✅ Administrador principal criado usando os dados do .env.");
-
-    return administrador;
-  } catch (error) {
-    console.error("❌ Erro ao garantir administrador principal:", error);
-
-    throw error;
+  if (!ADMIN_NOME || !ADMIN_EMAIL || !ADMIN_SENHA) {
+    throw new Error(
+      "ADMIN_NOME, ADMIN_EMAIL e ADMIN_SENHA devem estar definidos no .env"
+    );
   }
-};
 
-// ============================================================================
-// CADASTRAR USUÁRIO COMUM
-// ============================================================================
+  let administrador = await Usuario.findOne({
+    email: ADMIN_EMAIL,
+  }).select("+senha");
+
+  if (administrador) {
+    let alterou = false;
+
+    if (administrador.nivelDeAcesso !== "administrador") {
+      administrador.nivelDeAcesso = "administrador";
+      alterou = true;
+    }
+
+    if (!administrador.ativo) {
+      administrador.ativo = true;
+      alterou = true;
+    }
+
+    if (alterou) {
+      await administrador.save();
+    }
+
+    console.log("✅ Administrador principal já existe no sistema.");
+    return administrador;
+  }
+
+  administrador = await Usuario.create({
+    nome: ADMIN_NOME,
+    email: ADMIN_EMAIL,
+    senha: await bcrypt.hash(ADMIN_SENHA, 10),
+    nivelDeAcesso: "administrador",
+    telefone: null,
+    receberEmailEventos: false,
+    receberMensagensEventos: false,
+    ativo: true,
+    dataUltimoLogin: null,
+  });
+
+  console.log("✅ Administrador principal criado usando os dados do .env.");
+  return administrador;
+};
 
 const cadastrarUsuario = async (req, res) => {
   const {
@@ -245,61 +184,45 @@ const cadastrarUsuario = async (req, res) => {
       });
     }
 
-    const usuarioExistente = await Usuario.findOne({
-      where: {
-        email: emailNormalizado,
-      },
-    });
-
-    if (usuarioExistente) {
+    if (await Usuario.exists({ email: emailNormalizado })) {
       return res.status(400).json({
         erro: true,
         mensagem: "Este e-mail já está cadastrado.",
       });
     }
 
-    const senhaCriptografada = await bcrypt.hash(senha, 10);
-
     const novoUsuario = await Usuario.create({
       nome: nome.trim(),
-      senha: senhaCriptografada,
+      senha: await bcrypt.hash(senha, 10),
       email: emailNormalizado,
       telefone: limparTelefone(telefone),
-
       receberEmailEventos: receberEmailEventos !== false,
-
       receberMensagensEventos: receberMensagensEventos !== false,
-
       nivelDeAcesso: "usuario",
       ativo: true,
       dataUltimoLogin: new Date(),
     });
 
-    const token = gerarTokenUsuario(novoUsuario);
-
     return res.status(201).json({
       erro: false,
-
       mensagem:
         "Cadastro realizado com sucesso! Você foi logado automaticamente.",
-
       usuario: formatarUsuarioParaResposta(novoUsuario),
-
-      token,
-
+      token: gerarTokenUsuario(novoUsuario),
       loginAutomatico: true,
     });
   } catch (erro) {
     console.error("❌ Erro no cadastro:", erro);
 
-    if (erro.name === "SequelizeValidationError") {
+    if (erro.name === "ValidationError") {
       return res.status(400).json({
         erro: true,
-        mensagem: erro.errors?.[0]?.message || "Dados inválidos.",
+        mensagem:
+          Object.values(erro.errors || {})[0]?.message || "Dados inválidos.",
       });
     }
 
-    if (erro.name === "SequelizeUniqueConstraintError") {
+    if (erro.code === 11000) {
       return res.status(400).json({
         erro: true,
         mensagem: "Este e-mail já está cadastrado.",
@@ -312,10 +235,6 @@ const cadastrarUsuario = async (req, res) => {
     });
   }
 };
-
-// ============================================================================
-// AUTENTICAR USUÁRIO
-// ============================================================================
 
 const autenticarUsuario = async (req, res) => {
   const { email, senha } = req.body;
@@ -328,48 +247,29 @@ const autenticarUsuario = async (req, res) => {
       });
     }
 
-    const emailNormalizado = email.toLowerCase().trim();
-
     const usuario = await Usuario.findOne({
-      where: {
-        email: emailNormalizado,
-        ativo: true,
-      },
-    });
+      email: email.toLowerCase().trim(),
+      ativo: true,
+    }).select("+senha");
 
-    if (!usuario) {
+    if (!usuario || !(await bcrypt.compare(senha, usuario.senha))) {
       return res.status(401).json({
         erro: true,
         mensagem: "E-mail ou senha incorretos.",
       });
     }
 
-    const senhaValida = await bcrypt.compare(senha, usuario.senha);
-
-    if (!senhaValida) {
-      return res.status(401).json({
-        erro: true,
-        mensagem: "E-mail ou senha incorretos.",
-      });
-    }
-
-    await usuario.update({
-      dataUltimoLogin: new Date(),
-    });
-
-    const token = gerarTokenUsuario(usuario);
+    usuario.dataUltimoLogin = new Date();
+    await usuario.save();
 
     return res.json({
       erro: false,
       mensagem: "Login realizado com sucesso!",
-
       usuario: formatarUsuarioParaResposta(usuario),
-
-      token,
+      token: gerarTokenUsuario(usuario),
     });
   } catch (erro) {
     console.error("❌ Erro no login:", erro);
-
     return res.status(500).json({
       erro: true,
       mensagem: "Erro interno do servidor.",
@@ -377,17 +277,9 @@ const autenticarUsuario = async (req, res) => {
   }
 };
 
-// ============================================================================
-// LOGIN COM GOOGLE
-// ============================================================================
-
 const loginComGoogle = async (req, res) => {
   try {
     const { googleToken } = req.body;
-
-    // ============================================================
-    // VALIDAR SE O TOKEN FOI ENVIADO
-    // ============================================================
 
     if (!googleToken) {
       return res.status(400).json({
@@ -396,114 +288,34 @@ const loginComGoogle = async (req, res) => {
       });
     }
 
-    if (!process.env.GOOGLE_CLIENT_ID) {
-      console.error(
-        "❌ GOOGLE_CLIENT_ID não foi definido nas variáveis de ambiente.",
-      );
-
-      return res.status(500).json({
-        erro: true,
-        mensagem:
-          "A autenticação com Google não está configurada corretamente.",
-      });
-    }
-
-    // ============================================================
-    // VALIDAR TOKEN DIRETAMENTE COM O GOOGLE
-    // ============================================================
-
-    let ticket;
-
-    try {
-      ticket = await googleClient.verifyIdToken({
-        idToken: googleToken,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
-    } catch (erroGoogle) {
-      console.error(
-        "❌ Token do Google inválido:",
-        erroGoogle.message,
-      );
-
-      return res.status(401).json({
-        erro: true,
-        mensagem:
-          "Não foi possível validar sua identidade com o Google.",
-      });
-    }
-
-    // ============================================================
-    // EXTRAIR DADOS VERIFICADOS DO TOKEN
-    // ============================================================
+    const ticket = await googleClient.verifyIdToken({
+      idToken: googleToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
 
     const payload = ticket.getPayload();
 
-    if (!payload) {
+    if (!payload?.sub || !payload?.email || !payload.email_verified) {
       return res.status(401).json({
         erro: true,
-        mensagem:
-          "O Google não retornou informações válidas do usuário.",
+        mensagem: "Dados da conta Google inválidos ou não verificados.",
       });
     }
 
     const googleId = payload.sub;
-    const nome = payload.name;
-    const email = payload.email?.toLowerCase().trim();
+    const email = payload.email.toLowerCase().trim();
     const foto = payload.picture || null;
-    const emailVerificado = payload.email_verified;
 
-    // ============================================================
-    // VALIDAR DADOS OBRIGATÓRIOS
-    // ============================================================
-
-    if (!googleId || !email) {
-      return res.status(401).json({
-        erro: true,
-        mensagem:
-          "O Google não retornou os dados necessários para autenticação.",
-      });
-    }
-
-    if (!emailVerificado) {
-      return res.status(401).json({
-        erro: true,
-        mensagem:
-          "O e-mail da conta Google ainda não foi verificado.",
-      });
-    }
-
-    console.log(
-      `✅ Token Google validado para: ${email}`,
-    );
-
-    // ============================================================
-    // PROCURAR USUÁRIO EXISTENTE
-    // ============================================================
-
-    let usuario = await Usuario.findOne({
-      where: {
-        email,
-      },
-    });
-
-    // ============================================================
-    // CRIAR NOVO USUÁRIO
-    // ============================================================
+    let usuario = await Usuario.findOne({ email });
 
     if (!usuario) {
-      const senhaAleatoria = crypto
-        .randomBytes(32)
-        .toString("hex");
-
-      const senhaCriptografada = await bcrypt.hash(
-        senhaAleatoria,
-        10,
-      );
-
       usuario = await Usuario.create({
-        nome: nome || email.split("@")[0],
+        nome: payload.name || email.split("@")[0],
         email,
-        senha: senhaCriptografada,
+        senha: await bcrypt.hash(
+          crypto.randomBytes(32).toString("hex"),
+          10
+        ),
         googleId,
         foto,
         receberEmailEventos: true,
@@ -512,118 +324,53 @@ const loginComGoogle = async (req, res) => {
         ativo: true,
         dataUltimoLogin: new Date(),
       });
-
-      console.log(
-        "✅ Novo usuário criado via Google:",
-        usuario.email,
-      );
     } else {
-      // ============================================================
-      // VERIFICAR SE A CONTA ESTÁ ATIVA
-      // ============================================================
-
       if (!usuario.ativo) {
         return res.status(403).json({
           erro: true,
-          mensagem:
-            "Esta conta não está ativa no sistema.",
+          mensagem: "Esta conta não está ativa no sistema.",
         });
       }
 
-      // ============================================================
-      // ATUALIZAR DADOS DO GOOGLE
-      // ============================================================
+      usuario.googleId = googleId;
+      usuario.dataUltimoLogin = new Date();
 
-      const atualizacoes = {
-        dataUltimoLogin: new Date(),
-      };
+      if (foto) usuario.foto = foto;
 
-      if (
-        googleId &&
-        googleId !== usuario.googleId
-      ) {
-        atualizacoes.googleId = googleId;
-      }
-
-      if (
-        foto &&
-        foto !== usuario.foto
-      ) {
-        atualizacoes.foto = foto;
-      }
-
-      await usuario.update(atualizacoes);
-
-      await usuario.reload();
+      await usuario.save();
     }
-
-    // ============================================================
-    // GERAR O JWT DA SUA PRÓPRIA APLICAÇÃO
-    // ============================================================
-
-    const token = gerarTokenUsuario(usuario);
-
-    // ============================================================
-    // ENVIAR RESPOSTA PARA O FRONTEND
-    // ============================================================
 
     return res.json({
       erro: false,
-
-      mensagem:
-        "Login com Google realizado com sucesso!",
-
+      mensagem: "Login com Google realizado com sucesso!",
       usuario: formatarUsuarioParaResposta(usuario),
-
-      token,
+      token: gerarTokenUsuario(usuario),
     });
   } catch (error) {
-    console.error(
-      "❌ Erro no login Google:",
-      error,
-    );
+    console.error("❌ Erro no login Google:", error);
 
     return res.status(500).json({
       erro: true,
-      mensagem:
-        "Erro interno ao realizar login com Google.",
+      mensagem: "Erro interno ao realizar login com Google.",
     });
   }
 };
 
-// ============================================================================
-// ENCONTRAR USUÁRIO
-// ============================================================================
-
 const encontrarUsuario = async (req, res) => {
   try {
-    const id = Number(req.params.id);
+    const { id } = req.params;
 
-    if (!Number.isInteger(id)) {
+    if (!validarObjectId(id)) {
       return res.status(400).json({
         erro: true,
         mensagem: "ID inválido.",
       });
     }
 
-    const usuario = await Usuario.findOne({
-      where: { id },
-
-      attributes: [
-        "id",
-        "nome",
-        "email",
-        "telefone",
-        "receberEmailEventos",
-        "receberMensagensEventos",
-        "nivelDeAcesso",
-        "foto",
-        "ativo",
-        "dataUltimoLogin",
-        "createdAt",
-        "updatedAt",
-      ],
-    });
+    const usuario = await Usuario.findById(id).select(
+      "nome email telefone receberEmailEventos receberMensagensEventos " +
+        "nivelDeAcesso foto ativo dataUltimoLogin createdAt updatedAt"
+    );
 
     if (!usuario) {
       return res.status(404).json({
@@ -632,59 +379,30 @@ const encontrarUsuario = async (req, res) => {
       });
     }
 
-    return res.json({
-      erro: false,
-      usuario,
-    });
+    return res.json({ erro: false, usuario });
   } catch (erro) {
     console.error("❌ Erro ao buscar usuário:", erro);
-
     return res.status(500).json({
       erro: true,
-
       mensagem: "Ocorreu um erro ao buscar o usuário.",
     });
   }
 };
 
-// ============================================================================
-// PROCURAR TODOS OS USUÁRIOS
-// ============================================================================
-
 const procurarUsuarios = async (req, res) => {
   try {
-    const usuarios = await Usuario.findAll({
-      attributes: [
-        "id",
-        "nome",
-        "email",
-        "telefone",
-        "receberEmailEventos",
-        "receberMensagensEventos",
-        "nivelDeAcesso",
-        "foto",
-        "ativo",
-        "dataUltimoLogin",
-        "createdAt",
-        "updatedAt",
-      ],
-
-      order: [["createdAt", "DESC"]],
-    });
-
-    /*
-      O frontend não precisa conhecer ADMIN_EMAIL.
-
-      O backend simplesmente informa se a conta
-      é protegida ou não.
-    */
+    const usuarios = await Usuario.find()
+      .select(
+        "nome email telefone receberEmailEventos receberMensagensEventos " +
+          "nivelDeAcesso foto ativo dataUltimoLogin createdAt updatedAt"
+      )
+      .sort({ createdAt: -1 });
 
     const usuariosFormatados = usuarios.map((usuario) => {
       const dados = usuario.toJSON();
 
       return {
         ...dados,
-
         protegido:
           Boolean(ADMIN_EMAIL) &&
           dados.email?.toLowerCase().trim() === ADMIN_EMAIL,
@@ -698,35 +416,25 @@ const procurarUsuarios = async (req, res) => {
     });
   } catch (erro) {
     console.error("❌ Erro ao listar usuários:", erro);
-
     return res.status(500).json({
       erro: true,
-
       mensagem: "Ocorreu um erro ao listar os usuários.",
     });
   }
 };
 
-// ============================================================================
-// DELETAR USUÁRIO
-// ============================================================================
-
 const deletarUsuario = async (req, res) => {
   try {
-    const idUsuarioParaExcluir = Number(req.params.id);
+    const { id } = req.params;
 
-    if (!Number.isInteger(idUsuarioParaExcluir)) {
+    if (!validarObjectId(id)) {
       return res.status(400).json({
         erro: true,
         mensagem: "ID inválido.",
       });
     }
 
-    const usuario = await Usuario.findOne({
-      where: {
-        id: idUsuarioParaExcluir,
-      },
-    });
+    const usuario = await Usuario.findById(id);
 
     if (!usuario) {
       return res.status(404).json({
@@ -735,120 +443,84 @@ const deletarUsuario = async (req, res) => {
       });
     }
 
-    /*
-      O administrador principal, definido exclusivamente
-      pelo ADMIN_EMAIL do .env, nunca pode ser excluído.
-    */
-
     if (ehAdministradorPrincipal(usuario)) {
       return res.status(403).json({
         erro: true,
-
         mensagem: "O administrador principal do sistema não pode ser excluído.",
       });
     }
 
-    const idUsuarioLogado = Number(req.user.id);
-
-    const ehPropriaConta = idUsuarioLogado === idUsuarioParaExcluir;
-
+    const ehPropriaConta = String(req.user.id) === String(id);
     const ehAdministrador = req.user.nivelDeAcesso === "administrador";
-
-    /*
-      Um usuário pode excluir a própria conta.
-
-      Somente um administrador pode excluir
-      a conta de outra pessoa.
-    */
 
     if (!ehPropriaConta && !ehAdministrador) {
       return res.status(403).json({
         erro: true,
-
         mensagem: "Você não tem permissão para excluir esta conta.",
       });
     }
 
-    await usuario.destroy();
+    await usuario.deleteOne();
 
     return res.json({
       erro: false,
-
       mensagem: ehPropriaConta
         ? "Sua conta foi excluída com sucesso."
         : "Usuário excluído com sucesso.",
     });
   } catch (erro) {
     console.error("❌ Erro ao deletar usuário:", erro);
-
     return res.status(500).json({
       erro: true,
-
       mensagem: "Ocorreu um erro ao excluir o usuário.",
     });
   }
 };
 
-// ============================================================================
-// MODIFICAR DADOS DO USUÁRIO
-// ============================================================================
-
 const modificarDadosUsuario = async (req, res) => {
-  const {
-    nome,
-    senha,
-    email,
-    telefone,
-    receberEmailEventos,
-    receberMensagensEventos,
-    foto,
-    nivelDeAcesso,
-    googleId,
-  } = req.body;
-
   try {
-    const id = Number(req.params.id);
+    const { id } = req.params;
 
-    if (!Number.isInteger(id)) {
+    if (!validarObjectId(id)) {
       return res.status(400).json({
         erro: true,
         mensagem: "ID inválido.",
       });
     }
 
-    const usuarioExistente = await Usuario.findOne({
-      where: { id },
-    });
+    const usuario = await Usuario.findById(id).select("+senha");
 
-    if (!usuarioExistente) {
+    if (!usuario) {
       return res.status(404).json({
         erro: true,
         mensagem: "Usuário não encontrado.",
       });
     }
 
-    /*
-      Não bloqueamos todas as alterações no admin principal.
+    const {
+      nome,
+      senha,
+      email,
+      telefone,
+      receberEmailEventos,
+      receberMensagensEventos,
+      foto,
+      nivelDeAcesso,
+      googleId,
+    } = req.body;
 
-      Porém, seu e-mail e nível de administrador
-      continuam protegidos.
-    */
-
-    const usuarioEhAdminPrincipal = ehAdministradorPrincipal(usuarioExistente);
-
-    const dadosParaAtualizar = {};
+    const adminPrincipal = ehAdministradorPrincipal(usuario);
 
     if (nome !== undefined && nome.trim()) {
-      dadosParaAtualizar.nome = nome.trim();
+      usuario.nome = nome.trim();
     }
 
     if (email !== undefined) {
       const emailNormalizado = email.toLowerCase().trim();
 
-      if (usuarioEhAdminPrincipal && emailNormalizado !== ADMIN_EMAIL) {
+      if (adminPrincipal && emailNormalizado !== ADMIN_EMAIL) {
         return res.status(403).json({
           erro: true,
-
           mensagem:
             "O e-mail do administrador principal não pode ser alterado.",
         });
@@ -857,44 +529,33 @@ const modificarDadosUsuario = async (req, res) => {
       if (!validarEmail(emailNormalizado)) {
         return res.status(400).json({
           erro: true,
-
           mensagem: "Por favor, insira um e-mail válido.",
         });
       }
 
-      const { Op } = require("sequelize");
-
-      const emailJaExiste = await Usuario.findOne({
-        where: {
+      if (
+        await Usuario.exists({
           email: emailNormalizado,
-
-          id: {
-            [Op.ne]: id,
-          },
-        },
-      });
-
-      if (emailJaExiste) {
+          _id: { $ne: id },
+        })
+      ) {
         return res.status(400).json({
           erro: true,
-
           mensagem: "Este e-mail já está sendo usado por outro usuário.",
         });
       }
 
-      dadosParaAtualizar.email = emailNormalizado;
+      usuario.email = emailNormalizado;
     }
 
-    if (senha !== undefined && senha !== "") {
+    if (senha) {
       if (senha.length < 6) {
         return res.status(400).json({
           erro: true,
-
           mensagem: "A senha deve ter pelo menos 6 caracteres.",
         });
       }
-
-      dadosParaAtualizar.senha = await bcrypt.hash(senha, 10);
+      usuario.senha = await bcrypt.hash(senha, 10);
     }
 
     if (nivelDeAcesso !== undefined) {
@@ -908,101 +569,73 @@ const modificarDadosUsuario = async (req, res) => {
       if (!niveisPermitidos.includes(nivelDeAcesso)) {
         return res.status(400).json({
           erro: true,
-
           mensagem: "Nível de acesso inválido.",
         });
       }
 
-      if (usuarioEhAdminPrincipal && nivelDeAcesso !== "administrador") {
+      if (adminPrincipal && nivelDeAcesso !== "administrador") {
         return res.status(403).json({
           erro: true,
-
           mensagem:
             "O administrador principal deve permanecer como administrador.",
         });
       }
 
-      dadosParaAtualizar.nivelDeAcesso = nivelDeAcesso;
+      usuario.nivelDeAcesso = nivelDeAcesso;
     }
 
     if (telefone !== undefined) {
       if (telefone && !validarTelefone(telefone)) {
         return res.status(400).json({
           erro: true,
-
           mensagem: "Telefone deve estar em um formato válido.",
         });
       }
-
-      dadosParaAtualizar.telefone = limparTelefone(telefone);
+      usuario.telefone = limparTelefone(telefone);
     }
 
     if (receberEmailEventos !== undefined) {
-      dadosParaAtualizar.receberEmailEventos = Boolean(receberEmailEventos);
+      usuario.receberEmailEventos = Boolean(receberEmailEventos);
     }
 
     if (receberMensagensEventos !== undefined) {
-      dadosParaAtualizar.receberMensagensEventos = Boolean(
-        receberMensagensEventos,
-      );
+      usuario.receberMensagensEventos = Boolean(receberMensagensEventos);
     }
 
-    if (foto !== undefined) {
-      dadosParaAtualizar.foto = foto;
-    }
+    if (foto !== undefined) usuario.foto = foto;
+    if (googleId !== undefined) usuario.googleId = googleId || null;
 
-    if (googleId !== undefined) {
-      dadosParaAtualizar.googleId = googleId;
-    }
-
-    if (Object.keys(dadosParaAtualizar).length === 0) {
-      return res.status(400).json({
-        erro: true,
-        mensagem: "Nenhum dado para atualizar.",
-      });
-    }
-
-    await usuarioExistente.update(dadosParaAtualizar);
-
-    await usuarioExistente.reload();
+    await usuario.save();
 
     return res.json({
       erro: false,
-
       mensagem: "Usuário alterado com sucesso!",
-
-      usuario: formatarUsuarioParaResposta(usuarioExistente),
+      usuario: formatarUsuarioParaResposta(usuario),
     });
   } catch (erro) {
     console.error("❌ Erro ao alterar usuário:", erro);
 
-    if (erro.name === "SequelizeValidationError") {
+    if (erro.name === "ValidationError") {
       return res.status(400).json({
         erro: true,
-
-        mensagem: erro.errors?.[0]?.message || "Dados inválidos.",
+        mensagem:
+          Object.values(erro.errors || {})[0]?.message || "Dados inválidos.",
       });
     }
 
-    if (erro.name === "SequelizeUniqueConstraintError") {
+    if (erro.code === 11000) {
       return res.status(400).json({
         erro: true,
-
         mensagem: "Este e-mail já está sendo usado por outro usuário.",
       });
     }
 
     return res.status(500).json({
       erro: true,
-
       mensagem: "Ocorreu um erro ao alterar o usuário.",
     });
   }
 };
-
-// ============================================================================
-// ENVIAR CONVITE POR E-MAIL
-// ============================================================================
 
 const convidarUsuario = async (req, res) => {
   try {
@@ -1011,51 +644,32 @@ const convidarUsuario = async (req, res) => {
     if (!email || !nivelDeAcesso) {
       return res.status(400).json({
         erro: true,
-
         mensagem: "E-mail e nível de acesso são obrigatórios.",
       });
     }
 
     const emailNormalizado = email.toLowerCase().trim();
-
-    if (!validarEmail(emailNormalizado)) {
-      return res.status(400).json({
-        erro: true,
-
-        mensagem: "Por favor, insira um e-mail válido.",
-      });
-    }
-
     const niveisPermitidos = [
       "administrador",
       "subAdministrador",
       "contribuinte",
     ];
 
-    if (!niveisPermitidos.includes(nivelDeAcesso)) {
+    if (
+      !validarEmail(emailNormalizado) ||
+      !niveisPermitidos.includes(nivelDeAcesso)
+    ) {
       return res.status(400).json({
         erro: true,
-
-        mensagem: "O nível de acesso selecionado é inválido.",
+        mensagem: "E-mail ou nível de acesso inválido.",
       });
     }
 
-    const usuarioExistente = await Usuario.findOne({
-      where: {
-        email: emailNormalizado,
-      },
-    });
-
-    if (usuarioExistente) {
+    if (await Usuario.exists({ email: emailNormalizado })) {
       return res.status(400).json({
         erro: true,
-
         mensagem: "Já existe um usuário cadastrado com este e-mail.",
       });
-    }
-
-    if (!process.env.FRONTEND_URL) {
-      throw new Error("FRONTEND_URL não foi definido no .env");
     }
 
     const tokenConvite = jwt.sign(
@@ -1064,163 +678,43 @@ const convidarUsuario = async (req, res) => {
         nivelDeAcesso,
         tipo: "convite-administrativo",
       },
-
       obterSegredoConvite(),
-
-      {
-        expiresIn: "24h",
-      },
+      { expiresIn: "24h" }
     );
 
-    /*
-      Como seu frontend usa HashRouter,
-      o link utiliza #/convite.
-    */
-
     const frontendUrl = process.env.FRONTEND_URL.replace(/\/$/, "");
-
     const urlConvite =
-      `${frontendUrl}/#/convite?token=` + encodeURIComponent(tokenConvite);
+      `${frontendUrl}/#/convite?token=` +
+      encodeURIComponent(tokenConvite);
 
-    const transportador = criarTransportadorEmail();
-
-    await transportador.sendMail({
+    await criarTransportadorEmail().sendMail({
       from:
         process.env.SMTP_FROM ||
         `"Instituto Esperança - A Voz dos Animais" <${process.env.SMTP_USER}>`,
-
       to: emailNormalizado,
-
       subject: "Convite para acessar o Instituto Esperança",
-
       html: `
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-
-          <head>
-            <meta charset="UTF-8">
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            >
-
-            <title>
-              Convite para acessar o Instituto Esperança
-            </title>
-          </head>
-
-          <body
-            style="
-              margin: 0;
-              padding: 20px;
-              background-color: #f4f4f4;
-              font-family: Arial, Helvetica, sans-serif;
-            "
-          >
-
-            <div
-              style="
-                max-width: 600px;
-                margin: 0 auto;
-                background-color: #ffffff;
-                padding: 40px 25px;
-                border-radius: 12px;
-                text-align: center;
-                box-sizing: border-box;
-              "
-            >
-
-              <h1
-                style="
-                  color: #333333;
-                  margin-top: 0;
-                  margin-bottom: 20px;
-                "
-              >
-                Você recebeu um convite
-              </h1>
-
-              <p
-                style="
-                  color: #555555;
-                  font-size: 16px;
-                  line-height: 1.6;
-                "
-              >
-                Você foi convidado para acessar a área administrativa
-                do Instituto Esperança - A Voz dos Animais.
-              </p>
-
-              <p
-                style="
-                  color: #555555;
-                  font-size: 16px;
-                  line-height: 1.6;
-                "
-              >
-                Clique no botão abaixo para criar sua conta
-                e entrar automaticamente:
-              </p>
-
-              <a
-                href="${urlConvite}"
-
-                style="
-                  display: inline-block;
-                  margin-top: 20px;
-                  padding: 15px 30px;
-                  background-color: #2e7d32;
-                  color: #ffffff;
-                  text-decoration: none;
-                  border-radius: 8px;
-                  font-size: 16px;
-                  font-weight: bold;
-                "
-              >
-                Acessar minha conta
-              </a>
-
-              <p
-                style="
-                  margin-top: 30px;
-                  color: #777777;
-                  font-size: 13px;
-                  line-height: 1.5;
-                "
-              >
-                Este convite é válido por 24 horas.
-                Após a criação da conta, o mesmo convite
-                não poderá ser utilizado novamente.
-              </p>
-
-            </div>
-
-          </body>
-
-        </html>
+        <div style="font-family:Arial;max-width:600px;margin:auto;padding:30px">
+          <h1>Você recebeu um convite</h1>
+          <p>Você foi convidado para acessar a área administrativa do Instituto Esperança.</p>
+          <p><a href="${urlConvite}">Acessar minha conta</a></p>
+          <p>Este convite é válido por 24 horas.</p>
+        </div>
       `,
     });
 
     return res.status(200).json({
       erro: false,
-
       mensagem: `Convite enviado com sucesso para ${emailNormalizado}.`,
     });
   } catch (error) {
     console.error("❌ Erro ao enviar convite:", error);
-
     return res.status(500).json({
       erro: true,
-
-      mensagem:
-        "Não foi possível enviar o convite. Verifique as configurações de e-mail do servidor.",
+      mensagem: "Não foi possível enviar o convite.",
     });
   }
 };
-
-// ============================================================================
-// ACEITAR CONVITE E FAZER LOGIN AUTOMÁTICO
-// ============================================================================
 
 const aceitarConvite = async (req, res) => {
   try {
@@ -1229,7 +723,6 @@ const aceitarConvite = async (req, res) => {
     if (!token) {
       return res.status(400).json({
         erro: true,
-
         mensagem: "Token do convite não informado.",
       });
     }
@@ -1238,72 +731,43 @@ const aceitarConvite = async (req, res) => {
 
     try {
       dadosConvite = jwt.verify(token, obterSegredoConvite());
-    } catch (error) {
+    } catch {
       return res.status(401).json({
         erro: true,
-
         mensagem: "Este convite é inválido ou expirou.",
       });
     }
 
-    if (dadosConvite.tipo !== "convite-administrativo") {
-      return res.status(401).json({
-        erro: true,
-        mensagem: "Tipo de convite inválido.",
-      });
-    }
-
     const email = dadosConvite.email.toLowerCase().trim();
-
     const nivelDeAcesso = dadosConvite.nivelDeAcesso;
 
-    const niveisPermitidos = [
-      "administrador",
-      "subAdministrador",
-      "contribuinte",
-    ];
-
-    if (!niveisPermitidos.includes(nivelDeAcesso)) {
+    if (
+      dadosConvite.tipo !== "convite-administrativo" ||
+      !["administrador", "subAdministrador", "contribuinte"].includes(
+        nivelDeAcesso
+      )
+    ) {
       return res.status(400).json({
         erro: true,
-
-        mensagem: "O nível de acesso deste convite é inválido.",
+        mensagem: "Convite inválido.",
       });
     }
 
-    const usuarioExistente = await Usuario.findOne({
-      where: { email },
-    });
-
-    /*
-      O usuário já existir significa que o convite
-      já foi utilizado ou que esse e-mail já tinha conta.
-    */
-
-    if (usuarioExistente) {
+    if (await Usuario.exists({ email })) {
       return res.status(409).json({
         erro: true,
-
         mensagem:
-          "Este convite já foi utilizado ou já existe uma conta cadastrada com este e-mail.",
+          "Este convite já foi utilizado ou já existe uma conta cadastrada.",
       });
     }
-
-    /*
-      Criamos uma senha aleatória internamente.
-
-      Ela nunca é mostrada ao usuário e não é enviada
-      pelo navegador.
-    */
-
-    const senhaAleatoria = crypto.randomBytes(48).toString("hex");
-
-    const senhaCriptografada = await bcrypt.hash(senhaAleatoria, 10);
 
     const novoUsuario = await Usuario.create({
       nome: email.split("@")[0],
       email,
-      senha: senhaCriptografada,
+      senha: await bcrypt.hash(
+        crypto.randomBytes(48).toString("hex"),
+        10
+      ),
       nivelDeAcesso,
       telefone: null,
       receberEmailEventos: true,
@@ -1312,51 +776,31 @@ const aceitarConvite = async (req, res) => {
       dataUltimoLogin: new Date(),
     });
 
-    const tokenAutenticacao = gerarTokenUsuario(novoUsuario);
-
     return res.status(201).json({
       erro: false,
-
       mensagem: "Convite aceito. Login realizado com sucesso.",
-
-      token: tokenAutenticacao,
-
+      token: gerarTokenUsuario(novoUsuario),
       usuario: formatarUsuarioParaResposta(novoUsuario),
-
       loginAutomatico: true,
     });
   } catch (error) {
     console.error("❌ Erro ao aceitar convite:", error);
-
     return res.status(500).json({
       erro: true,
-
       mensagem: "Não foi possível processar o convite.",
     });
   }
 };
 
-// ============================================================================
-// INICIALIZAÇÃO DO SISTEMA
-// ============================================================================
-
 const inicializarSistema = async () => {
   try {
     console.log("🔄 Inicializando sistema de usuários...");
-
     await garantirAdminFixo();
-
     console.log("✅ Sistema de usuários inicializado com sucesso!");
   } catch (error) {
     console.error("❌ Erro na inicialização do sistema:", error);
   }
 };
-
-inicializarSistema();
-
-// ============================================================================
-// EXPORTAÇÕES
-// ============================================================================
 
 module.exports = {
   cadastrarUsuario,

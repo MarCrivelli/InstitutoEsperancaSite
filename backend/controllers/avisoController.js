@@ -1,231 +1,202 @@
-const Avisos = require('../models/Avisos'); // Ajuste o caminho conforme sua estrutura
+const mongoose = require("mongoose");
+const Avisos = require("../models/Avisos");
+
+const validarId = (id) => mongoose.isValidObjectId(id);
+
+const formatarAviso = (aviso) => {
+  const dataInicioFormatada = new Date(
+    aviso.dataInicio
+  ).toLocaleDateString("pt-BR", { timeZone: "UTC" });
+
+  const dataFormatada =
+    aviso.ehPeriodo && aviso.dataFim
+      ? `${dataInicioFormatada} ao ${new Date(
+          aviso.dataFim
+        ).toLocaleDateString("pt-BR", { timeZone: "UTC" })}`
+      : dataInicioFormatada;
+
+  return {
+    id: aviso.id,
+    data: dataFormatada,
+    descricao: aviso.descricao,
+    corData: aviso.corData,
+    dataInicio: aviso.dataInicio,
+    dataFim: aviso.dataFim,
+    ehPeriodo: aviso.ehPeriodo,
+  };
+};
 
 const avisoController = {
-  // Listar todos os avisos
   async listarAvisos(req, res) {
     try {
-      const avisos = await Avisos.findAll({
-        order: [['dataInicio', 'ASC']] // Ordenar por data de início
-      });
+      const avisos = await Avisos.find().sort({ dataInicio: 1 });
 
-      // Formatar as datas para exibição no frontend
-      const avisosFormatados = avisos.map(aviso => {
-        let dataFormatada;
-        
-        if (aviso.ehPeriodo && aviso.dataFim) {
-          // Período: "01/01/2025 ao 07/01/2025"
-          const dataInicioFormatada = new Date(aviso.dataInicio).toLocaleDateString('pt-BR');
-          const dataFimFormatada = new Date(aviso.dataFim).toLocaleDateString('pt-BR');
-          dataFormatada = `${dataInicioFormatada} ao ${dataFimFormatada}`;
-        } else {
-          // Data única: "01/01/2025"
-          dataFormatada = new Date(aviso.dataInicio).toLocaleDateString('pt-BR');
-        }
-
-        return {
-          id: aviso.id,
-          data: dataFormatada,
-          descricao: aviso.descricao,
-          corData: aviso.corData,
-          dataInicio: aviso.dataInicio,
-          dataFim: aviso.dataFim,
-          ehPeriodo: aviso.ehPeriodo
-        };
-      });
-
-      res.status(200).json(avisosFormatados);
+      res.status(200).json(avisos.map(formatarAviso));
     } catch (error) {
-      console.error('Erro ao listar avisos:', error);
-      res.status(500).json({ 
-        erro: 'Erro interno do servidor',
-        detalhes: error.message 
+      console.error("Erro ao listar avisos:", error);
+
+      res.status(500).json({
+        erro: "Erro interno do servidor",
+        detalhes: error.message,
       });
     }
   },
 
-  // Buscar aviso por ID
   async buscarAvisoPorId(req, res) {
     try {
       const { id } = req.params;
-      
-      const aviso = await Avisos.findByPk(id);
-      
+
+      if (!validarId(id)) {
+        return res.status(400).json({ erro: "ID inválido" });
+      }
+
+      const aviso = await Avisos.findById(id);
+
       if (!aviso) {
-        return res.status(404).json({ erro: 'Aviso não encontrado' });
+        return res.status(404).json({ erro: "Aviso não encontrado" });
       }
 
-      // Formatar data para exibição
-      let dataFormatada;
-      if (aviso.ehPeriodo && aviso.dataFim) {
-        const dataInicioFormatada = new Date(aviso.dataInicio).toLocaleDateString('pt-BR');
-        const dataFimFormatada = new Date(aviso.dataFim).toLocaleDateString('pt-BR');
-        dataFormatada = `${dataInicioFormatada} ao ${dataFimFormatada}`;
-      } else {
-        dataFormatada = new Date(aviso.dataInicio).toLocaleDateString('pt-BR');
-      }
-
-      const avisoFormatado = {
-        id: aviso.id,
-        data: dataFormatada,
-        descricao: aviso.descricao,
-        corData: aviso.corData,
-        dataInicio: aviso.dataInicio,
-        dataFim: aviso.dataFim,
-        ehPeriodo: aviso.ehPeriodo
-      };
-
-      res.status(200).json(avisoFormatado);
+      res.status(200).json(formatarAviso(aviso));
     } catch (error) {
-      console.error('Erro ao buscar aviso:', error);
-      res.status(500).json({ 
-        erro: 'Erro interno do servidor',
-        detalhes: error.message 
+      console.error("Erro ao buscar aviso:", error);
+
+      res.status(500).json({
+        erro: "Erro interno do servidor",
+        detalhes: error.message,
       });
     }
   },
 
-  // Criar novo aviso
   async criarAviso(req, res) {
     try {
       const { descricao, dataInicio, dataFim, ehPeriodo, corData } = req.body;
 
-      // Validações básicas
       if (!descricao || !dataInicio) {
-        return res.status(400).json({ 
-          erro: 'Descrição e data de início são obrigatórias' 
+        return res.status(400).json({
+          erro: "Descrição e data de início são obrigatórias",
         });
       }
 
       if (ehPeriodo && !dataFim) {
-        return res.status(400).json({ 
-          erro: 'Data final é obrigatória quando é um período' 
+        return res.status(400).json({
+          erro: "Data final é obrigatória quando é um período",
         });
       }
 
-      // Validar se dataFim é posterior a dataInicio quando é período
-      if (ehPeriodo && dataFim && new Date(dataFim) < new Date(dataInicio)) {
-        return res.status(400).json({ 
-          erro: 'Data final deve ser posterior à data inicial' 
+      if (ehPeriodo && new Date(dataFim) < new Date(dataInicio)) {
+        return res.status(400).json({
+          erro: "Data final deve ser posterior à data inicial",
         });
       }
 
       const novoAviso = await Avisos.create({
-        descricao,
+        descricao: descricao.trim(),
         dataInicio,
         dataFim: ehPeriodo ? dataFim : null,
-        ehPeriodo: !!ehPeriodo,
-        corData: corData || '#000000'
+        ehPeriodo: Boolean(ehPeriodo),
+        corData: corData || "#000000",
       });
 
-      // Formatar resposta
-      let dataFormatada;
-      if (novoAviso.ehPeriodo && novoAviso.dataFim) {
-        const dataInicioFormatada = new Date(novoAviso.dataInicio).toLocaleDateString('pt-BR');
-        const dataFimFormatada = new Date(novoAviso.dataFim).toLocaleDateString('pt-BR');
-        dataFormatada = `${dataInicioFormatada} ao ${dataFimFormatada}`;
-      } else {
-        dataFormatada = new Date(novoAviso.dataInicio).toLocaleDateString('pt-BR');
-      }
-
-      const avisoFormatado = {
-        id: novoAviso.id,
-        data: dataFormatada,
-        descricao: novoAviso.descricao,
-        corData: novoAviso.corData,
-        dataInicio: novoAviso.dataInicio,
-        dataFim: novoAviso.dataFim,
-        ehPeriodo: novoAviso.ehPeriodo
-      };
-
-      res.status(201).json(avisoFormatado);
+      res.status(201).json(formatarAviso(novoAviso));
     } catch (error) {
-      console.error('Erro ao criar aviso:', error);
-      res.status(500).json({ 
-        erro: 'Erro interno do servidor',
-        detalhes: error.message 
+      console.error("Erro ao criar aviso:", error);
+
+      res.status(500).json({
+        erro: "Erro interno do servidor",
+        detalhes: error.message,
       });
     }
   },
 
-  // Atualizar aviso
   async atualizarAviso(req, res) {
     try {
       const { id } = req.params;
       const { descricao, dataInicio, dataFim, ehPeriodo, corData } = req.body;
 
-      const aviso = await Avisos.findByPk(id);
-      
-      if (!aviso) {
-        return res.status(404).json({ erro: 'Aviso não encontrado' });
+      if (!validarId(id)) {
+        return res.status(400).json({ erro: "ID inválido" });
       }
 
-      // Validações
-      if (ehPeriodo && dataFim && new Date(dataFim) < new Date(dataInicio)) {
-        return res.status(400).json({ 
-          erro: 'Data final deve ser posterior à data inicial' 
+      const aviso = await Avisos.findById(id);
+
+      if (!aviso) {
+        return res.status(404).json({ erro: "Aviso não encontrado" });
+      }
+
+      const novoEhPeriodo =
+        ehPeriodo !== undefined ? Boolean(ehPeriodo) : aviso.ehPeriodo;
+
+      const novaDataInicio = dataInicio || aviso.dataInicio;
+      const novaDataFim = novoEhPeriodo
+        ? dataFim || aviso.dataFim
+        : null;
+
+      if (novoEhPeriodo && !novaDataFim) {
+        return res.status(400).json({
+          erro: "Data final é obrigatória quando é um período",
         });
       }
 
-      await aviso.update({
-        descricao: descricao || aviso.descricao,
-        dataInicio: dataInicio || aviso.dataInicio,
-        dataFim: ehPeriodo ? (dataFim || aviso.dataFim) : null,
-        ehPeriodo: ehPeriodo !== undefined ? !!ehPeriodo : aviso.ehPeriodo,
-        corData: corData || aviso.corData
-      });
-
-      // Formatar resposta
-      let dataFormatada;
-      if (aviso.ehPeriodo && aviso.dataFim) {
-        const dataInicioFormatada = new Date(aviso.dataInicio).toLocaleDateString('pt-BR');
-        const dataFimFormatada = new Date(aviso.dataFim).toLocaleDateString('pt-BR');
-        dataFormatada = `${dataInicioFormatada} ao ${dataFimFormatada}`;
-      } else {
-        dataFormatada = new Date(aviso.dataInicio).toLocaleDateString('pt-BR');
+      if (
+        novoEhPeriodo &&
+        new Date(novaDataFim) < new Date(novaDataInicio)
+      ) {
+        return res.status(400).json({
+          erro: "Data final deve ser posterior à data inicial",
+        });
       }
 
-      const avisoFormatado = {
-        id: aviso.id,
-        data: dataFormatada,
-        descricao: aviso.descricao,
-        corData: aviso.corData,
-        dataInicio: aviso.dataInicio,
-        dataFim: aviso.dataFim,
-        ehPeriodo: aviso.ehPeriodo
-      };
+      if (descricao !== undefined) {
+        aviso.descricao = descricao.trim();
+      }
 
-      res.status(200).json(avisoFormatado);
+      aviso.dataInicio = novaDataInicio;
+      aviso.dataFim = novaDataFim;
+      aviso.ehPeriodo = novoEhPeriodo;
+
+      if (corData !== undefined) {
+        aviso.corData = corData;
+      }
+
+      await aviso.save();
+
+      res.status(200).json(formatarAviso(aviso));
     } catch (error) {
-      console.error('Erro ao atualizar aviso:', error);
-      res.status(500).json({ 
-        erro: 'Erro interno do servidor',
-        detalhes: error.message 
+      console.error("Erro ao atualizar aviso:", error);
+
+      res.status(500).json({
+        erro: "Erro interno do servidor",
+        detalhes: error.message,
       });
     }
   },
 
-  // Deletar aviso
   async deletarAviso(req, res) {
     try {
       const { id } = req.params;
-      
-      const aviso = await Avisos.findByPk(id);
-      
-      if (!aviso) {
-        return res.status(404).json({ erro: 'Aviso não encontrado' });
+
+      if (!validarId(id)) {
+        return res.status(400).json({ erro: "ID inválido" });
       }
 
-      await aviso.destroy();
-      
-      res.status(200).json({ mensagem: 'Aviso deletado com sucesso' });
+      const aviso = await Avisos.findByIdAndDelete(id);
+
+      if (!aviso) {
+        return res.status(404).json({ erro: "Aviso não encontrado" });
+      }
+
+      res.status(200).json({
+        mensagem: "Aviso deletado com sucesso",
+      });
     } catch (error) {
-      console.error('Erro ao deletar aviso:', error);
-      res.status(500).json({ 
-        erro: 'Erro interno do servidor',
-        detalhes: error.message 
+      console.error("Erro ao deletar aviso:", error);
+
+      res.status(500).json({
+        erro: "Erro interno do servidor",
+        detalhes: error.message,
       });
     }
-  }
+  },
 };
 
 module.exports = avisoController;

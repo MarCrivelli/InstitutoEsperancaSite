@@ -1,86 +1,105 @@
-const connection = require("../config/connection");
+const { mongoose } = require("../config/connection");
+const modelOptions = require("./modelOptions");
 
-const Animais = connection.sequelize.define(
-  "animais",
+const animaisSchema = new mongoose.Schema(
   {
-    id: {
-      type: connection.Sequelize.INTEGER,
-      autoIncrement: true,
-      allowNull: false,
-      primaryKey: true,
-    },
     nome: {
-      type: connection.Sequelize.STRING,
-      allowNull: false,
+      type: String,
+      required: [true, "O nome é obrigatório"],
+      trim: true,
     },
+
     idade: {
-      type: connection.Sequelize.INTEGER,
-      allowNull: false,
+      type: Number,
+      required: [true, "A idade é obrigatória"],
+      min: [0, "A idade não pode ser negativa"],
     },
+
     sexo: {
-      type: connection.Sequelize.STRING,
-      allowNull: false,
+      type: String,
+      required: [true, "O sexo é obrigatório"],
+      trim: true,
     },
+
     tipo: {
-      type: connection.Sequelize.STRING,
-      allowNull: false,
+      type: String,
+      required: [true, "O tipo é obrigatório"],
+      trim: true,
     },
+
     statusMicrochipagem: {
-      type: connection.Sequelize.STRING,
-      allowNull: false,
-      field: "status_microchipagem",
+      type: String,
+      required: [true, "O status de microchipagem é obrigatório"],
+      trim: true,
     },
+
     statusVacinacao: {
-      type: connection.Sequelize.STRING,
-      allowNull: false,
-      field: "status_vacinacao",
+      type: String,
+      required: [true, "O status de vacinação é obrigatório"],
+      trim: true,
     },
+
     statusCastracao: {
-      type: connection.Sequelize.STRING,
-      allowNull: false,
-      field: "status_castracao",
+      type: String,
+      required: [true, "O status de castração é obrigatório"],
+      trim: true,
     },
+
     statusAdocao: {
-      type: connection.Sequelize.STRING,
-      allowNull: false,
-      field: "status_adocao",
+      type: String,
+      required: [true, "O status de adoção é obrigatório"],
+      trim: true,
     },
+
     statusVermifugacao: {
-      type: connection.Sequelize.STRING,
-      allowNull: false,
-      field: "status_vermifugacao",
+      type: String,
+      required: [true, "O status de vermifugação é obrigatório"],
+      trim: true,
     },
+
     imagemEntrada: {
-      type: connection.Sequelize.STRING,
-      allowNull: false,
-      field: "imagem_entrada",
+      type: String,
+      required: [true, "A imagem de entrada é obrigatória"],
+      trim: true,
     },
+
     imagemSaida: {
-      type: connection.Sequelize.STRING,
-      allowNull: true,
-      field: "imagem_saida",
+      type: String,
+      default: null,
+      trim: true,
     },
+
     dataVacinacao: {
-      type: connection.Sequelize.DATE,
-      allowNull: true,
-      field: "data_vacinacao",
+      type: Date,
+      default: null,
     },
+
     descricaoEntrada: {
-      type: connection.Sequelize.TEXT,
-      allowNull: true,
-      field: "descricao_entrada",
+      type: String,
+      default: null,
+      trim: true,
     },
+
     descricaoSaida: {
-      type: connection.Sequelize.TEXT,
-      allowNull: true,
-      field: "descricao_saida",
+      type: String,
+      default: null,
+      trim: true,
     },
   },
   {
-    tableName: "animais",
-    underscored: true,
-    timestamps: true,
+    ...modelOptions,
+    collection: "animais",
   }
 );
 
-module.exports = Animais;
+// Equivale ao antigo "as: itensCarrossel" do Sequelize.
+// É um virtual: os itens continuam armazenados na coleção carrossel_animais.
+animaisSchema.virtual("itensCarrossel", {
+  ref: "CarrosselDeAnimais",
+  localField: "_id",
+  foreignField: "animalId",
+});
+
+module.exports =
+  mongoose.models.Animais ||
+  mongoose.model("Animais", animaisSchema);

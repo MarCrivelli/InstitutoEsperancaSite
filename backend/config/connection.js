@@ -1,118 +1,56 @@
-const { Sequelize } = require('sequelize');
-require('dotenv').config();
+const mongoose = require("mongoose");
+require("dotenv").config();
 
-const commonOptions = {
-  dialect: 'postgres',
-  logging: false,
-  define: {
-    underscored: false,
-    freezeTableName: true,
-    timestamps: true
+let connectionPromise = null;
+
+async function connectDatabase() {
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
   }
-};
 
-let sequelize;
+  if (connectionPromise) {
+    return connectionPromise;
+  }
 
-console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
-console.log('🔍 DATABASE_URL existe?', process.env.DATABASE_URL ? 'SIM' : 'NÃO');
+  const mongoUri = process.env.MONGODB_URI;
 
-if (process.env.DATABASE_URL) {
-  console.log('🌐 Conectando usando DATABASE_URL do Render');
+  if (!mongoUri) {
+    throw new Error(
+      "A variável MONGODB_URI não foi configurada. Adicione-a no arquivo .env e no Render."
+    );
+  }
 
-  sequelize = new Sequelize(process.env.DATABASE_URL, {
-    ...commonOptions,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
-      }
-    }
-  });
-} else {
-  console.log('⚠️ DATABASE_URL não encontrada. Usando configuração local.');
+  console.log("🔍 NODE_ENV:", process.env.NODE_ENV || "development");
+  console.log("🔍 MONGODB_URI existe?", mongoUri ? "SIM" : "NÃO");
+  console.log("🌐 Conectando ao MongoDB...");
 
-  const config = {
-    development: {
-      username: process.env.DB_USER || 'postgres',
-      password: process.env.DB_PWD || '',
-      database: process.env.DB_NAME || 'seu_banco',
-      host: process.env.DB_HOST || 'localhost',
-      port: process.env.DB_PORT || 5432,
-      ...commonOptions,
-      retry: {
-        max: 5,
-        timeout: 5000
-      }
-    },
-    test: {
-      username: process.env.DB_USER || 'postgres',
-      password: process.env.DB_PWD || '',
-      database: process.env.DB_NAME_TEST || 'test_database',
-      host: process.env.DB_HOST || 'localhost',
-      port: process.env.DB_PORT || 5432,
-      dialect: 'postgres',
-      logging: false
-    },
-    production: {
-      username: process.env.DB_USER,
-      password: process.env.DB_PWD,
-      database: process.env.DB_NAME,
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT || 5432,
-      ...commonOptions
-    }
-  };
+  connectionPromise = mongoose
+    .connect(mongoUri, {
+      serverSelectionTimeoutMS: 15000,
+    })
+    .then((mongooseInstance) => {
+      console.log("✅ Conexão com MongoDB estabelecida.");
+      return mongooseInstance.connection;
+    })
+    .catch((error) => {
+      connectionPromise = null;
+      console.error("❌ Falha na conexão com MongoDB:", error.message);
+      throw error;
+    });
 
-  const env = process.env.NODE_ENV || 'development';
-  const currentConfig = config[env];
-
-  sequelize = new Sequelize(
-    currentConfig.database,
-    currentConfig.username,
-    currentConfig.password,
-    currentConfig
-  );
+  return connectionPromise;
 }
 
-sequelize.authenticate()
-  .then(() => {
-    console.log('✅ Conexão com PostgreSQL estabelecida.');
-  })
-  .catch(err => {
-    console.error('❌ Falha na conexão:', err);
-    process.exit(1);
-  });
+mongoose.connection.on("disconnected", () => {
+  console.warn("⚠️ MongoDB desconectado.");
+  connectionPromise = null;
+});
+
+mongoose.connection.on("error", (error) => {
+  console.error("❌ Erro na conexão do MongoDB:", error.message);
+});
 
 module.exports = {
-  sequelize,
-  Sequelize,
-  development: {
-    username: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PWD || '',
-    database: process.env.DB_NAME || 'seu_banco',
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
-    dialect: 'postgres',
-    logging: false
-  },
-  test: {
-    username: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PWD || '',
-    database: process.env.DB_NAME_TEST || 'test_database',
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
-    dialect: 'postgres',
-    logging: false
-  },
-  production: {
-    use_env_variable: 'DATABASE_URL',
-    dialect: 'postgres',
-    logging: false,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
-      }
-    }
-  }
+  mongoose,
+  connectDatabase,
 };

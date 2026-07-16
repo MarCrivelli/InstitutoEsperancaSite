@@ -1,44 +1,66 @@
-const connection = require("../config/connection");
+const { mongoose } = require("../config/connection");
+const modelOptions = require("./modelOptions");
 
-const Avisos = connection.sequelize.define("avisos", {
-  id: {
-    type: connection.Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
+const avisosSchema = new mongoose.Schema(
+  {
+    descricao: {
+      type: String,
+      required: [true, "A descrição é obrigatória"],
+      trim: true,
+    },
+
+    dataInicio: {
+      type: Date,
+      required: [true, "A data de início é obrigatória"],
+    },
+
+    dataFim: {
+      type: Date,
+      default: null,
+    },
+
+    ehPeriodo: {
+      type: Boolean,
+      default: false,
+    },
+
+    corData: {
+      type: String,
+      default: "#000000",
+      trim: true,
+    },
   },
-  descricao: {
-    type: connection.Sequelize.TEXT,
-    allowNull: false,
-  },
-  dataInicio: {
-    type: connection.Sequelize.DATEONLY, 
-    allowNull: false,
-  },
-  dataFim: {
-    type: connection.Sequelize.DATEONLY, // Para períodos
-    allowNull: true, // Pode ser null se for data única
-  },
-  ehPeriodo: {
-    type: connection.Sequelize.BOOLEAN,
-    allowNull: false,
-    defaultValue: false,
-  },
-  corData: {
-    type: connection.Sequelize.STRING(7), // Para cores hex (#ffffff)
-    allowNull: false,
-    defaultValue: '#000000',
-  },
-  createdAt: {
-    type: connection.Sequelize.DATE,
-    allowNull: false,
-    defaultValue: connection.Sequelize.NOW,
-  },
-  updatedAt: {
-    type: connection.Sequelize.DATE,
-    allowNull: false,
-    defaultValue: connection.Sequelize.NOW,
-  },
+  {
+    ...modelOptions,
+    collection: "avisos",
+  }
+);
+
+avisosSchema.pre("validate", function validarPeriodo(next) {
+  if (this.ehPeriodo && !this.dataFim) {
+    return next(
+      new Error("A data final é obrigatória quando o aviso é um período")
+    );
+  }
+
+  if (
+    this.ehPeriodo &&
+    this.dataFim &&
+    this.dataInicio &&
+    this.dataFim < this.dataInicio
+  ) {
+    return next(
+      new Error("A data final deve ser posterior à data inicial")
+    );
+  }
+
+  if (!this.ehPeriodo) {
+    this.dataFim = null;
+  }
+
+  next();
 });
 
-module.exports = Avisos;
+module.exports =
+  mongoose.models.Avisos ||
+  mongoose.model("Avisos", avisosSchema);

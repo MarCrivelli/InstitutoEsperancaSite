@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Animais = require("../models/Animais");
 
 const atualizarStatusVacinacao = (animal) => {
@@ -5,42 +6,32 @@ const atualizarStatusVacinacao = (animal) => {
     const umAnoAtras = new Date();
     umAnoAtras.setFullYear(umAnoAtras.getFullYear() - 1);
 
-    if (new Date(animal.dataVacinacao) < umAnoAtras) {
-      animal.statusVacinacao = "naoVacinado";
-    } else {
-      animal.statusVacinacao = "vacinado";
-    }
+    animal.statusVacinacao =
+      new Date(animal.dataVacinacao) < umAnoAtras
+        ? "naoVacinado"
+        : "vacinado";
   }
+
   return animal;
 };
+
+const validarId = (id) => mongoose.isValidObjectId(id);
 
 // Buscar todos os animais
 const procurarAnimais = async (req, res) => {
   try {
-    const animais = await Animais.findAll({
-      attributes: [
-        "id",
-        "nome",
-        "idade",
-        "sexo",
-        "tipo",
-        "statusMicrochipagem",
-        "statusVacinacao",
-        "statusCastracao",
-        "statusAdocao",
-        "statusVermifugacao",
-        "imagemEntrada",
-        "imagemSaida",
-        "dataVacinacao",
-        "descricaoEntrada",
-        "descricaoSaida",
-      ],
-      order: [["id", "ASC"]],
-    });
+    const animais = await Animais.find()
+      .select(
+        "nome idade sexo tipo statusMicrochipagem statusVacinacao " +
+          "statusCastracao statusAdocao statusVermifugacao imagemEntrada " +
+          "imagemSaida dataVacinacao descricaoEntrada descricaoSaida"
+      )
+      .sort({ createdAt: 1 });
 
     res.status(200).json(animais);
   } catch (error) {
     console.error("Erro ao buscar animais:", error);
+
     res.status(500).json({
       success: false,
       message: "Erro ao buscar animais",
@@ -89,7 +80,11 @@ const cadastrarAnimal = async (req, res) => {
     });
   } catch (error) {
     console.error("Erro ao cadastrar animal:", error);
-    res.status(500).json({ message: "Erro ao cadastrar o animal." });
+
+    res.status(500).json({
+      message: "Erro ao cadastrar o animal.",
+      error: error.message,
+    });
   }
 };
 
@@ -98,19 +93,16 @@ const atualizarAnimal = async (req, res) => {
     const { id } = req.params;
     const dadosRecebidos = req.body;
 
-    console.log("🔄 Atualizando animal ID:", id);
-    console.log("📋 Dados recebidos:", dadosRecebidos);
-
-    if (!id || isNaN(id)) {
+    if (!validarId(id)) {
       return res.status(400).json({
         success: false,
         message: "ID do animal inválido",
       });
     }
 
-    const animal = await Animais.findByPk(id);
+    const animal = await Animais.findById(id);
+
     if (!animal) {
-      console.log("❌ Animal não encontrado:", id);
       return res.status(404).json({
         success: false,
         message: "Animal não encontrado.",
@@ -132,30 +124,42 @@ const atualizarAnimal = async (req, res) => {
       "descricaoSaida",
     ];
 
-    const dadosParaAtualizar = {};
     let houveAlteracao = false;
 
-    camposPermitidos.forEach((campo) => {
-      if (Object.prototype.hasOwnProperty.call(dadosRecebidos, campo)) {
-        let valor = dadosRecebidos[campo];
-
-        if (typeof valor === "string") {
-          valor = valor.trim();
-        }
-
-        if (campo === "dataVacinacao" && !valor) {
-          valor = null;
-        }
-
-        if (animal[campo] !== valor) {
-          dadosParaAtualizar[campo] = valor;
-          houveAlteracao = true;
-          console.log(
-            `📝 Campo alterado - ${campo}: "${animal[campo]}" → "${valor}"`
-          );
-        }
+    for (const campo of camposPermitidos) {
+      if (!Object.prototype.hasOwnProperty.call(dadosRecebidos, campo)) {
+        continue;
       }
-    });
+
+      let valor = dadosRecebidos[campo];
+
+      if (typeof valor === "string") {
+        valor = valor.trim();
+      }
+
+      if (campo === "idade" && valor !== "") {
+        valor = Number(valor);
+      }
+
+      if (campo === "dataVacinacao" && !valor) {
+        valor = null;
+      }
+
+      const valorAtual =
+        animal[campo] instanceof Date
+          ? animal[campo].toISOString()
+          : animal[campo];
+
+      const novoValor =
+        campo === "dataVacinacao" && valor
+          ? new Date(valor).toISOString()
+          : valor;
+
+      if (String(valorAtual ?? "") !== String(novoValor ?? "")) {
+        animal[campo] = valor;
+        houveAlteracao = true;
+      }
+    }
 
     if (!houveAlteracao) {
       return res.status(200).json({
@@ -165,26 +169,14 @@ const atualizarAnimal = async (req, res) => {
       });
     }
 
-    Object.keys(dadosParaAtualizar).forEach((campo) => {
-      animal[campo] = dadosParaAtualizar[campo];
-    });
-
     if (
-      dadosParaAtualizar.hasOwnProperty("dataVacinacao") ||
-      dadosParaAtualizar.hasOwnProperty("statusVacinacao")
+      Object.prototype.hasOwnProperty.call(dadosRecebidos, "dataVacinacao") ||
+      Object.prototype.hasOwnProperty.call(dadosRecebidos, "statusVacinacao")
     ) {
       atualizarStatusVacinacao(animal);
     }
 
     await animal.save();
-
-    console.log("✅ Animal atualizado com sucesso");
-    console.log("📋 Dados finais do animal:", {
-      id: animal.id,
-      nome: animal.nome,
-      descricaoEntrada: animal.descricaoEntrada,
-      descricaoSaida: animal.descricaoSaida,
-    });
 
     res.status(200).json({
       success: true,
@@ -193,12 +185,11 @@ const atualizarAnimal = async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Erro ao atualizar animal:", error);
-    console.error("❌ Stack trace:", error.stack);
 
     res.status(500).json({
       success: false,
       message: "Erro ao atualizar animal.",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      error: error.message,
     });
   }
 };
@@ -207,9 +198,16 @@ const atualizarAnimal = async (req, res) => {
 const buscarAnimalPorId = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("🔍 Buscando animal por ID:", id);
 
-    const animal = await Animais.findByPk(id);
+    if (!validarId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID do animal inválido.",
+      });
+    }
+
+    const animal = await Animais.findById(id);
+
     if (!animal) {
       return res.status(404).json({
         success: false,
@@ -219,17 +217,13 @@ const buscarAnimalPorId = async (req, res) => {
 
     const animalData = animal.toJSON();
 
-    if (!animalData.hasOwnProperty("descricaoSaida")) {
-      animalData.descricaoSaida = null;
-    }
-
-    if (!animalData.hasOwnProperty("descricaoEntrada")) {
-      animalData.descricaoEntrada = null;
-    }
+    animalData.descricaoSaida ??= null;
+    animalData.descricaoEntrada ??= null;
 
     res.status(200).json(animalData);
   } catch (error) {
     console.error("❌ Erro ao buscar animal:", error);
+
     res.status(500).json({
       success: false,
       message: "Erro ao buscar animal.",
@@ -243,6 +237,13 @@ const atualizarImagemSaida = async (req, res) => {
   try {
     const { id } = req.params;
 
+    if (!validarId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID do animal inválido",
+      });
+    }
+
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -250,7 +251,8 @@ const atualizarImagemSaida = async (req, res) => {
       });
     }
 
-    const animal = await Animais.findByPk(id);
+    const animal = await Animais.findById(id);
+
     if (!animal) {
       return res.status(404).json({
         success: false,
@@ -258,13 +260,8 @@ const atualizarImagemSaida = async (req, res) => {
       });
     }
 
-    const imagemAnterior = animal.imagemSaida;
     animal.imagemSaida = req.file.filename;
     await animal.save();
-
-    console.log(
-      `✅ Imagem de saída atualizada: "${imagemAnterior}" → "${req.file.filename}"`
-    );
 
     res.status(200).json({
       success: true,
@@ -273,6 +270,7 @@ const atualizarImagemSaida = async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Erro ao atualizar imagem de saída:", error);
+
     res.status(500).json({
       success: false,
       message: "Erro interno ao atualizar imagem",
@@ -286,6 +284,13 @@ const atualizarImagemEntrada = async (req, res) => {
   try {
     const { id } = req.params;
 
+    if (!validarId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID do animal inválido",
+      });
+    }
+
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -293,7 +298,8 @@ const atualizarImagemEntrada = async (req, res) => {
       });
     }
 
-    const animal = await Animais.findByPk(id);
+    const animal = await Animais.findById(id);
+
     if (!animal) {
       return res.status(404).json({
         success: false,
@@ -301,13 +307,8 @@ const atualizarImagemEntrada = async (req, res) => {
       });
     }
 
-    const imagemAnterior = animal.imagemEntrada;
     animal.imagemEntrada = req.file.filename;
     await animal.save();
-
-    console.log(
-      `✅ Imagem de entrada atualizada: "${imagemAnterior}" → "${req.file.filename}"`
-    );
 
     res.status(200).json({
       success: true,
@@ -316,6 +317,7 @@ const atualizarImagemEntrada = async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Erro ao atualizar imagem de entrada:", error);
+
     res.status(500).json({
       success: false,
       message: "Erro ao atualizar imagem de entrada.",
@@ -330,6 +332,13 @@ const atualizarDescricaoSaida = async (req, res) => {
     const { id } = req.params;
     const { descricaoSaida } = req.body;
 
+    if (!validarId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID do animal inválido",
+      });
+    }
+
     if (!descricaoSaida || descricaoSaida.trim() === "") {
       return res.status(400).json({
         success: false,
@@ -337,16 +346,18 @@ const atualizarDescricaoSaida = async (req, res) => {
       });
     }
 
-    const animal = await Animais.findByPk(id);
+    const animal = await Animais.findByIdAndUpdate(
+      id,
+      { descricaoSaida: descricaoSaida.trim() },
+      { new: true, runValidators: true }
+    );
+
     if (!animal) {
       return res.status(404).json({
         success: false,
         message: "Animal não encontrado",
       });
     }
-
-    animal.descricaoSaida = descricaoSaida.trim();
-    await animal.save();
 
     return res.status(200).json({
       success: true,
@@ -355,6 +366,7 @@ const atualizarDescricaoSaida = async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Erro ao atualizar descrição de saída:", error);
+
     return res.status(500).json({
       success: false,
       message: "Erro ao atualizar descrição de saída",

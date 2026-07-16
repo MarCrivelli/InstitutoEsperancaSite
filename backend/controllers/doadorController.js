@@ -1,15 +1,21 @@
+const mongoose = require("mongoose");
 const Doadores = require("../models/Doadores");
+
+const validarId = (id) => mongoose.isValidObjectId(id);
 
 // Listar todos os doadores
 const listarDoadores = async (req, res) => {
   try {
-    const doadores = await Doadores.findAll({
-      order: [["createdAt", "DESC"]], // Ordena do mais recente para o mais antigo
-    });
+    const doadores = await Doadores.find().sort({ createdAt: -1 });
+
     res.json(doadores);
   } catch (error) {
     console.error("Erro ao listar doadores:", error);
-    res.status(500).json({ message: "Erro ao listar os doadores." });
+
+    res.status(500).json({
+      message: "Erro ao listar os doadores.",
+      error: error.message,
+    });
   }
 };
 
@@ -19,7 +25,15 @@ const cadastrarDoador = async (req, res) => {
     const { nome, descricao } = req.body;
 
     if (!req.file) {
-      return res.status(400).json({ message: "Imagem é obrigatória." });
+      return res.status(400).json({
+        message: "Imagem é obrigatória.",
+      });
+    }
+
+    if (descricao && descricao.length > 500) {
+      return res.status(400).json({
+        message: "A descrição não pode exceder 500 caracteres",
+      });
     }
 
     const novoDoador = await Doadores.create({
@@ -28,32 +42,44 @@ const cadastrarDoador = async (req, res) => {
       imagem: req.file.filename,
     });
 
-    // Adicione o log aqui:
-    console.log("Doador criado:", {
-      id: novoDoador.id,
-      nome: novoDoador.nome,
-      imagem: novoDoador.imagem,
-      caminhoCompleto: `/uploads/${novoDoador.imagem}`,
-    });
-
     res.status(201).json(novoDoador);
   } catch (error) {
     console.error("Erro ao cadastrar doador:", error);
-    res.status(500).json({ message: "Erro ao cadastrar o doador." });
+
+    res.status(500).json({
+      message: "Erro ao cadastrar o doador.",
+      error: error.message,
+    });
   }
 };
 
 // Buscar doador por ID
 const buscarDoadorPorId = async (req, res) => {
   try {
-    const doador = await Doadores.findByPk(req.params.id);
-    if (!doador) {
-      return res.status(404).json({ message: "Doador não encontrado." });
+    const { id } = req.params;
+
+    if (!validarId(id)) {
+      return res.status(400).json({
+        message: "ID do doador inválido.",
+      });
     }
+
+    const doador = await Doadores.findById(id);
+
+    if (!doador) {
+      return res.status(404).json({
+        message: "Doador não encontrado.",
+      });
+    }
+
     res.json(doador);
   } catch (error) {
     console.error("Erro ao buscar doador:", error);
-    res.status(500).json({ message: "Erro ao buscar doador." });
+
+    res.status(500).json({
+      message: "Erro ao buscar doador.",
+      error: error.message,
+    });
   }
 };
 
@@ -63,13 +89,11 @@ const atualizarDoador = async (req, res) => {
     const { id } = req.params;
     const { nome, descricao } = req.body;
 
-    const doador = await Doadores.findByPk(id);
-    if (!doador) {
-      return res.status(404).json({ message: "Doador não encontrado." });
+    if (!validarId(id)) {
+      return res.status(400).json({
+        message: "ID do doador inválido.",
+      });
     }
-
-    doador.nome = nome || doador.nome;
-    doador.descricao = descricao || doador.descricao;
 
     if (descricao && descricao.length > 500) {
       return res.status(400).json({
@@ -77,8 +101,23 @@ const atualizarDoador = async (req, res) => {
       });
     }
 
+    const doador = await Doadores.findById(id);
+
+    if (!doador) {
+      return res.status(404).json({
+        message: "Doador não encontrado.",
+      });
+    }
+
+    if (nome !== undefined && nome.trim()) {
+      doador.nome = nome.trim();
+    }
+
+    if (descricao !== undefined) {
+      doador.descricao = descricao.trim();
+    }
+
     if (req.file) {
-      // Aqui você pode adicionar lógica para deletar a imagem antiga se quiser
       doador.imagem = req.file.filename;
     }
 
@@ -90,25 +129,43 @@ const atualizarDoador = async (req, res) => {
     });
   } catch (error) {
     console.error("Erro ao atualizar doador:", error);
-    res.status(500).json({ message: "Erro ao atualizar doador." });
+
+    res.status(500).json({
+      message: "Erro ao atualizar doador.",
+      error: error.message,
+    });
   }
 };
 
 // Deletar doador
 const deletarDoador = async (req, res) => {
   try {
-    const doador = await Doadores.findByPk(req.params.id);
-    if (!doador) {
-      return res.status(404).json({ message: "Doador não encontrado." });
+    const { id } = req.params;
+
+    if (!validarId(id)) {
+      return res.status(400).json({
+        message: "ID do doador inválido.",
+      });
     }
 
-    // Aqui você pode adicionar lógica para deletar a imagem associada se quiser
-    await doador.destroy();
+    const doador = await Doadores.findByIdAndDelete(id);
 
-    res.json({ message: "Doador deletado com sucesso!" });
+    if (!doador) {
+      return res.status(404).json({
+        message: "Doador não encontrado.",
+      });
+    }
+
+    res.json({
+      message: "Doador deletado com sucesso!",
+    });
   } catch (error) {
     console.error("Erro ao deletar doador:", error);
-    res.status(500).json({ message: "Erro ao deletar doador." });
+
+    res.status(500).json({
+      message: "Erro ao deletar doador.",
+      error: error.message,
+    });
   }
 };
 

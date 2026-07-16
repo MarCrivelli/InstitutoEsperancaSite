@@ -1,22 +1,13 @@
-require('dotenv').config();
+require("dotenv").config();
 
 module.exports = {
   development: {
-    database: process.env.DB_NAME,
-    username: process.env.DB_USER,
-    password: process.env.DB_PWD,
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
-    dialect: 'postgres',
-    logging: false
+    uri: process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/instituto_esperanca",
+  },
+  test: {
+    uri: process.env.MONGODB_URI_TEST || "mongodb://127.0.0.1:27017/instituto_esperanca_test",
   },
   production: {
-    database: process.env.DB_NAME,
-    username: process.env.DB_USER,
-    password: process.env.DB_PWD,
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
-    dialect: 'postgres',
-    logging: false
-  }
+    uri: process.env.MONGODB_URI,
+  },
 };

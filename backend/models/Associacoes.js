@@ -1,19 +1,15 @@
-// models/Associacoes.js
-const Animais = require("./Animais");
-const CarrosselAnimais = require("./CarrosselDeAnimais");
+/*
+ * No Mongoose, as associações são definidas dentro dos schemas.
+ *
+ * Animais.js possui o virtual "itensCarrossel".
+ * CarrosselDeAnimais.js possui:
+ *   animalId: { type: ObjectId, ref: "Animais" }
+ *
+ * Portanto, este arquivo não precisa executar nenhuma configuração.
+ */
 
 function setupAssociations() {
-  Animais.hasMany(CarrosselAnimais, {
-    foreignKey: "animalId",
-    as: "itensCarrossel",
-  });
-
-  CarrosselAnimais.belongsTo(Animais, {
-    foreignKey: "animalId",
-    as: "animal",
-  });
-
-  console.log("Associações configuradas com sucesso");
+  console.log("✅ Referências do Mongoose configuradas nos schemas.");
 }
 
 module.exports = setupAssociations;

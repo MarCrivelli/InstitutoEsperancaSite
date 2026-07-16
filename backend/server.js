@@ -4,8 +4,13 @@ const path = require("path");
 
 require("dotenv").config();
 
-const app = express();
+const { connectDatabase } = require("./config/connection");
 
+const {
+  inicializarSistema,
+} = require("./controllers/usuariosController");
+
+const app = express();
 const PORT = process.env.PORT || 3003;
 
 // ============================================================================
@@ -20,15 +25,11 @@ const origensPermitidas = [
   "http://127.0.0.1:5173",
   "http://127.0.0.1:3000",
   "http://127.0.0.1:3001",
-
-  // GitHub Pages
   "https://marcrivelli.github.io",
 ];
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Permite requisições sem Origin,
-    // como Postman, navegador direto ou serviços internos.
     if (!origin) {
       return callback(null, true);
     }
@@ -40,20 +41,13 @@ const corsOptions = {
     console.error(`❌ Origem bloqueada pelo CORS: ${origin}`);
 
     return callback(
-      new Error(`Origem não permitida pelo CORS: ${origin}`),
+      new Error(`Origem não permitida pelo CORS: ${origin}`)
     );
   },
 
   credentials: true,
 
-  methods: [
-    "GET",
-    "POST",
-    "PUT",
-    "PATCH",
-    "DELETE",
-    "OPTIONS",
-  ],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 
   allowedHeaders: [
     "Content-Type",
@@ -74,19 +68,17 @@ app.use(
   express.urlencoded({
     extended: true,
     limit: "10mb",
-  }),
+  })
 );
 
-// Servir arquivos estáticos
 app.use(
   "/uploads",
-  express.static(path.join(__dirname, "uploads")),
+  express.static(path.join(__dirname, "uploads"))
 );
 
-// Log de requisições
 app.use((req, res, next) => {
   console.log(
-    `${req.method} ${req.path} - Origin: ${req.get("origin")}`,
+    `${req.method} ${req.path} - Origin: ${req.get("origin") || "sem origin"}`
   );
 
   next();
@@ -118,12 +110,18 @@ app.get("/teste-cors", (req, res) => {
 // ============================================================================
 
 const routes = require("./routers/routes");
-
 app.use("/", routes);
 
 // ============================================================================
-// TRATAMENTO DE ERROS
+// TRATAMENTO DE ROTAS E ERROS
 // ============================================================================
+
+app.use((req, res) => {
+  res.status(404).json({
+    erro: true,
+    mensagem: "Rota não encontrada",
+  });
+});
 
 app.use((err, req, res, next) => {
   console.error("❌ Erro não tratado:", err);
@@ -139,9 +137,27 @@ app.use((err, req, res, next) => {
 });
 
 // ============================================================================
-// INICIAR SERVIDOR
+// CONECTAR AO BANCO E INICIAR O SERVIDOR
 // ============================================================================
 
-app.listen(PORT, () => {
-  console.log(`✅ Servidor rodando na porta ${PORT}`);
-});
+async function startServer() {
+  try {
+    await connectDatabase();
+
+    await inicializarSistema();
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`✅ Servidor rodando na porta ${PORT}`);
+    });
+  } catch (error) {
+    console.error(
+      "❌ O servidor não foi iniciado:",
+      error.message
+    );
+
+    process.exit(1);
+  }
+}
+
+startServer();
+

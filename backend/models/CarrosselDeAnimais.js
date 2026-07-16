@@ -1,37 +1,36 @@
-const connection = require("../config/connection");
+const { mongoose } = require("../config/connection");
+const modelOptions = require("./modelOptions");
 
-const CarrosselDeAnimais = connection.sequelize.define(
-  "carrossel_animais",
+const carrosselDeAnimaisSchema = new mongoose.Schema(
   {
-    id: {
-      type: connection.Sequelize.INTEGER,
-      autoIncrement: true,
-      allowNull: false,
-      primaryKey: true,
-    },
     animalId: {
-      type: connection.Sequelize.INTEGER,
-      allowNull: false,
-      references: {
-        model: "animais",
-        key: "id",
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Animais",
+      required: [true, "O animal é obrigatório"],
+      index: true,
     },
+
     descricaoSaida: {
-      type: connection.Sequelize.TEXT,
-      allowNull: true,
-      field: "descricao_saida",
+      type: String,
+      default: null,
+      trim: true,
     },
+
     ordem: {
-      type: connection.Sequelize.INTEGER,
-      allowNull: false,
+      type: Number,
+      required: [true, "A ordem é obrigatória"],
+      min: [0, "A ordem não pode ser negativa"],
     },
   },
   {
-    tableName: "carrossel_animais",
-    underscored: true,
-    timestamps: true,
-  },
+    ...modelOptions,
+    collection: "carrossel_animais",
+  }
 );
 
-module.exports = CarrosselDeAnimais;
+module.exports =
+  mongoose.models.CarrosselDeAnimais ||
+  mongoose.model(
+    "CarrosselDeAnimais",
+    carrosselDeAnimaisSchema
+  );

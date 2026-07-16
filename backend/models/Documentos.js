@@ -1,27 +1,32 @@
-const connection = require("../config/connection");
+const { mongoose } = require("../config/connection");
+const modelOptions = require("./modelOptions");
 
-const Documentos = connection.sequelize.define("documentos", {
-  id: {
-    type: connection.Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
+const documentosSchema = new mongoose.Schema(
+  {
+    nome: {
+      type: String,
+      required: [true, "O nome é obrigatório"],
+      trim: true,
+    },
+
+    tipoDeArquivo: {
+      type: String,
+      required: [true, "O tipo do arquivo é obrigatório"],
+      trim: true,
+    },
+
+    caminhoArquivo: {
+      type: String,
+      required: [true, "O caminho do arquivo é obrigatório"],
+      trim: true,
+    },
   },
+  {
+    ...modelOptions,
+    collection: "documentos",
+  }
+);
 
-  nome: {
-    type: connection.Sequelize.STRING,
-    allowNull: false,
-  },
-
-  tipoDeArquivo: {
-    type: connection.Sequelize.STRING,
-    allowNull: false,
-  },
-
-  caminhoArquivo: {
-    type: connection.Sequelize.STRING,
-    allowNull: false,
-  },
-});
-
-module.exports = Documentos;
+module.exports =
+  mongoose.models.Documentos ||
+  mongoose.model("Documentos", documentosSchema);

@@ -1,6 +1,19 @@
+const mongoose = require("mongoose");
 const Documentos = require("../models/Documentos");
 const path = require("path");
 const fs = require("fs");
+
+const validarId = (id) => mongoose.isValidObjectId(id);
+
+const removerArquivoSeExistir = (caminho) => {
+  try {
+    if (caminho && fs.existsSync(caminho)) {
+      fs.unlinkSync(caminho);
+    }
+  } catch (error) {
+    console.error("Erro ao remover arquivo:", error.message);
+  }
+};
 
 const cadastrarDocumento = async (req, res) => {
   try {
@@ -12,14 +25,17 @@ const cadastrarDocumento = async (req, res) => {
     }
 
     const extensoesPermitidas = [".doc", ".docx", ".xls", ".xlsx"];
-    const extensaoArquivo = path.extname(req.file.originalname).toLowerCase();
+    const extensaoArquivo = path.extname(
+      req.file.originalname
+    ).toLowerCase();
 
     if (!extensoesPermitidas.includes(extensaoArquivo)) {
-      fs.unlinkSync(req.file.path);
+      removerArquivoSeExistir(req.file.path);
 
       return res.status(400).json({
         success: false,
-        message: "Tipo de arquivo não permitido. Envie apenas Word ou Excel.",
+        message:
+          "Tipo de arquivo não permitido. Envie apenas Word ou Excel.",
       });
     }
 
@@ -37,6 +53,10 @@ const cadastrarDocumento = async (req, res) => {
   } catch (error) {
     console.error("Erro ao cadastrar documento:", error);
 
+    if (req.file?.path) {
+      removerArquivoSeExistir(req.file.path);
+    }
+
     return res.status(500).json({
       success: false,
       message: "Erro ao cadastrar documento.",
@@ -47,17 +67,20 @@ const cadastrarDocumento = async (req, res) => {
 
 const listarDocumentos = async (req, res) => {
   try {
-    const pagina = Number(req.query.page) || 1;
-    const limite = Number(req.query.limit) || 10;
+    const pagina = Math.max(Number(req.query.page) || 1, 1);
+    const limite = Math.min(
+      Math.max(Number(req.query.limit) || 10, 1),
+      100
+    );
     const offset = (pagina - 1) * limite;
 
-    const { count, rows } = await Documentos.findAndCountAll({
-      limit: limite,
-      offset,
-      order: [["createdAt", "DESC"]],
-    });
-
-    const totalPaginas = Math.ceil(count / limite);
+    const [count, rows] = await Promise.all([
+      Documentos.countDocuments(),
+      Documentos.find()
+        .sort({ createdAt: -1 })
+        .skip(offset)
+        .limit(limite),
+    ]);
 
     return res.status(200).json({
       success: true,
@@ -66,7 +89,7 @@ const listarDocumentos = async (req, res) => {
         paginaAtual: pagina,
         limitePorPagina: limite,
         totalDocumentos: count,
-        totalPaginas,
+        totalPaginas: Math.ceil(count / limite),
       },
     });
   } catch (error) {
@@ -84,7 +107,14 @@ const deletarDocumento = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const documento = await Documentos.findByPk(id);
+    if (!validarId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID do documento inválido.",
+      });
+    }
+
+    const documento = await Documentos.findById(id);
 
     if (!documento) {
       return res.status(404).json({
@@ -99,11 +129,8 @@ const deletarDocumento = async (req, res) => {
       documento.caminhoArquivo
     );
 
-    if (fs.existsSync(caminhoCompleto)) {
-      fs.unlinkSync(caminhoCompleto);
-    }
-
-    await documento.destroy();
+    removerArquivoSeExistir(caminhoCompleto);
+    await documento.deleteOne();
 
     return res.status(200).json({
       success: true,

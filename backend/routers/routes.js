@@ -12,7 +12,7 @@ const animalController = require(
 );
 
 const carrosselAnimaisController = require(
-  "../controllers/carrosselDeAnimaisController",
+  "../controllers/carrosselAnimaisController",
 );
 
 const doadorController = require(
