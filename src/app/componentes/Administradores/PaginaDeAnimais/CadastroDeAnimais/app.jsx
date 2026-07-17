@@ -13,12 +13,12 @@ export default function CadastroDeAnimais({ onAnimalCadastrado, onClose }) {
   const [statusCastracao, setStatusCastracao] = useState("");
   const [statusAdocao, setStatusAdocao] = useState("");
   const [statusVermifugacao, setStatusVermifugacao] = useState("");
-  const [image, setImage] = useState(null);
+  const [imagemEntrada, setImagemEntrada] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
-      setImage(event.target.files[0]);
+      setImagemEntrada(event.target.files[0]);
     }
   };
 
@@ -32,7 +32,7 @@ export default function CadastroDeAnimais({ onAnimalCadastrado, onClose }) {
     setStatusCastracao("");
     setStatusAdocao("");
     setStatusVermifugacao("");
-    setImage(null);
+    setImagemEntrada(null);
   };
 
   const registrarAnimal = async (event) => {
@@ -48,7 +48,7 @@ export default function CadastroDeAnimais({ onAnimalCadastrado, onClose }) {
       !statusCastracao ||
       !statusAdocao ||
       !statusVermifugacao ||
-      !image
+      !imagemEntrada
     ) {
       alert("Preencha todos os campos e selecione uma imagem.");
       return;
@@ -67,7 +67,7 @@ export default function CadastroDeAnimais({ onAnimalCadastrado, onClose }) {
     formData.append("statusCastracao", statusCastracao);
     formData.append("statusAdocao", statusAdocao);
     formData.append("statusVermifugacao", statusVermifugacao);
-    formData.append("imagem", image);
+    formData.append("imagemEntrada", imagemEntrada);
 
     try {
       const token = localStorage.getItem("token");
@@ -143,7 +143,7 @@ export default function CadastroDeAnimais({ onAnimalCadastrado, onClose }) {
       <div className={styles.inserirImagem}>
         <img
           className={styles.previaImagem}
-          src={image ? URL.createObjectURL(image) : ""}
+          src={imagemEntrada ? URL.createObjectURL(imagemEntrada) : ""}
           alt="Prévia da imagem"
         />
         <label htmlFor="inputDeImagem" className={styles.labelDeImagem}>
@@ -157,7 +157,7 @@ export default function CadastroDeAnimais({ onAnimalCadastrado, onClose }) {
           accept="image/*"
         />
         <span className={styles.nomeArquivo}>
-          {image ? image.name : "Nenhum arquivo selecionado"}
+          {imagemEntrada ? imagemEntrada.name : "Nenhum arquivo selecionado"}
         </span>
       </div>
 

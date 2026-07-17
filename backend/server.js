@@ -8,7 +8,7 @@ const { connectDatabase } = require("./config/connection");
 
 const {
   inicializarSistema,
-} = require("./controllers/usuariosController");
+} = require("./controllers/usuarioController");
 
 const app = express();
 const PORT = process.env.PORT || 3003;

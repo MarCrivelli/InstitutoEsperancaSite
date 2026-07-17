@@ -7,9 +7,7 @@ const atualizarStatusVacinacao = (animal) => {
     umAnoAtras.setFullYear(umAnoAtras.getFullYear() - 1);
 
     animal.statusVacinacao =
-      new Date(animal.dataVacinacao) < umAnoAtras
-        ? "naoVacinado"
-        : "vacinado";
+      new Date(animal.dataVacinacao) < umAnoAtras ? "naoVacinado" : "vacinado";
   }
 
   return animal;
@@ -24,7 +22,7 @@ const procurarAnimais = async (req, res) => {
       .select(
         "nome idade sexo tipo statusMicrochipagem statusVacinacao " +
           "statusCastracao statusAdocao statusVermifugacao imagemEntrada " +
-          "imagemSaida dataVacinacao descricaoEntrada descricaoSaida"
+          "imagemSaida dataVacinacao descricaoEntrada descricaoSaida",
       )
       .sort({ createdAt: 1 });
 
@@ -59,6 +57,13 @@ const cadastrarAnimal = async (req, res) => {
 
     const imagemEntrada = req.file ? req.file.filename : null;
 
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "A imagem de entrada é obrigatória.",
+      });
+    }
+
     const novoAnimal = await Animais.create({
       nome,
       idade,
@@ -79,10 +84,21 @@ const cadastrarAnimal = async (req, res) => {
       animal: novoAnimal,
     });
   } catch (error) {
-    console.error("Erro ao cadastrar animal:", error);
+    console.error("❌ Erro completo ao cadastrar animal:", error);
 
-    res.status(500).json({
-      message: "Erro ao cadastrar o animal.",
+    if (error.name === "ValidationError") {
+      const erros = Object.values(error.errors).map((item) => item.message);
+
+      return res.status(400).json({
+        success: false,
+        message: "Dados inválidos para cadastrar o animal.",
+        erros,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Erro interno do servidor.",
       error: error.message,
     });
   }
@@ -349,7 +365,7 @@ const atualizarDescricaoSaida = async (req, res) => {
     const animal = await Animais.findByIdAndUpdate(
       id,
       { descricaoSaida: descricaoSaida.trim() },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!animal) {
