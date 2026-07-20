@@ -3,6 +3,17 @@ import Select from "react-select";
 import styles from "./funcoesAdm.module.css";
 
 export default function FuncoesDeAdministrador() {
+  const propriedadesMenuSelect = {
+    menuPortalTarget: document.body,
+    menuPosition: "fixed",
+    styles: {
+      menuPortal: (estilosBase) => ({
+        ...estilosBase,
+        zIndex: 9999,
+      }),
+    },
+  };
+
   // ==========================================================================
   // ESTADOS GERAIS
   // ==========================================================================
@@ -40,26 +51,6 @@ export default function FuncoesDeAdministrador() {
     nivelAcessoConvite,
     setNivelAcessoConvite,
   ] = useState(null);
-
-  // ==========================================================================
-  // REDES SOCIAIS
-  // ==========================================================================
-
-  const [
-    credenciaisInstagram,
-    setCredenciaisInstagram,
-  ] = useState({
-    usuario: "",
-    senha: "",
-  });
-
-  const [
-    credenciaisFacebook,
-    setCredenciaisFacebook,
-  ] = useState({
-    email: "",
-    senha: "",
-  });
 
   // ==========================================================================
   // OPÇÕES DE NÍVEL DE ACESSO
@@ -599,6 +590,8 @@ export default function FuncoesDeAdministrador() {
           </h1>
 
           <Select
+            {...propriedadesMenuSelect}
+
             options={usuarios}
             value={usuarioSelecionadoExcluir}
 
@@ -658,6 +651,8 @@ export default function FuncoesDeAdministrador() {
           </h1>
 
           <Select
+            {...propriedadesMenuSelect}
+
             options={usuarios}
 
             value={usuarioSelecionadoAlterar}
@@ -688,6 +683,8 @@ export default function FuncoesDeAdministrador() {
           </h1>
 
           <Select
+            {...propriedadesMenuSelect}
+
             options={nivelDeAcesso}
 
             value={novoNivelAcesso}
@@ -769,6 +766,8 @@ export default function FuncoesDeAdministrador() {
           </h1>
 
           <Select
+            {...propriedadesMenuSelect}
+
             options={nivelDeAcesso}
 
             value={nivelAcessoConvite}
@@ -812,7 +811,7 @@ export default function FuncoesDeAdministrador() {
         </div>
 
       </div>
-
+      
     </div>
   );
 }

@@ -78,18 +78,6 @@
   background-color: rgb(111, 0, 255);
 }
 
-.botaoInserirInstagram {
-  background-color: rgb(0, 179, 27);
-}
-
-.botaoInserirFacebook {
-  background-color: #0866ff;
-}
-
-.blocoRedesSociais {
-  row-gap: 30px;
-}
-
 @media (max-width: 500px) {
   .blocoFuncao {
     padding: 0px 0px 30px 0px;
@@ -107,10 +95,6 @@
 
   .blocoFuncao {
     gap: 0;
-  }
-
-  .blocoRedesSociais {
-    row-gap: 20px;
   }
 
   .funcao {

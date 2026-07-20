@@ -176,8 +176,6 @@ export default function CadastroELogin({ onLoginSucesso }) {
       // Este é o JWT do Instituto Esperança,
       // não o token do Google.
       onLoginSucesso(dados.usuario, dados.token);
-
-      alert("Login com Google realizado com sucesso!");
     } catch (erro) {
       console.error("❌ Erro no login Google:", erro);
 
@@ -273,7 +271,6 @@ export default function CadastroELogin({ onLoginSucesso }) {
 
       if (resposta.ok && !dados.erro) {
         if (dados.loginAutomatico && dados.token) {
-          alert(`${dados.mensagem}`);
           onLoginSucesso(dados.usuario, dados.token);
         } else {
           alert("Usuário cadastrado com sucesso!");
@@ -318,7 +315,6 @@ export default function CadastroELogin({ onLoginSucesso }) {
       const dados = await resposta.json();
 
       if (resposta.ok && !dados.erro) {
-        alert("Login realizado com sucesso!");
         onLoginSucesso(dados.usuario, dados.token);
         setUsuario({ nome: "", email: "", senha: "" });
       } else {

@@ -77,9 +77,15 @@ app.use(
 );
 
 app.use((req, res, next) => {
-  console.log(
-    `${req.method} ${req.path} - Origin: ${req.get("origin") || "sem origin"}`
-  );
+  const inicio = Date.now();
+
+  res.on("finish", () => {
+    const duracao = Date.now() - inicio;
+
+    console.log(
+      `${req.method} ${req.originalUrl} ${res.statusCode} - ${duracao}ms - Origin: ${req.get("origin") || "sem origin"}`
+    );
+  });
 
   next();
 });
@@ -160,4 +166,3 @@ async function startServer() {
 }
 
 startServer();
-
