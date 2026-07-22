@@ -69,6 +69,12 @@ const descricoes = [
   { value: "descricaoSaida", label: "Descrição de saída" },
 ];
 
+const tipoArquivo = [
+  { value: "todos", label: "Todos" },
+  { value: "word", label: "Word" },
+  { value: "excel", label: "Excel" },
+];
+
 // Função para obter o label a partir do value
 export const vincularLabel = (value, optionType) => {
   if (!value) return "";
@@ -84,6 +90,7 @@ export const vincularLabel = (value, optionType) => {
     StatusMicrochipagem,
     StatusVermifugacao,
     descricoes,
+    tipoArquivo,
   }[optionType];
 
   const found = options?.find((opt) => opt.value === value);
@@ -102,5 +109,6 @@ export default {
   StatusMicrochipagem,
   StatusVermifugacao,
   descricoes,
+  tipoArquivo,
   vincularLabel,
 };
