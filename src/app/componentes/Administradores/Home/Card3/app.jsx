@@ -29,22 +29,16 @@ export default function Card3() {
 
   const imagemFiltro = `${urlPublica}card3/filtro.png`;
 
-  const imagemAdicionar = `${urlPublica}adicionarOuRemover/adicionar_branco.png`;
+  const imagemAdicionar = `${urlPublica}adicionarOuRemover/adicionar_azulEsverdeado.png`;
+  
+  const imagemRemover = `${urlPublica}card3/lixeira.png`;
 
-  /*
-   * Ícone personalizado apresentado no lado direito
-   * do Select.
-   */
   const IndicadorFiltro = (props) => (
     <components.DropdownIndicator {...props}>
       <img src={imagemFiltro} alt="" className={styles.imagemFiltro} />
     </components.DropdownIndicator>
   );
 
-  /*
-   * Realiza uma requisição incluindo o token do
-   * usuário autenticado.
-   */
   const requisicaoAutenticada = useCallback(
     async (endereco, configuracoes = {}) => {
       const token = localStorage.getItem("token");
@@ -242,11 +236,6 @@ export default function Card3() {
       setMensagem(error.message);
     } finally {
       setEnviando(false);
-
-      /*
-       * Permite selecionar novamente um arquivo
-       * com o mesmo nome.
-       */
       event.target.value = "";
     }
   };
@@ -323,6 +312,7 @@ export default function Card3() {
             }),
           }}
         />
+
         <button
           type="button"
           className={`${styles.botaoAdicionar} ${
@@ -333,11 +323,7 @@ export default function Card3() {
           title="Adicionar arquivo Word ou Excel"
           aria-label="Adicionar arquivo Word ou Excel"
         >
-          {enviando ? (
-            <span className={styles.carregandoUpload}>Enviando...</span>
-          ) : (
-            <img src={imagemAdicionar} alt="" />
-          )}
+          <img src={imagemAdicionar} alt="" />
         </button>
 
         <input
@@ -347,7 +333,10 @@ export default function Card3() {
           accept=".doc,.docx,.xls,.xlsx"
           onChange={enviarArquivo}
         />
-        <button></button>
+
+        <button type="button" className={styles.botaoRemover}>
+          <img src={imagemRemover} alt="" />
+        </button>
       </div>
 
       {mensagem && (
@@ -363,7 +352,6 @@ export default function Card3() {
       )}
 
       <div className={styles.listaDocumentos}>
-
         {carregando ? (
           <div className={styles.estadoLista}>Carregando arquivos...</div>
         ) : documentosFiltrados.length > 0 ? (
