@@ -313,53 +313,63 @@ export default function Card1({ onAvisosChange }) {
   };
 
   return (
+    
     <>
       {exibirErro()}
 
-      <div className={styles.containerWrapper}>
-        <div
-          className={`${styles.containerLembretes} ${
-            lembretes.length === 0 ? styles.containerLembretesVazio : ""
-          }`}
-          ref={containerRef}
-        >
-          {loading && lembretes.length === 0 && (
-            <p className={styles.mensagemCarregando}>Carregando avisos...</p>
-          )}
+      {!loading && lembretes.length === 0 ? (
+        <div className={styles.mensagemVazia}>
+          <img
+            src={`${import.meta.env.BASE_URL}card1/homemConfuso.png`}
+            alt="Ícone Aviso"
+          />
+          <p>Sem avisos por enquanto...</p>
 
-          {!loading && lembretes.length === 0 && (
-            <div className={styles.mensagemVazia}>
-              <img
-                src={`${import.meta.env.BASE_URL}card1/homemConfuso.png`}
-                alt="Ícone Aviso"
-              />
-              <p>Sem avisos por enquanto...</p>
-            </div>
+          {usuarioAdministrador && (
+            <button
+              className={styles.botaoAdicionar}
+              onClick={abrirFormulario}
+              type="button"
+              disabled={loading}
+              title="Adicionar novo aviso"
+            ></button>
           )}
-
-          {lembretes.map((lembrete) => (
-            <Lembrete
-              key={lembrete.id}
-              data={lembrete.data}
-              descricao={lembrete.descricao}
-              corData={lembrete.corData}
-              onRemover={() => removerLembrete(lembrete.id)}
-              isNovo={lembrete.id === ultimoLembreteId}
-              usuarioAdministrador={usuarioAdministrador}
-            />
-          ))}
         </div>
+      ) : (
+        <div className={styles.containerWrapper}>
+          <div className={styles.containerLembretes} ref={containerRef}>
+            {loading && lembretes.length === 0 && (
+              <p className={styles.mensagemCarregando}>
+                Carregando avisos...
+              </p>
+            )}
 
-        {usuarioAdministrador && (
-          <button
-            className={styles.botaoAdicionar}
-            onClick={abrirFormulario}
-            type="button"
-            disabled={loading}
-            title="Adicionar novo aviso"
-          ></button>
-        )}
-      </div>
+            {lembretes.map((lembrete) => (
+              <Lembrete
+                key={lembrete.id}
+                data={lembrete.data}
+                descricao={lembrete.descricao}
+                corData={lembrete.corData}
+                onRemover={() => removerLembrete(lembrete.id)}
+                isNovo={lembrete.id === ultimoLembreteId}
+                usuarioAdministrador={usuarioAdministrador}
+              />
+            ))}
+          </div>
+
+          {usuarioAdministrador && (
+            <button
+              className={styles.botaoAdicionar}
+              onClick={abrirFormulario}
+              type="button"
+              disabled={loading}
+              title="Adicionar novo aviso"
+            >
+              <img src={`${import.meta.env.BASE_URL}adicionarOuRemover/adicionar_branco.png`} />
+            </button>
+          )}
+        </div>
+      )}
 
       {mostrarFormulario && usuarioAdministrador && (
         <div className={styles.modal}>

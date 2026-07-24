@@ -19,17 +19,17 @@ export default function PaginaInicialAdministradores() {
         <div className={styles.painel}>
           
           <div className={`${styles.padraoCard} ${styles.card1}`}>
-            <h1 className={styles.tituloCards}>Quadro de Avisos</h1>
+            <h1>Quadro de Avisos</h1>
             <Card1 />
           </div>
 
           <div className={`${styles.padraoCard} ${styles.card2}`}>
-            <h1 className={styles.tituloCards}>Lembrete de vacinação</h1>
+            <h1>Lembrete de vacinação</h1>
             <Card2 />
           </div>
 
           <div className={`${styles.padraoCard} ${styles.card3}`}>
-            <h1 className={styles.tituloCards}>Inserir Arquivo</h1>
+            <h1>Inserir Arquivo</h1>
             <Card3 />
           </div>
           

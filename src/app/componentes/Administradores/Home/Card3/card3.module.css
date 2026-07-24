@@ -12,6 +12,10 @@
   width: 100%;
   gap: 8px;
   margin-bottom: 18px;
+  padding: 10px;
+  background-color: white;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .inputPesquisa,
@@ -157,6 +161,7 @@
   display: grid;
   grid-template-columns: repeat(5, minmax(70px, 1fr));
   align-content: start;
+  padding: 18px;
   gap: 18px 32px;
   width: 100%;
   flex: 1;
