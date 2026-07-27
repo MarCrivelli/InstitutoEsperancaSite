@@ -3,6 +3,22 @@
   flex: 1;
   flex-direction: column;
   width: 100%;
+  position: relative;
+  border: 2px solid white;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.blocoArquivos::before{
+  content:"";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgb(22, 0, 0);
+  opacity: .3;
+  z-index: 1;
 }
 
 .areaPesquisa {
@@ -14,8 +30,7 @@
   margin-bottom: 18px;
   padding: 10px;
   background-color: white;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
+  z-index: 2;
 }
 
 .inputPesquisa,
@@ -146,6 +161,11 @@
   border-radius: 50%;
 }
 
+.botaoRemover:hover img{
+  filter: brightness(200%);
+}
+
+
 .botaoAdicionar img,
 .botaoRemover img {
   max-width: 20px;
@@ -154,7 +174,7 @@
 
 .botaoRemover:hover{
   background-color: rgb(255, 0, 64);
-  border-color: white;
+  border-color: rgb(138, 0, 34)
 }
 
 .listaDocumentos {
@@ -165,6 +185,7 @@
   gap: 18px 32px;
   width: 100%;
   flex: 1;
+  z-index: 2;
 }
 
 .itemDocumento {

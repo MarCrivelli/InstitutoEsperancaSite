@@ -332,7 +332,12 @@ export default function Card1({ onAvisosChange }) {
               type="button"
               disabled={loading}
               title="Adicionar novo aviso"
-            ></button>
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}adicionarOuRemover/adicionar_branco.png`}
+                alt="Adicionar novo aviso"
+              />
+            </button>
           )}
         </div>
       ) : (

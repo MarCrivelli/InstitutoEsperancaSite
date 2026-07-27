@@ -129,16 +129,16 @@
 
 .botaoAdicionar {
   position: absolute;
+  background-color: #008cff;
+  border-radius: 50%;
   right: 12px;
   top: 10px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+  width: 40px;
+  padding: 7px;
   border: none;
   cursor: pointer;
   transition: transform 0.2s;
   z-index: 100;
-  background-color: red;
 }
 
 .botaoAdicionar:hover {
@@ -147,10 +147,8 @@
 }
 
 .botaoAdicionar img{
-  width: 900px;
+  width: 90%;
   position: relative;
-  background-color: #008cff;
-  z-index: 1000000;
 }
 
 .modal {
@@ -269,10 +267,12 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1000px;
   height: 100%;
-  border-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
   padding: 20px;
+  overflow: hidden;
 }
 
 .mensagemVazia::before{
@@ -282,11 +282,8 @@
   height: 100%;
   top: 0;
   left: 0;
-  background-image: url(/card1/particulas.png);
-  background-repeat: repeat;
-  background-size: 200px;
-  background-position: top left;
-  opacity: .1;
+  background-color: rgb(22, 0, 0);
+  opacity: .3;
   z-index: 1;
 }
 
@@ -301,7 +298,7 @@
   color: #eaf3f7;
   text-align: center;
   font-weight: 400;
-  font-size: 2.5rem;
+  font-size: 1.9rem;
   z-index: 2;
 }
 
@@ -309,7 +306,6 @@
   .botaoAdicionar {
     width: 35px;
     height: 35px;
-    font-size: 1.2rem;
   }
   .lembreteData {
     font-size: 0.7rem;
