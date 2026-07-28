@@ -9,15 +9,15 @@
   border-bottom-right-radius: 20px;
 }
 
-.blocoArquivos::before{
-  content:"";
+.blocoArquivos::before {
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
   background-color: rgb(22, 0, 0);
-  opacity: .3;
+  opacity: 0.3;
   z-index: 1;
 }
 
@@ -82,7 +82,7 @@
 }
 
 .selectTipoArquivo :global(.filtroArquivo__control:hover),
-.botaoAdicionar:hover{
+.botaoAdicionar:hover {
   border-color: #168e93;
 }
 
@@ -161,10 +161,9 @@
   border-radius: 50%;
 }
 
-.botaoRemover:hover img{
+.botaoRemover:hover img {
   filter: brightness(200%);
 }
-
 
 .botaoAdicionar img,
 .botaoRemover img {
@@ -172,9 +171,9 @@
   object-fit: contain;
 }
 
-.botaoRemover:hover{
+.botaoRemover:hover {
   background-color: rgb(255, 0, 64);
-  border-color: rgb(138, 0, 34)
+  border-color: rgb(138, 0, 34);
 }
 
 .listaDocumentos {
@@ -263,39 +262,21 @@
   overflow: hidden;
 }
 
+.acessoNegado,
 .estadoLista {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #666666;
-  font-size: 0.95rem;
-  text-align: center;
-}
-
-.estadoLista h3{
+  margin: auto;
+  padding: 0 20px;
   width: 100%;
+  color: #fafafa;
+  z-index: 2;
 }
 
-.mensagem {
+.estadoLista h3 {
   width: 100%;
-  margin: -8px 0 12px;
-  padding: 7px 10px;
-  border-radius: 7px;
-  font-size: 0.82rem;
-  text-align: center;
-}
-
-.mensagemSucesso {
-  color: #17683d;
-  background-color: #dcf8e9;
-  border: 1px solid #9bd9b8;
-}
-
-.mensagemErro {
-  color: #8c1f2a;
-  background-color: #ffe1e4;
-  border: 1px solid #e5a7ae;
 }
 
 .paginacao {
@@ -358,7 +339,7 @@
 }
 
 @media (max-width: 700px) {
-  .inputPesquisa{
+  .inputPesquisa {
     min-width: 100%;
     flex: 5;
   }

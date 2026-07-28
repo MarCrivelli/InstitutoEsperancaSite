@@ -19,6 +19,7 @@ export default function Card3() {
   const [carregando, setCarregando] = useState(true);
   const [enviando, setEnviando] = useState(false);
   const [mensagem, setMensagem] = useState("");
+  const [acessoNegado, setAcessoNegado] = useState(false);
 
   const urlApi = import.meta.env.VITE_API_URL;
   const urlPublica = import.meta.env.BASE_URL;
@@ -30,7 +31,7 @@ export default function Card3() {
   const imagemFiltro = `${urlPublica}card3/filtro.png`;
 
   const imagemAdicionar = `${urlPublica}adicionarOuRemover/adicionar_azulEsverdeado.png`;
-  
+
   const imagemRemover = `${urlPublica}card3/lixeira.png`;
 
   const IndicadorFiltro = (props) => (
@@ -70,6 +71,17 @@ export default function Card3() {
         };
       }
 
+      if (resposta.status === 401 || resposta.status === 403) {
+        const erro = new Error(
+          dados?.mensagem ||
+            dados?.message ||
+            "Você não tem permissão para acessar os documentos.",
+        );
+
+        erro.status = resposta.status;
+        throw erro;
+      }
+
       if (!resposta.ok) {
         throw new Error(
           dados?.message ||
@@ -98,6 +110,7 @@ export default function Card3() {
       try {
         setCarregando(true);
         setMensagem("");
+        setAcessoNegado(false);
 
         const dados = await requisicaoAutenticada(
           `${urlApi}/documentos?page=${pagina}&limit=${LIMITE_POR_PAGINA}`,
@@ -118,7 +131,14 @@ export default function Card3() {
         console.error("Erro ao carregar documentos:", error);
 
         setDocumentos([]);
-        setMensagem(error.message);
+
+        if (error.status === 401 || error.status === 403) {
+          setAcessoNegado(true);
+          setMensagem(error.message);
+        } else {
+          setAcessoNegado(false);
+          setMensagem(error.message);
+        }
       } finally {
         setCarregando(false);
       }
@@ -339,33 +359,25 @@ export default function Card3() {
         </button>
       </div>
 
-      {mensagem && (
-        <p
-          className={`${styles.mensagem} ${
-            mensagem.includes("sucesso")
-              ? styles.mensagemSucesso
-              : styles.mensagemErro
-          }`}
-        >
-          {mensagem}
-        </p>
-      )}
-
       {carregando ? (
+        <div className={styles.estadoLista}>
+          <p>Carregando arquivos...</p>
+        </div>
+      ) : acessoNegado ? (
+        <div className={styles.acessoNegado}>
+          <h3>Acesso negado</h3>
 
-          <div className={styles.estadoLista}>
-            Carregando arquivos...
-          </div>
-
-        ) : documentosFiltrados.length > 0 ? (
-
+          <p>
+            {(mensagem && !acessoNegado) ||
+              "Você não tem permissão para visualizar os documentos."}
+          </p>
+        </div>
+      ) : documentosFiltrados.length > 0 ? (
         <div className={styles.listaDocumentos}>
-
-          documentosFiltrados.map((documento) => {
+          {documentosFiltrados.map((documento) => {
             const tipo = obterTipoDocumento(documento);
 
             return (
-
               <button
                 type="button"
                 key={documento.id || documento._id || documento.caminhoArquivo}
@@ -387,40 +399,36 @@ export default function Card3() {
                 <span>{documento.nome}</span>
               </button>
             );
-
-          })
-          
+          })}
         </div>
-            
-          ) : (
-              <div className={styles.estadoLista}>
-                <h3>Nenhum arquivo encontrado.</h3>
-              </div>
-           )
-        }
-      
+      ) : (
+        <div className={styles.estadoLista}>
+          <p>Nenhum arquivo encontrado.</p>
+        </div>
+      )}
+      {!acessoNegado && (
+        <div className={styles.paginacao}>
+          <button
+            type="button"
+            onClick={voltarPagina}
+            disabled={paginaAtual <= 1 || carregando}
+          >
+            anterior
+          </button>
 
-      <div className={styles.paginacao}>
-        <button
-          type="button"
-          onClick={voltarPagina}
-          disabled={paginaAtual <= 1 || carregando}
-        >
-          anterior
-        </button>
+          <span>
+            {paginaAtual} de {totalPaginas}
+          </span>
 
-        <span>
-          {paginaAtual} de {totalPaginas}
-        </span>
-
-        <button
-          type="button"
-          onClick={avancarPagina}
-          disabled={paginaAtual >= totalPaginas || carregando}
-        >
-          próximo
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={avancarPagina}
+            disabled={paginaAtual >= totalPaginas || carregando}
+          >
+            próximo
+          </button>
+        </div>
+      )}
     </div>
   );
 }
