@@ -17,10 +17,13 @@ const ADMIN_SENHA = process.env.ADMIN_SENHA;
 const validarObjectId = (id) => mongoose.isValidObjectId(id);
 
 const obterSegredoJwt = () => {
-  if (!process.env.SECRET) {
-    throw new Error("SECRET não foi definido no arquivo .env");
+  const segredo = process.env.SECRET;
+
+  if (!segredo) {
+    throw new Error("Defina SECRET no ambiente.");
   }
-  return process.env.SECRET;
+
+  return segredo;
 };
 
 const obterSegredoConvite = () => {

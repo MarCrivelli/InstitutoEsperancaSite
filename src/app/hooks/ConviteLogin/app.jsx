@@ -59,8 +59,6 @@ export default function ConviteLogin({ onUsuarioAtualizado }) {
 
         const tokenConvite = obterTokenConvite();
 
-        console.log("Token encontrado:", tokenConvite);
-
         if (!tokenConvite) {
           setErro(true);
 

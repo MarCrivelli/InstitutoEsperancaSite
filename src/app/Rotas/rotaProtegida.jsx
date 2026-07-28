@@ -28,7 +28,7 @@ const tokenExpirado = (token) => {
   }
 
   const agora = Math.floor(Date.now() / 1000);
-  return decoded.exp < agora;
+  return decoded.exp <= agora;
 };
 
 export default function RotaProtegida({ children, niveisPermitidos }) {
