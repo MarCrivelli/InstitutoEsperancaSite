@@ -351,14 +351,21 @@ export default function Card3() {
         </p>
       )}
 
-      <div className={styles.listaDocumentos}>
-        {carregando ? (
-          <div className={styles.estadoLista}>Carregando arquivos...</div>
+      {carregando ? (
+
+          <div className={styles.estadoLista}>
+            Carregando arquivos...
+          </div>
+
         ) : documentosFiltrados.length > 0 ? (
+
+        <div className={styles.listaDocumentos}>
+
           documentosFiltrados.map((documento) => {
             const tipo = obterTipoDocumento(documento);
 
             return (
+
               <button
                 type="button"
                 key={documento.id || documento._id || documento.caminhoArquivo}
@@ -380,11 +387,18 @@ export default function Card3() {
                 <span>{documento.nome}</span>
               </button>
             );
+
           })
-        ) : (
-          <div className={styles.estadoLista}>Nenhum arquivo encontrado.</div>
-        )}
-      </div>
+          
+        </div>
+            
+          ) : (
+              <div className={styles.estadoLista}>
+                <h3>Nenhum arquivo encontrado.</h3>
+              </div>
+           )
+        }
+      
 
       <div className={styles.paginacao}>
         <button

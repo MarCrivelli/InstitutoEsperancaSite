@@ -36,10 +36,10 @@ const avisosSchema = new mongoose.Schema(
   }
 );
 
-avisosSchema.pre("validate", function validarPeriodo(next) {
+avisosSchema.pre("validate", function validarPeriodo() {
   if (this.ehPeriodo && !this.dataFim) {
-    return next(
-      new Error("A data final é obrigatória quando o aviso é um período")
+    throw new Error(
+      "A data final é obrigatória quando o aviso é um período",
     );
   }
 
@@ -49,16 +49,14 @@ avisosSchema.pre("validate", function validarPeriodo(next) {
     this.dataInicio &&
     this.dataFim < this.dataInicio
   ) {
-    return next(
-      new Error("A data final deve ser posterior à data inicial")
+    throw new Error(
+      "A data final deve ser posterior à data inicial",
     );
   }
 
   if (!this.ehPeriodo) {
     this.dataFim = null;
   }
-
-  next();
 });
 
 module.exports =
