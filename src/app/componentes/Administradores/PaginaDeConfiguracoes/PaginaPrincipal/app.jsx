@@ -166,9 +166,7 @@ export default function Configuracoes() {
                   <span className={styles.textoTab}>Carrossel de animais</span>
                 </div>
               }
-              tabClassName={`${styles.tabPadrao} ${
-                abaAtiva === "primeiroTopico" ? styles.tabAtivo : ""
-              }`}
+              tabClassName={`${abaAtiva === "primeiroTopico" ? styles.tabAtivo : styles.tabPadrao}`}
               className={styles.tab}
             >
               <div
@@ -200,9 +198,7 @@ export default function Configuracoes() {
                 </div>
               }
               disabled={!podeGerenciarCarrosseis}
-              tabClassName={`${styles.tabPadrao} ${
-                abaAtiva === "segundoTopico" ? styles.tabAtivo : ""
-              } ${!podeGerenciarCarrosseis ? styles.tabDesabilitado : ""}`}
+              tabClassName={`${abaAtiva === "segundoTopico" ? styles.tabAtivo : styles.tabPadrao} ${!podeGerenciarCarrosseis ? styles.tabDesabilitado : ""}`}
               className={styles.tab}
             >
               <CarrosselDeDoadores />
@@ -223,8 +219,7 @@ export default function Configuracoes() {
                 </div>
               }
               disabled={!podeGerenciarUsuarios}
-              tabClassName={`${styles.tabPadrao} ${
-                abaAtiva === "terceiroTopico" ? styles.tabAtivo : ""
+              tabClassName={`${abaAtiva === "terceiroTopico" ? styles.tabAtivo : styles.tabPadrao}
               } ${!podeGerenciarUsuarios ? styles.tabDesabilitado : ""}`}
               className={styles.tab}
             >

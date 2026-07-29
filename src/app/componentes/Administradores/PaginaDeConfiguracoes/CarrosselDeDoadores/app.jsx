@@ -4,6 +4,7 @@ import axios from "axios";
 import styles from "./carrossel.module.css";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import podeGerenciarCarrosseis from "../PaginaPrincipal/app"
 
 export default function CarrosselDeDoadores() {
   const [doadores, setDoadores] = useState([]);
@@ -13,6 +14,8 @@ export default function CarrosselDeDoadores() {
     descricao: "",
   });
   const fileInputRef = useRef(null);
+
+  console.log(podeGerenciarCarrosseis ? "Tudo certo" : "tudo errado")
 
   useEffect(() => {
     const controller = new AbortController();
@@ -90,7 +93,7 @@ export default function CarrosselDeDoadores() {
           className={styles.carrossel}
         >
           {/* Slide do formulário */}
-          <div className={styles.slideFormulario}>
+          <div className={`${styles.slideFormulario} ${podeGerenciarCarrosseis ? styles.slideDesabilitado : ""}`}>
             <div className={styles.containerPreImagem}>
               <input
                 type="file"
@@ -186,6 +189,7 @@ export default function CarrosselDeDoadores() {
               </button>
             </div>
           ))}
+
         </Carousel>
       </div>
     </div>

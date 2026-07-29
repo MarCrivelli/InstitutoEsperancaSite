@@ -113,30 +113,29 @@
   overflow: hidden;
 }
 
+.tabPadrao,
+.tabAtivo {
+  border: none !important;
+  border-radius: 10px !important;
+  margin-right: 8px;
+}
+
 .tabPadrao {
   color: #555 !important;
   background-color: #ffffff !important;
-  border: none !important;
-  margin-right: 8px;
-  border-radius: 8px !important;
   padding: 10px 20px !important;
   transition: transform 0.3s ease;
 }
 
 .tabPadrao:hover {
-  color: #000;
   transform: scale(1.03);
 }
 
 .tabAtivo {
   color: white !important;
   background-color: #0088ff !important;
-  border: none !important;
-  border-radius: 10px !important;
   font-weight: bold;
-  margin-right: 8px;
   box-shadow: 2px 2px 0px rgba(0, 52, 77, 0.72);
-  transition: background 0.3s ease;
   animation: aparecerSuave 0.5s ease-in-out;
 }
 

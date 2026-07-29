@@ -32,6 +32,10 @@
   gap: 15px;
 }
 
+.slideDesabilitado{
+  display: none !important;
+}
+
 .infoDoador {
   display: flex;
   flex-direction: column;

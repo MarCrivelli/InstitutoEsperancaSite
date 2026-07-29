@@ -5,6 +5,7 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import styles from "./carrossel.module.css";
+import podeGerenciarCarrosseis from "../PaginaPrincipal/app"
 
 const SetaCustomizadaDoCarrossel = ({ onClick, direcao }) => {
   const Icone = direcao === "left" ? FiChevronLeft : FiChevronRight;
@@ -754,7 +755,7 @@ export default function CarrosselAnimais() {
         }
       >
         {/*SLIDE DO FORMULÁRIO*/}
-        <div className={styles.slideFormulario}>
+        <div className={`${styles.slideFormulario} ${podeGerenciarCarrosseis ? styles.slideDesabilitado : ""}`}>
           <div
             className={styles.divBotaoTrocarDados}
             onClick={alternarDadosFormulario}

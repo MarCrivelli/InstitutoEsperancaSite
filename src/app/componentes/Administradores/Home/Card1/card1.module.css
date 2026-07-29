@@ -15,7 +15,8 @@
   background-color: #191919;
   overflow-y: scroll;
   overflow-x: hidden;
-  border-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
   position: relative;
   z-index: 100;
   gap: 5px;
@@ -27,9 +28,9 @@
   position: absolute;
   background-image: url(/imagensDeFundo/fundoPatas_BrancoTotal.png);
   background-repeat: repeat;
-  background-size: 400px;
+  background-size: 550px;
   background-position: top left;
-  opacity: 0.1;
+  opacity: 0.04;
   top: 0;
   left: 0;
   width: 100%;
@@ -43,12 +44,14 @@
 
 .containerLembretes::-webkit-scrollbar-track {
   background: #ffc100;
-  border-radius: 10px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .containerLembretes::-webkit-scrollbar-thumb {
   background-color: #008cff;
-  border-radius: 10px;
+  border-radius: 0px;
   border: 2px solid currentColor;
 }
 
@@ -86,7 +89,7 @@
   display: flex;
   height: auto;
   padding: 8px;
-  background-color: #11262c;
+  background-color: rgba(24, 37, 53, 0.925);
   border-radius: 5px;
   color: white;
   width: 100%;
