@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
+export const podeGerenciarCarrosseis = "Olá do outro arquivo!";
 
 //================ Minhas importações ================//
 import Header from "../../../Header/app";

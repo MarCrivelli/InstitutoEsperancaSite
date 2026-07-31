@@ -5,7 +5,8 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import styles from "./carrossel.module.css";
-import podeGerenciarCarrosseis from "../PaginaPrincipal/app"
+import { podeGerenciarCarrosseis } from '../PaginaPrincipal/app';
+
 
 const SetaCustomizadaDoCarrossel = ({ onClick, direcao }) => {
   const Icone = direcao === "left" ? FiChevronLeft : FiChevronRight;
@@ -25,6 +26,9 @@ const SetaCustomizadaDoCarrossel = ({ onClick, direcao }) => {
 };
 
 export default function CarrosselAnimais() {
+
+console.log(podeGerenciarCarrosseis);
+
   // ESTADOS PRINCIPAIS
   const [erro, setErro] = useState("");
   const [animais, setAnimais] = useState([]);

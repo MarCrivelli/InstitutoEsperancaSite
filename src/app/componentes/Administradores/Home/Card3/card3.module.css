@@ -159,16 +159,20 @@
   width: 32px;
   padding-inline: 15px;
   border-radius: 50%;
-}
-
-.botaoRemover:hover img {
-  filter: brightness(200%);
+  transition: 
+  background ease-out .5s, 
+  border ease-out .3s
+  ;
 }
 
 .botaoAdicionar img,
 .botaoRemover img {
   max-width: 20px;
   object-fit: contain;
+}
+
+.botaoRemover:hover img {
+  filter: brightness(200%);
 }
 
 .botaoRemover:hover {

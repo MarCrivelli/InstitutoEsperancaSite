@@ -15,7 +15,7 @@ export default function CarrosselDeDoadores() {
   });
   const fileInputRef = useRef(null);
 
-  console.log(podeGerenciarCarrosseis ? "Tudo certo" : "tudo errado")
+  console.log(!podeGerenciarCarrosseis() ? "Tudo certo" : "tudo errado")
 
   useEffect(() => {
     const controller = new AbortController();
@@ -183,7 +183,7 @@ export default function CarrosselDeDoadores() {
                     deletarDoador(doador.id);
                   }
                 }}
-                className={styles.botaoRemover}
+                className={`${styles.botaoRemover} ${!podeGerenciarCarrosseis ? styles.desabilitado : ""}`}
               >
                 Remover Doador
               </button>
