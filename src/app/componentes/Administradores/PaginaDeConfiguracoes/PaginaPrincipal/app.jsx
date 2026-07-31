@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-export const podeGerenciarCarrosseis = "Olá do outro arquivo!";
 
 //================ Minhas importações ================//
 import Header from "../../../Header/app";
@@ -53,14 +52,6 @@ export default function Configuracoes() {
       setAbaAtiva("primeiroTopico");
     }
 
-    if (
-      abaAtiva === "segundoTopico" &&
-      !["administrador", "subAdministrador"].includes(
-        usuarioLogado.nivelDeAcesso,
-      )
-    ) {
-      setAbaAtiva("primeiroTopico");
-    }
   }, [usuarioLogado, abaAtiva]);
 
   // Função para fazer logout
@@ -94,15 +85,13 @@ export default function Configuracoes() {
 
   const ehSubAdministrador = nivelDeAcesso === "subAdministrador";
 
-  const ehContribuinte = nivelDeAcesso === "contribuinte";
-
   const podeGerenciarCarrosseis = ehAdministrador || ehSubAdministrador;
 
   const podeGerenciarUsuarios = ehAdministrador;
 
   return (
     <div className={styles.fundoPagina}>
-      <Header destino="adms"/>
+      <Header destino="adms" />
       <BotaoDeTrocaDePaginas destino="visitantes" />
       <div className={styles.fundoPainel}>
         <div className={styles.painel}>
@@ -170,20 +159,9 @@ export default function Configuracoes() {
               tabClassName={`${abaAtiva === "primeiroTopico" ? styles.tabAtivo : styles.tabPadrao}`}
               className={styles.tab}
             >
-              <div
-                className={
-                  ehContribuinte ? styles.conteudoSomenteLeitura : undefined
-                }
-              >
-                <CarrosselAnimaisAutonomo />
-              </div>
-
-              {ehContribuinte && (
-                <p className={styles.avisoSomenteLeitura}>
-                  Seu nível de acesso não permite realizar alterações, apenas
-                  visualizar.
-                </p>
-              )}
+              <CarrosselAnimaisAutonomo
+                podeGerenciarCarrosseis={podeGerenciarCarrosseis}
+              />
             </Tab>
 
             <Tab
@@ -198,11 +176,12 @@ export default function Configuracoes() {
                   <span className={styles.textoTab}>Carrossel de doadores</span>
                 </div>
               }
-              disabled={!podeGerenciarCarrosseis}
-              tabClassName={`${abaAtiva === "segundoTopico" ? styles.tabAtivo : styles.tabPadrao} ${!podeGerenciarCarrosseis ? styles.tabDesabilitado : ""}`}
+              tabClassName={`${abaAtiva === "segundoTopico" ? styles.tabAtivo : styles.tabPadrao}`}
               className={styles.tab}
             >
-              <CarrosselDeDoadores />
+              <CarrosselDeDoadores
+                podeGerenciarCarrosseis={podeGerenciarCarrosseis}
+              />
             </Tab>
 
             <Tab
@@ -224,7 +203,7 @@ export default function Configuracoes() {
               } ${!podeGerenciarUsuarios ? styles.tabDesabilitado : ""}`}
               className={styles.tab}
             >
-              <FuncoesDeAdministrador />
+              {podeGerenciarUsuarios && <FuncoesDeAdministrador />}
             </Tab>
           </Tabs>
         </div>

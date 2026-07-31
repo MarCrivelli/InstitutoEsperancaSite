@@ -51,11 +51,15 @@
 }
 
 .fundoPadrao {
+  background-image: url(/homeAdms/fundoRadar.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top left;
   position: fixed;
   inset: 0;
   width: 100%;
   height: 100%;
-  padding-bottom: 20px;
+  padding-block: 20px;
 }
 
 .mostrarAviso,
@@ -109,9 +113,15 @@
 }
 
 .tituloQuadroDeAvisos {
-  margin-bottom: 10px;
-  font-size: 3rem;
-  color: white;
+  width: 100%;
+  max-width: 1000px;
+  background-color: white;
+  font-size: 2.4rem;
+  color: #160010;
+  padding: 10px 20px;
+  text-align: center;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 
 @media (max-width: 500px) {

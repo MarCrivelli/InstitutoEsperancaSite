@@ -4,9 +4,8 @@ import axios from "axios";
 import styles from "./carrossel.module.css";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import podeGerenciarCarrosseis from "../PaginaPrincipal/app"
 
-export default function CarrosselDeDoadores() {
+export default function CarrosselDeDoadores({ podeGerenciarCarrosseis }) {
   const [doadores, setDoadores] = useState([]);
   const [novoDoador, setNovoDoador] = useState({
     imagem: null,
@@ -14,8 +13,6 @@ export default function CarrosselDeDoadores() {
     descricao: "",
   });
   const fileInputRef = useRef(null);
-
-  console.log(!podeGerenciarCarrosseis() ? "Tudo certo" : "tudo errado")
 
   useEffect(() => {
     const controller = new AbortController();
@@ -86,14 +83,15 @@ export default function CarrosselDeDoadores() {
           showArrows={true}
           showThumbs={false}
           showStatus={false}
-          showIndicators={true}
+          showIndicators={doadores.length + (podeGerenciarCarrosseis ? 1 : 0) > 1}
           infiniteLoop={false}
           preventMovementUntilSwipeScrollTolerance={true}
           swipeScrollTolerance={40}
           className={styles.carrossel}
         >
-          {/* Slide do formulário */}
-          <div className={`${styles.slideFormulario} ${podeGerenciarCarrosseis ? styles.slideDesabilitado : ""}`}>
+          {/* Retornar um array vazio evita que o Carousel crie um slide em branco. */}
+          {podeGerenciarCarrosseis ? (
+          <div key="formulario-doador" className={styles.slideFormulario}>
             <div className={styles.containerPreImagem}>
               <input
                 type="file"
@@ -154,6 +152,7 @@ export default function CarrosselDeDoadores() {
               Adicionar Doador
             </button>
           </div>
+          ) : []}
 
           {/* Slides dos doadores existentes */}
           {doadores.map((doador) => (
@@ -173,6 +172,7 @@ export default function CarrosselDeDoadores() {
                 <h1>{doador.nome}</h1>
                 <p>{doador.descricao}</p>
               </div>
+              {podeGerenciarCarrosseis && (
               <button
                 onClick={() => {
                   if (
@@ -183,10 +183,11 @@ export default function CarrosselDeDoadores() {
                     deletarDoador(doador.id);
                   }
                 }}
-                className={`${styles.botaoRemover} ${!podeGerenciarCarrosseis ? styles.desabilitado : ""}`}
+                className={styles.botaoRemover}
               >
                 Remover Doador
               </button>
+              )}
             </div>
           ))}
 

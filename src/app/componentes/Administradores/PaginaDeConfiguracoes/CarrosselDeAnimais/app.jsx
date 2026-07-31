@@ -5,7 +5,6 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import styles from "./carrossel.module.css";
-import { podeGerenciarCarrosseis } from '../PaginaPrincipal/app';
 
 
 const SetaCustomizadaDoCarrossel = ({ onClick, direcao }) => {
@@ -25,9 +24,7 @@ const SetaCustomizadaDoCarrossel = ({ onClick, direcao }) => {
   );
 };
 
-export default function CarrosselAnimais() {
-
-console.log(podeGerenciarCarrosseis);
+export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
 
   // ESTADOS PRINCIPAIS
   const [erro, setErro] = useState("");
@@ -758,8 +755,9 @@ console.log(podeGerenciarCarrosseis);
           )
         }
       >
-        {/*SLIDE DO FORMULÁRIO*/}
-        <div className={`${styles.slideFormulario} ${podeGerenciarCarrosseis ? styles.slideDesabilitado : ""}`}>
+        {/* Retornar um array vazio evita que o Carousel crie um slide em branco. */}
+        {podeGerenciarCarrosseis ? (
+        <div key="formulario-animal" className={styles.slideFormulario}>
           <div
             className={styles.divBotaoTrocarDados}
             onClick={alternarDadosFormulario}
@@ -912,6 +910,7 @@ console.log(podeGerenciarCarrosseis);
             </button>
           </div>
         </div>
+        ) : []}
 
         {/*SLIDES DOS ANIMAIS CADASTRADOS*/}
         {animaisCarrossel.length > 0 ? (
@@ -1076,6 +1075,7 @@ console.log(podeGerenciarCarrosseis);
                   </div>
                 </div>
 
+                {podeGerenciarCarrosseis && (
                 <div className={styles.divBotaoSlide}>
                   {estaEditando ? (
                     <div className={styles.divBotoesEdicao}>
@@ -1127,6 +1127,7 @@ console.log(podeGerenciarCarrosseis);
                     </div>
                   )}
                 </div>
+                )}
               </div>
             );
           })
