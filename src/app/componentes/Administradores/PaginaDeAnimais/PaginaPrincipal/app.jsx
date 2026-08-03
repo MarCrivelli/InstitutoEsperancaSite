@@ -10,11 +10,29 @@ import carregarAnimais from "../../../../hooks/GerenciarDadosAnimais/CarregarAni
 import { criarFiltrosAnimaisPadrao } from "../../../../hooks/GerenciarDadosAnimais/FiltrarAnimais/filtrarAnimais";
 
 export default function FichasDeAnimais() {
-  const [filtros, setFiltros] = useState(criarFiltrosAnimaisPadrao());
-  const [mostrarCadastro, setMostrarCadastro] = useState(false);
-  const [mostrarFiltros, setMostrarFiltros] = useState(false);
-  const [modoSelecaoPostagem, setModoSelecaoPostagem] = useState(false);
-  const [animaisSelecionados, setAnimaisSelecionados] = useState([]);
+  const [filtros, setFiltros] = useState(
+    criarFiltrosAnimaisPadrao()
+  );
+
+  const [mostrarCadastro, setMostrarCadastro] =
+    useState(false);
+
+  const [mostrarFiltros, setMostrarFiltros] =
+    useState(false);
+
+  const [modoSelecaoPostagem, setModoSelecaoPostagem] =
+    useState(false);
+
+  const [animaisSelecionados, setAnimaisSelecionados] =
+    useState([]);
+
+  const [nivelDeAcesso, setNivelDeAcesso] =
+    useState(null);
+
+  const podeCadastrarAnimal = [
+    "administrador",
+    "subAdministrador",
+  ].includes(nivelDeAcesso);
 
   const {
     animaisFiltrados,
@@ -24,78 +42,170 @@ export default function FichasDeAnimais() {
     filtrosAtivos,
   } = carregarAnimais({ filtros });
 
+  // Carrega o nível de acesso do usuário
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const filtroVacinacao = urlParams.get("filtroVacinacao");
-    const modoPostagem = urlParams.get("modoPostagem");
+    try {
+      const dadosUsuario =
+        localStorage.getItem("usuario");
+
+      const usuario = dadosUsuario
+        ? JSON.parse(dadosUsuario)
+        : null;
+
+      setNivelDeAcesso(
+        usuario?.nivelDeAcesso ?? null
+      );
+    } catch (error) {
+      console.error(
+        "Erro ao carregar o nível de acesso do usuário:",
+        error
+      );
+
+      setNivelDeAcesso(null);
+    }
+  }, []);
+
+  // Verifica os parâmetros presentes na URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(
+      window.location.search
+    );
+
+    const filtroVacinacao =
+      urlParams.get("filtroVacinacao");
+
+    const modoPostagem =
+      urlParams.get("modoPostagem");
 
     if (filtroVacinacao === "naoVacinado") {
       setFiltros((prev) => ({
         ...prev,
         statusVacinacao: ["naoVacinado"],
       }));
+
       setMostrarFiltros(true);
     }
 
     if (modoPostagem === "true") {
       setModoSelecaoPostagem(true);
-      document.body.classList.add("modo-selecao-ativo");
 
-      const animaisSalvos = urlParams.get("animaisSelecionados");
+      document.body.classList.add(
+        "modo-selecao-ativo"
+      );
+
+      const animaisSalvos =
+        urlParams.get("animaisSelecionados");
+
       if (animaisSalvos) {
         try {
-          const animaisArray = JSON.parse(decodeURIComponent(animaisSalvos));
+          const animaisArray = JSON.parse(
+            decodeURIComponent(animaisSalvos)
+          );
+
           setAnimaisSelecionados(animaisArray);
         } catch (error) {
-          console.error("Erro ao recuperar animais selecionados:", error);
+          console.error(
+            "Erro ao recuperar animais selecionados:",
+            error
+          );
         }
       }
     }
 
     return () => {
-      document.body.classList.remove("modo-selecao-ativo");
+      document.body.classList.remove(
+        "modo-selecao-ativo"
+      );
     };
   }, []);
 
+  // Salva os animais selecionados na URL
   useEffect(() => {
-    if (modoSelecaoPostagem && animaisSelecionados.length > 0) {
-      const urlParams = new URLSearchParams(window.location.search);
+    if (
+      modoSelecaoPostagem &&
+      animaisSelecionados.length > 0
+    ) {
+      const urlParams = new URLSearchParams(
+        window.location.search
+      );
+
       urlParams.set(
         "animaisSelecionados",
-        encodeURIComponent(JSON.stringify(animaisSelecionados))
+        encodeURIComponent(
+          JSON.stringify(animaisSelecionados)
+        )
       );
-      const novaUrl = `${window.location.pathname}?${urlParams.toString()}`;
-      window.history.replaceState({}, "", novaUrl);
-    }
-  }, [animaisSelecionados, modoSelecaoPostagem]);
 
+      const novaUrl =
+        `${window.location.pathname}?${urlParams.toString()}`;
+
+      window.history.replaceState(
+        {},
+        "",
+        novaUrl
+      );
+    }
+  }, [
+    animaisSelecionados,
+    modoSelecaoPostagem,
+  ]);
+
+  // Controla a exibição do modo de seleção
   useEffect(() => {
-    const container = document.querySelector(`.${styles.containerPostagem}`);
+    const container = document.querySelector(
+      `.${styles.containerPostagem}`
+    );
+
     const botaoSelecao = document.querySelector(
       `.${styles.botoesFlutuantes} .${styles.botaoAcao}:nth-child(3)`
     );
 
     if (modoSelecaoPostagem) {
-      document.body.classList.add("modo-selecao-ativo");
+      document.body.classList.add(
+        "modo-selecao-ativo"
+      );
 
       if (animaisSelecionados.length > 0) {
-        container?.classList.add(styles.visivel);
-        botaoSelecao?.classList.add(styles.botaoSelecaoAtivo);
+        container?.classList.add(
+          styles.visivel
+        );
+
+        botaoSelecao?.classList.add(
+          styles.botaoSelecaoAtivo
+        );
       } else {
-        container?.classList.remove(styles.visivel);
-        botaoSelecao?.classList.remove(styles.botaoSelecaoAtivo);
+        container?.classList.remove(
+          styles.visivel
+        );
+
+        botaoSelecao?.classList.remove(
+          styles.botaoSelecaoAtivo
+        );
       }
     } else {
-      document.body.classList.remove("modo-selecao-ativo");
-      container?.classList.remove(styles.visivel);
-      botaoSelecao?.classList.remove(styles.botaoSelecaoAtivo);
+      document.body.classList.remove(
+        "modo-selecao-ativo"
+      );
+
+      container?.classList.remove(
+        styles.visivel
+      );
+
+      botaoSelecao?.classList.remove(
+        styles.botaoSelecaoAtivo
+      );
     }
-  }, [animaisSelecionados, modoSelecaoPostagem]);
+  }, [
+    animaisSelecionados,
+    modoSelecaoPostagem,
+  ]);
 
   const toggleSelecaoAnimal = (animalId) => {
     setAnimaisSelecionados((prev) =>
       prev.includes(animalId)
-        ? prev.filter((id) => id !== animalId)
+        ? prev.filter(
+            (id) => id !== animalId
+          )
         : [...prev, animalId]
     );
   };
@@ -103,9 +213,15 @@ export default function FichasDeAnimais() {
   const desativarModoSelecao = () => {
     setModoSelecaoPostagem(false);
     setAnimaisSelecionados([]);
-    document.body.classList.remove("modo-selecao-ativo");
 
-    const urlParams = new URLSearchParams(window.location.search);
+    document.body.classList.remove(
+      "modo-selecao-ativo"
+    );
+
+    const urlParams = new URLSearchParams(
+      window.location.search
+    );
+
     urlParams.delete("modoPostagem");
     urlParams.delete("animaisSelecionados");
 
@@ -113,68 +229,118 @@ export default function FichasDeAnimais() {
       ? `${window.location.pathname}?${urlParams.toString()}`
       : window.location.pathname;
 
-    window.history.replaceState({}, "", novaUrl);
+    window.history.replaceState(
+      {},
+      "",
+      novaUrl
+    );
   };
 
   const limparFiltroVacinacaoUrl = () => {
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(
+      window.location.search
+    );
 
     if (urlParams.has("filtroVacinacao")) {
       urlParams.delete("filtroVacinacao");
+
       const novaUrl = urlParams.toString()
         ? `${window.location.pathname}?${urlParams.toString()}`
         : window.location.pathname;
-      window.history.replaceState({}, "", novaUrl);
+
+      window.history.replaceState(
+        {},
+        "",
+        novaUrl
+      );
     }
   };
 
   return (
     <div
       className={`${styles.fundoPagina} ${
-        modoSelecaoPostagem ? styles.modoSelecaoAtivo : ""
+        modoSelecaoPostagem
+          ? styles.modoSelecaoAtivo
+          : ""
       }`}
     >
-      <Header destino="adms"/>
-      <BotaoDeTrocaDePaginas destino="visitantes" />
+      <Header destino="adms" />
+
+      <BotaoDeTrocaDePaginas
+        destino="visitantes"
+      />
+
       <RolarPCima />
 
       <div className={styles.botoesFlutuantes}>
         <button
           className={styles.botaoAcao}
-          onClick={() => setMostrarFiltros(true)}
+          onClick={() =>
+            setMostrarFiltros(true)
+          }
         >
-          <img src={`${import.meta.env.BASE_URL}pagFichasDAnimais/filtro.png`} alt="Filtrar" />
+          <img
+            src={`${import.meta.env.BASE_URL}pagFichasDAnimais/filtro.png`}
+            alt="Filtrar"
+          />
         </button>
 
         <button
           className={styles.botaoAcao}
-          onClick={() => setMostrarCadastro(true)}
+          onClick={() =>
+            setMostrarCadastro(true)
+          }
+          disabled={!podeCadastrarAnimal}
+          aria-disabled={!podeCadastrarAnimal}
+          title={
+            podeCadastrarAnimal
+              ? "Cadastrar animal"
+              : "Você não tem permissão para cadastrar animais"
+          }
         >
-          <img src={`${import.meta.env.BASE_URL}pagFichasDAnimais/addAnimal.png`} alt="Adicionar animal" />
+          <img
+            src={`${import.meta.env.BASE_URL}pagFichasDAnimais/addAnimal.png`}
+            alt="Adicionar animal"
+          />
         </button>
       </div>
 
-      <div className={styles.containerPostagem}>
+      <div
+        className={styles.containerPostagem}
+      >
         <button
-          className={`${styles.fecharContainerPostagem} ${
-            modoSelecaoPostagem ? styles.ativo : ""
+          className={`${
+            styles.fecharContainerPostagem
+          } ${
+            modoSelecaoPostagem
+              ? styles.ativo
+              : ""
           }`}
           onClick={desativarModoSelecao}
         >
           X
         </button>
+
         <p>
           {animaisSelecionados.length}
+
           {animaisSelecionados.length === 1
             ? " animal selecionado"
             : " animais selecionados"}
         </p>
-        <button className={styles.botaoPostar}>Postar</button>
+
+        <button
+          className={styles.botaoPostar}
+        >
+          Postar
+        </button>
       </div>
 
       {mostrarFiltros && (
         <div className={styles.modalOverlay}>
-          <div className={`${styles.modalContent} ${styles.modalFiltros}`}>
+          <div
+            className={`${styles.modalContent} ${styles.modalFiltros}`}
+          >
             <button
               className={styles.fecharModal}
               onClick={() => {
@@ -184,43 +350,71 @@ export default function FichasDeAnimais() {
             >
               ×
             </button>
-            <h2>Filtros de Pesquisa</h2>
-            <FiltroDeAnimais filtros={filtros} setFiltros={setFiltros} />
-          </div>
-        </div>
-      )}
 
-      {mostrarCadastro && (
-        <div className={styles.modalOverlay}>
-          <div className={`${styles.modalContent} ${styles.modalCadastro}`}>
-            <button
-              className={styles.fecharModal}
-              onClick={() => setMostrarCadastro(false)}
-            >
-              ×
-            </button>
-            <h2>Cadastrar Animal</h2>
-            <CadastroDeAnimais
-              onAnimalCadastrado={recarregarAnimais}
-              onClose={() => setMostrarCadastro(false)}
+            <h2>Filtros de Pesquisa</h2>
+
+            <FiltroDeAnimais
+              filtros={filtros}
+              setFiltros={setFiltros}
             />
           </div>
         </div>
       )}
 
+      {mostrarCadastro &&
+        podeCadastrarAnimal && (
+          <div
+            className={styles.modalOverlay}
+          >
+            <div
+              className={`${styles.modalContent} ${styles.modalCadastro}`}
+            >
+              <button
+                className={
+                  styles.fecharModal
+                }
+                onClick={() =>
+                  setMostrarCadastro(false)
+                }
+              >
+                ×
+              </button>
+
+              <h2>Cadastrar Animal</h2>
+
+              <CadastroDeAnimais
+                onAnimalCadastrado={
+                  recarregarAnimais
+                }
+                onClose={() =>
+                  setMostrarCadastro(false)
+                }
+              />
+            </div>
+          </div>
+        )}
+
       <div className={styles.fundoPainel}>
         <div className={styles.painel}>
           {carregando ? (
             <div className={styles.loading}>
-              <img src={`${import.meta.env.BASE_URL}paraErros/carregando.svg`} alt="Carregando" />
+              <img
+                src={`${import.meta.env.BASE_URL}paraErros/carregando.svg`}
+                alt="Carregando"
+              />
+
               <p>Carregando...</p>
             </div>
           ) : erro ? (
             <div className={styles.error}>
-              Erro ao carregar animais: {erro}
+              Erro ao carregar animais:{" "}
+              {erro}
+
               <button
                 onClick={recarregarAnimais}
-                className={styles.botaoRecarregar}
+                className={
+                  styles.botaoRecarregar
+                }
               >
                 Tentar novamente
               </button>
@@ -228,10 +422,18 @@ export default function FichasDeAnimais() {
           ) : (
             <ExibicaoDeAnimais
               animais={animaisFiltrados}
-              filtrosAplicados={filtrosAtivos}
-              modoSelecaoPostagem={modoSelecaoPostagem}
-              animaisSelecionados={animaisSelecionados}
-              toggleSelecaoAnimal={toggleSelecaoAnimal}
+              filtrosAplicados={
+                filtrosAtivos
+              }
+              modoSelecaoPostagem={
+                modoSelecaoPostagem
+              }
+              animaisSelecionados={
+                animaisSelecionados
+              }
+              toggleSelecaoAnimal={
+                toggleSelecaoAnimal
+              }
             />
           )}
         </div>

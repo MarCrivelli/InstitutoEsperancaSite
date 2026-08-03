@@ -172,8 +172,12 @@ export default function Header({ destino = "visitantes", tipo = "padrao" }) {
                     usuarioLogado?.foto ||
                     `${import.meta.env.BASE_URL}paraErros/user.png`
                   }
-                  alt="perfil"
+                  alt="Perfil do usuário"
                   className={styles.iconeUsuario}
+                  onError={(evento) => {
+                    evento.currentTarget.onerror = null;
+                    evento.currentTarget.src = `${import.meta.env.BASE_URL}paraErros/user.png`;
+                  }}
                 />
               </button>
             </li>

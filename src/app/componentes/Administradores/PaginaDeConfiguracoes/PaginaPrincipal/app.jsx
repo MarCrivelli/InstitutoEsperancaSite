@@ -51,7 +51,6 @@ export default function Configuracoes() {
     ) {
       setAbaAtiva("primeiroTopico");
     }
-
   }, [usuarioLogado, abaAtiva]);
 
   // Função para fazer logout
@@ -120,6 +119,10 @@ export default function Configuracoes() {
                   `${import.meta.env.BASE_URL}paraErros/user.png`
                 }
                 alt="Avatar do usuário"
+                onError={(evento) => {
+                  evento.currentTarget.onerror = null;
+                  evento.currentTarget.src = `${import.meta.env.BASE_URL}paraErros/user.png`;
+                }}
               />
               <h1 className={styles.nomeUsuario}>
                 {usuarioLogado ? usuarioLogado.nome : "Carregando..."}

@@ -52,11 +52,12 @@ export default function PainelUsuario({
 
       // Verificar se o token ainda é válido antes de carregar
       const token =
+        localStorage.getItem("token") ||
+        sessionStorage.getItem("token") ||
         document.cookie
           .split("; ")
           .find((row) => row.startsWith("token="))
           ?.split("=")[1] ||
-        sessionStorage.getItem("token") ||
         new URLSearchParams(window.location.search).get("token");
 
       if (!token) {
@@ -162,8 +163,7 @@ export default function PainelUsuario({
           Authorization: `Bearer ${tokenAuth}`,
         },
         body: JSON.stringify({
-          googleId: dadosGoogle.googleId,
-          foto: dadosGoogle.foto,
+          googleToken: token,
         }),
       });
 
@@ -186,6 +186,102 @@ export default function PainelUsuario({
       }
     } catch (erro) {
       console.error("Erro ao conectar com Google:", erro);
+    }
+  };
+
+  const desconectarGoogle = async () => {
+    if (!usuarioLogado?.googleId) {
+      alert("Esta conta não está conectada ao Google.");
+      return;
+    }
+
+    const novaSenha = window.prompt(
+      "Para desconectar sua conta Google, crie uma senha de acesso com pelo menos 6 caracteres:",
+    );
+
+    if (novaSenha === null) {
+      return;
+    }
+
+    if (novaSenha.length < 6) {
+      alert("A senha deve possuir pelo menos 6 caracteres.");
+      return;
+    }
+
+    const confirmarSenha = window.prompt("Digite novamente a nova senha:");
+
+    if (confirmarSenha === null) {
+      return;
+    }
+
+    if (novaSenha !== confirmarSenha) {
+      alert("As senhas digitadas não são iguais.");
+      return;
+    }
+
+    const confirmou = window.confirm(
+      "Deseja realmente desconectar sua conta Google? Depois disso, você deverá entrar usando seu e-mail e a nova senha.",
+    );
+
+    if (!confirmou) {
+      return;
+    }
+
+    try {
+      setCarregandoGoogle(true);
+
+      const token = obterToken();
+
+      if (!token) {
+        alert("Sua sessão expirou. Faça login novamente.");
+        return;
+      }
+
+      const resposta = await fetch(
+        `${import.meta.env.VITE_API_URL}/usuarios/${usuarioLogado.id}`,
+        {
+          method: "PUT",
+
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+
+          body: JSON.stringify({
+            senha: novaSenha,
+            googleId: null,
+            foto: null,
+          }),
+        },
+      );
+
+      const dados = await resposta.json();
+
+      if (!resposta.ok || dados.erro) {
+        throw new Error(
+          dados.mensagem || "Não foi possível desconectar a conta Google.",
+        );
+      }
+
+      if (window.google?.accounts?.id?.revoke) {
+        window.google.accounts.id.revoke(usuarioLogado.email, () => {
+          console.log("Autorização Google revogada.");
+        });
+      }
+
+      if (typeof onUsuarioAtualizado === "function") {
+        onUsuarioAtualizado(dados.usuario);
+      }
+
+      alert(
+        "Conta Google desconectada com sucesso! Agora você poderá entrar usando seu e-mail e a nova senha.",
+      );
+    } catch (error) {
+      console.error("Erro ao desconectar conta Google:", error);
+
+      alert(error.message || "Erro ao desconectar a conta Google.");
+    } finally {
+      setCarregandoGoogle(false);
     }
   };
 
@@ -405,13 +501,14 @@ export default function PainelUsuario({
 
   //================ Renderizar botão do Google ================//
   const renderizarBotaoGoogle = () => {
-    if (usuarioLogado?.id) {
-      // Usuário já está conectado
-
+    if (usuarioLogado?.googleId) {
       return (
         <button
+          type="button"
           className={`${styles.botaoDadoGoogle} ${styles.contaConectada}`}
-          disabled
+          onClick={desconectarGoogle}
+          disabled={carregandoGoogle}
+          title="Desconectar conta Google"
         >
           <img
             className={styles.iconeLog}
@@ -474,10 +571,14 @@ export default function PainelUsuario({
           <img
             className={styles.iconeUsuario}
             src={
-              usuarioLogado.foto ||
+              usuarioLogado?.foto ||
               `${import.meta.env.BASE_URL}paraErros/user.png`
             }
             alt="Avatar do usuário"
+            onError={(evento) => {
+              evento.currentTarget.onerror = null;
+              evento.currentTarget.src = `${import.meta.env.BASE_URL}paraErros/user.png`;
+            }}
           />
         </div>
       </div>

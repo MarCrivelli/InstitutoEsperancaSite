@@ -49,10 +49,13 @@ const formatarUsuarioParaResposta = (usuario) => ({
   nome: usuario.nome,
   email: usuario.email,
   telefone: usuario.telefone,
-  receberEmailEventos: usuario.receberEmailEventos,
-  receberMensagensEventos: usuario.receberMensagensEventos,
+  receberEmailEventos:
+    usuario.receberEmailEventos,
+  receberMensagensEventos:
+    usuario.receberMensagensEventos,
   nivelDeAcesso: usuario.nivelDeAcesso,
   foto: usuario.foto,
+  googleId: usuario.googleId,
   ativo: usuario.ativo,
 });
 
