@@ -9,6 +9,9 @@ export default function CadastroELogin({ onLoginSucesso }) {
 
   const [painelDireitoAtivo, setPainelDireitoAtivo] = useState(false);
   const [carregando, setCarregando] = useState(false);
+  const [googleTokenPendente, setGoogleTokenPendente] = useState(null);
+  const [senhaGoogle, setSenhaGoogle] = useState("");
+  const [confirmacaoSenhaGoogle, setConfirmacaoSenhaGoogle] = useState("");
 
   // Estado para os formulários de login/cadastro
   const [usuario, setUsuario] = useState({
@@ -121,7 +124,7 @@ export default function CadastroELogin({ onLoginSucesso }) {
     }
   };
 
-  const processarLoginGoogle = async (googleToken) => {
+  const processarLoginGoogle = async (googleToken, senha = null) => {
     setCarregando(true);
 
     try {
@@ -142,6 +145,7 @@ export default function CadastroELogin({ onLoginSucesso }) {
 
         body: JSON.stringify({
           googleToken,
+          ...(senha ? { senha } : {}),
         }),
       });
 
@@ -161,6 +165,11 @@ export default function CadastroELogin({ onLoginSucesso }) {
         );
       }
 
+      if (dados.requerCadastroSenha) {
+        setGoogleTokenPendente(googleToken);
+        return;
+      }
+
       if (!resposta.ok || dados.erro) {
         throw new Error(dados.mensagem || `Erro HTTP ${resposta.status}`);
       }
@@ -175,6 +184,9 @@ export default function CadastroELogin({ onLoginSucesso }) {
 
       // Este é o JWT do Instituto Esperança,
       // não o token do Google.
+      setGoogleTokenPendente(null);
+      setSenhaGoogle("");
+      setConfirmacaoSenhaGoogle("");
       onLoginSucesso(dados.usuario, dados.token);
     } catch (erro) {
       console.error("❌ Erro no login Google:", erro);
@@ -183,6 +195,28 @@ export default function CadastroELogin({ onLoginSucesso }) {
     } finally {
       setCarregando(false);
     }
+  };
+
+  const concluirCadastroGoogle = async (evento) => {
+    evento.preventDefault();
+
+    if (senhaGoogle.length < 6) {
+      alert("A senha deve ter pelo menos 6 caracteres.");
+      return;
+    }
+
+    if (senhaGoogle !== confirmacaoSenhaGoogle) {
+      alert("As senhas digitadas não são iguais.");
+      return;
+    }
+
+    await processarLoginGoogle(googleTokenPendente, senhaGoogle);
+  };
+
+  const cancelarCadastroGoogle = () => {
+    setGoogleTokenPendente(null);
+    setSenhaGoogle("");
+    setConfirmacaoSenhaGoogle("");
   };
 
   // Decodificar JWT do Google
@@ -534,6 +568,63 @@ export default function CadastroELogin({ onLoginSucesso }) {
           </div>
         </div>
       </div>
+
+      {googleTokenPendente && (
+        <div className={styles.overlaySenhaGoogle}>
+          <form
+            className={styles.cardSenhaGoogle}
+            onSubmit={concluirCadastroGoogle}
+          >
+            <h2>Crie sua senha</h2>
+            <p>
+              Para concluir seu cadastro com o Google, crie também uma senha de
+              acesso com pelo menos 6 caracteres.
+            </p>
+            <input
+              className={styles.campoInput}
+              type="password"
+              placeholder="Digite sua senha"
+              value={senhaGoogle}
+              onChange={(evento) => setSenhaGoogle(evento.target.value)}
+              minLength="6"
+              autoComplete="new-password"
+              disabled={carregando}
+              required
+              autoFocus
+            />
+            <input
+              className={styles.campoInput}
+              type="password"
+              placeholder="Confirme sua senha"
+              value={confirmacaoSenhaGoogle}
+              onChange={(evento) =>
+                setConfirmacaoSenhaGoogle(evento.target.value)
+              }
+              minLength="6"
+              autoComplete="new-password"
+              disabled={carregando}
+              required
+            />
+            <div className={styles.acoesSenhaGoogle}>
+              <button
+                className={`${styles.botaoPrincipal} ${styles.botaoCancelar}`}
+                type="button"
+                onClick={cancelarCadastroGoogle}
+                disabled={carregando}
+              >
+                Cancelar
+              </button>
+              <button
+                className={styles.botaoPrincipal}
+                type="submit"
+                disabled={carregando}
+              >
+                {carregando ? "Cadastrando..." : "Concluir cadastro"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </>
   );
 }

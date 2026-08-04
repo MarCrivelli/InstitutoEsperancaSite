@@ -285,7 +285,7 @@ const autenticarUsuario = async (req, res) => {
 
 const loginComGoogle = async (req, res) => {
   try {
-    const { googleToken } = req.body;
+    const { googleToken, senha } = req.body;
 
     if (!googleToken) {
       return res.status(400).json({
@@ -315,13 +315,27 @@ const loginComGoogle = async (req, res) => {
     let usuario = await Usuario.findOne({ email });
 
     if (!usuario) {
+      if (!senha) {
+        return res.status(428).json({
+          erro: true,
+          requerCadastroSenha: true,
+          mensagem:
+            "Crie uma senha para concluir seu cadastro com o Google.",
+        });
+      }
+
+      if (senha.length < 6) {
+        return res.status(400).json({
+          erro: true,
+          mensagem: "A senha deve ter pelo menos 6 caracteres.",
+        });
+      }
+
       usuario = await Usuario.create({
         nome: payload.name || email.split("@")[0],
         email,
-        senha: await bcrypt.hash(
-          crypto.randomBytes(32).toString("hex"),
-          10
-        ),
+        senha: await bcrypt.hash(senha, 10),
+        senhaGoogleConfirmada: true,
         googleId,
         foto,
         receberEmailEventos: true,
@@ -336,6 +350,27 @@ const loginComGoogle = async (req, res) => {
           erro: true,
           mensagem: "Esta conta não está ativa no sistema.",
         });
+      }
+
+      if (!usuario.senhaGoogleConfirmada) {
+        if (!senha) {
+          return res.status(428).json({
+            erro: true,
+            requerCadastroSenha: true,
+            mensagem:
+              "Crie uma senha para continuar usando sua conta do Google.",
+          });
+        }
+
+        if (senha.length < 6) {
+          return res.status(400).json({
+            erro: true,
+            mensagem: "A senha deve ter pelo menos 6 caracteres.",
+          });
+        }
+
+        usuario.senha = await bcrypt.hash(senha, 10);
+        usuario.senhaGoogleConfirmada = true;
       }
 
       usuario.googleId = googleId;
@@ -562,6 +597,7 @@ const modificarDadosUsuario = async (req, res) => {
         });
       }
       usuario.senha = await bcrypt.hash(senha, 10);
+      usuario.senhaGoogleConfirmada = true;
     }
 
     if (nivelDeAcesso !== undefined) {

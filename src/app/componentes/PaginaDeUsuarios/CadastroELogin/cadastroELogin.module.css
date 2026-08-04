@@ -1,4 +1,3 @@
-
 @import url("https://fonts.googleapis.com/css2?family=Montserrat");
 
 /* Container Principal */
@@ -109,6 +108,55 @@
   transform: scale(1.04);
 }
 
+.overlaySenhaGoogle {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.55);
+}
+
+.cardSenhaGoogle {
+  display: flex;
+  width: min(420px, 100%);
+  padding: 32px;
+  border-radius: 16px;
+  background-color: white;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+}
+
+.cardSenhaGoogle p {
+  margin: 0 0 8px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.cardSenhaGoogle .campoInput {
+  margin: 0;
+}
+
+.acoesSenhaGoogle {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.acoesSenhaGoogle .botaoPrincipal {
+  padding-inline: 22px;
+}
+
+.botaoCancelar {
+  border-color: #777;
+  background-color: #777;
+}
+
 /* Overlay */
 .containerOverlay {
   display: block;
@@ -177,6 +225,13 @@
 
 /* Responsivo */
 @media (max-width: 700px) {
+  .cardSenhaGoogle {
+    padding: 24px 18px;
+  }
+
+  .acoesSenhaGoogle {
+    flex-direction: column-reverse;
+  }
   .alinharFormulario {
     min-height: 100vh;
   }

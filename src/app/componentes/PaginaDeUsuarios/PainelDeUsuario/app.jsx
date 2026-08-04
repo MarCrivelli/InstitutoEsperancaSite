@@ -195,32 +195,8 @@ export default function PainelUsuario({
       return;
     }
 
-    const novaSenha = window.prompt(
-      "Para desconectar sua conta Google, crie uma senha de acesso com pelo menos 6 caracteres:",
-    );
-
-    if (novaSenha === null) {
-      return;
-    }
-
-    if (novaSenha.length < 6) {
-      alert("A senha deve possuir pelo menos 6 caracteres.");
-      return;
-    }
-
-    const confirmarSenha = window.prompt("Digite novamente a nova senha:");
-
-    if (confirmarSenha === null) {
-      return;
-    }
-
-    if (novaSenha !== confirmarSenha) {
-      alert("As senhas digitadas não são iguais.");
-      return;
-    }
-
     const confirmou = window.confirm(
-      "Deseja realmente desconectar sua conta Google? Depois disso, você deverá entrar usando seu e-mail e a nova senha.",
+      "Deseja realmente desconectar sua conta Google? Depois disso, você poderá entrar usando seu e-mail e a senha cadastrada.",
     );
 
     if (!confirmou) {
@@ -248,7 +224,6 @@ export default function PainelUsuario({
           },
 
           body: JSON.stringify({
-            senha: novaSenha,
             googleId: null,
             foto: null,
           }),
@@ -274,7 +249,7 @@ export default function PainelUsuario({
       }
 
       alert(
-        "Conta Google desconectada com sucesso! Agora você poderá entrar usando seu e-mail e a nova senha.",
+        "Conta Google desconectada com sucesso! Agora você poderá entrar usando seu e-mail e sua senha.",
       );
     } catch (error) {
       console.error("Erro ao desconectar conta Google:", error);
@@ -554,9 +529,7 @@ export default function PainelUsuario({
     }
 
     return (
-      <div className={styles.containerBotaoGoogle}>
-        <div ref={googleButtonRef}></div>
-      </div>
+        <div className={styles.loginGoogle} ref={googleButtonRef}></div>
     );
   };
 

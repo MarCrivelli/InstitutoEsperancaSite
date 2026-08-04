@@ -20,6 +20,11 @@ const usuarioSchema = new mongoose.Schema(
       select: false,
     },
 
+    senhaGoogleConfirmada: {
+      type: Boolean,
+      default: false,
+    },
+
     email: {
       type: String,
       required: [true, "O e-mail é obrigatório"],
