@@ -106,6 +106,7 @@ const listarDocumentos = async (req, res) => {
 const deletarDocumento = async (req, res) => {
   try {
     const { id } = req.params;
+    const { nomeDocumento } = req.body || {};
 
     if (!validarId(id)) {
       return res.status(400).json({
@@ -120,6 +121,14 @@ const deletarDocumento = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Documento não encontrado.",
+      });
+    }
+
+    if (!nomeDocumento || nomeDocumento !== documento.nome) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Digite o nome completo do documento para confirmar a exclusão.",
       });
     }
 

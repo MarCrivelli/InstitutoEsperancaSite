@@ -186,6 +186,17 @@
   border-color: rgb(138, 0, 34);
 }
 
+.botaoRemoverAtivo,
+.botaoRemoverAtivo:hover {
+  background-color: #e00038;
+  border-color: #8a0022;
+  box-shadow: 0 0 0 3px rgba(224, 0, 56, 0.2);
+}
+
+.botaoRemoverAtivo img {
+  filter: brightness(200%);
+}
+
 .listaDocumentos {
   display: grid;
   grid-template-columns: repeat(5, minmax(70px, 1fr));
@@ -195,6 +206,18 @@
   width: 100%;
   flex: 1;
   z-index: 2;
+}
+
+.mensagemOperacao {
+  position: relative;
+  z-index: 2;
+  margin: -8px 18px 8px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  color: #ffffff;
+  background-color: rgba(39, 0, 24, 0.82);
+  font-size: 0.78rem;
+  text-align: center;
 }
 
 .itemDocumento {
@@ -248,6 +271,19 @@
 
 .documentoWord {
   background: linear-gradient(135deg, #3d99fc, #0172eb, #005cbe);
+}
+
+.documentoParaExclusao {
+  background: linear-gradient(135deg, #ff5c67, #e00038, #9d001f);
+  border-color: #790018;
+}
+
+.documentoParaExclusao:hover {
+  filter: brightness(2);
+}
+
+.documentoParaExclusao img{
+  filter: brightness(2) !important;
 }
 
 .itemDocumento img {
@@ -328,6 +364,100 @@
   white-space: nowrap;
 }
 
+.overlayExclusao {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: rgba(15, 0, 5, 0.72);
+}
+
+.cardExclusao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(460px, 100%);
+  padding: 30px;
+  border: 2px solid #cf1644;
+  border-radius: 18px;
+  background-color: #ffffff;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
+  text-align: center;
+}
+
+.cardExclusao > img {
+  width: 54px;
+  height: 54px;
+  margin-bottom: 12px;
+  object-fit: contain;
+}
+
+.cardExclusao h2 {
+  margin: 0 0 10px;
+  color: #830020;
+  font-size: 1.25rem;
+}
+
+.cardExclusao strong {
+  max-width: 100%;
+  color: #242424;
+  overflow-wrap: anywhere;
+}
+
+.cardExclusao p {
+  margin: 16px 0 10px;
+  color: #555555;
+  line-height: 1.45;
+}
+
+.cardExclusao input {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1px solid #b7b7b7;
+  border-radius: 8px;
+  outline: none;
+}
+
+.cardExclusao input:focus {
+  border-color: #cf1644;
+  box-shadow: 0 0 0 3px rgba(207, 22, 68, 0.15);
+}
+
+.acoesExclusao {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.acoesExclusao button {
+  min-width: 105px;
+  padding: 9px 16px;
+  border-radius: 18px;
+  font-weight: 700;
+}
+
+.botaoCancelarExclusao {
+  color: #333333;
+  background-color: #eeeeee;
+  border: 1px solid #c5c5c5;
+}
+
+.botaoConfirmarExclusao {
+  color: #ffffff;
+  background-color: #d50035;
+  border: 1px solid #a00028;
+}
+
+.botaoConfirmarExclusao:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 @media (max-width: 1350px) {
   .listaDocumentos {
     gap: 16px 22px;
@@ -371,6 +501,18 @@
 @media (max-width: 500px) {
   .areaPesquisa {
     align-items: flex-end;
+  }
+
+  .cardExclusao {
+    padding: 24px 18px;
+  }
+
+  .acoesExclusao {
+    flex-direction: column-reverse;
+  }
+
+  .acoesExclusao button {
+    width: 100%;
   }
 }
 

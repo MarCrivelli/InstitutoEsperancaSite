@@ -20,6 +20,10 @@ export default function Card3() {
   const [enviando, setEnviando] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [acessoNegado, setAcessoNegado] = useState(false);
+  const [modoExclusao, setModoExclusao] = useState(false);
+  const [documentoParaExcluir, setDocumentoParaExcluir] = useState(null);
+  const [nomeConfirmacao, setNomeConfirmacao] = useState("");
+  const [excluindo, setExcluindo] = useState(false);
 
   const urlApi = import.meta.env.VITE_API_URL;
   const urlPublica = import.meta.env.BASE_URL;
@@ -278,6 +282,79 @@ export default function Card3() {
     window.open(enderecoArquivo, "_blank", "noopener,noreferrer");
   };
 
+  const alternarModoExclusao = () => {
+    if (excluindo) return;
+
+    setModoExclusao((modoAtual) => !modoAtual);
+    setDocumentoParaExcluir(null);
+    setNomeConfirmacao("");
+    setMensagem("");
+  };
+
+  const selecionarDocumento = (documento) => {
+    if (modoExclusao) {
+      setDocumentoParaExcluir(documento);
+      setNomeConfirmacao("");
+      return;
+    }
+
+    abrirDocumento(documento);
+  };
+
+  const fecharConfirmacaoExclusao = () => {
+    if (excluindo) return;
+
+    setDocumentoParaExcluir(null);
+    setNomeConfirmacao("");
+  };
+
+  const excluirDocumento = async (event) => {
+    event.preventDefault();
+
+    if (!documentoParaExcluir || nomeConfirmacao !== documentoParaExcluir.nome) {
+      return;
+    }
+
+    const idDocumento = documentoParaExcluir.id || documentoParaExcluir._id;
+
+    if (!idDocumento) {
+      setMensagem("Não foi possível identificar o documento selecionado.");
+      return;
+    }
+
+    try {
+      setExcluindo(true);
+      setMensagem("");
+
+      await requisicaoAutenticada(`${urlApi}/documentos/${idDocumento}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nomeDocumento: nomeConfirmacao,
+        }),
+      });
+
+      const paginaARecarregar =
+        documentos.length === 1 && paginaAtual > 1
+          ? paginaAtual - 1
+          : paginaAtual;
+
+      setDocumentoParaExcluir(null);
+      setNomeConfirmacao("");
+      setModoExclusao(false);
+
+      await carregarDocumentos(paginaARecarregar);
+      setMensagem("Documento excluído com sucesso.");
+    } catch (error) {
+      console.error("Erro ao excluir documento:", error);
+      setMensagem(error.message);
+    } finally {
+      setExcluindo(false);
+    }
+  };
+
   const voltarPagina = () => {
     if (paginaAtual > 1 && !carregando) {
       setPesquisa("");
@@ -354,10 +431,28 @@ export default function Card3() {
           onChange={enviarArquivo}
         />
 
-        <button type="button" className={styles.botaoRemover}>
+        <button
+          type="button"
+          className={`${styles.botaoRemover} ${
+            modoExclusao ? styles.botaoRemoverAtivo : ""
+          }`}
+          onClick={alternarModoExclusao}
+          disabled={excluindo}
+          title={modoExclusao ? "Cancelar exclusão" : "Excluir documento"}
+          aria-label={
+            modoExclusao ? "Cancelar modo de exclusão" : "Excluir documento"
+          }
+          aria-pressed={modoExclusao}
+        >
           <img src={imagemRemover} alt="" />
         </button>
       </div>
+
+      {mensagem && !acessoNegado && (
+        <p className={styles.mensagemOperacao} role="status">
+          {mensagem}
+        </p>
+      )}
 
       {carregando ? (
         <div className={styles.estadoLista}>
@@ -382,17 +477,33 @@ export default function Card3() {
                 type="button"
                 key={documento.id || documento._id || documento.caminhoArquivo}
                 className={`${styles.itemDocumento} ${
-                  tipo === "excel"
+                  modoExclusao
+                    ? styles.documentoParaExclusao
+                    : tipo === "excel"
                     ? styles.documentoExcel
                     : styles.documentoWord
                 }`}
-                onClick={() => abrirDocumento(documento)}
-                title={`Abrir ${documento.nome}`}
+                onClick={() => selecionarDocumento(documento)}
+                title={
+                  modoExclusao
+                    ? `Excluir ${documento.nome}`
+                    : `Abrir ${documento.nome}`
+                }
               >
                 <img
-                  src={tipo === "excel" ? imagemExcel : imagemWord}
+                  src={
+                    modoExclusao
+                      ? imagemRemover
+                      : tipo === "excel"
+                        ? imagemExcel
+                        : imagemWord
+                  }
                   alt={
-                    tipo === "excel" ? "Arquivo do Excel" : "Arquivo do Word"
+                    modoExclusao
+                      ? "Excluir documento"
+                      : tipo === "excel"
+                        ? "Arquivo do Excel"
+                        : "Arquivo do Word"
                   }
                 />
 
@@ -427,6 +538,57 @@ export default function Card3() {
           >
             próximo
           </button>
+        </div>
+      )}
+
+      {documentoParaExcluir && (
+        <div
+          className={styles.overlayExclusao}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="tituloExclusaoDocumento"
+        >
+          <form className={styles.cardExclusao} onSubmit={excluirDocumento}>
+            <img src={imagemRemover} alt="" />
+            <h2 id="tituloExclusaoDocumento">
+              Você deseja excluir este documento?
+            </h2>
+            <strong>{documentoParaExcluir.nome}</strong>
+            <p>
+              Para confirmar, digite abaixo o nome completo do documento,
+              incluindo sua extensão.
+            </p>
+            <input
+              type="text"
+              value={nomeConfirmacao}
+              onChange={(event) => setNomeConfirmacao(event.target.value)}
+              placeholder={documentoParaExcluir.nome}
+              aria-label="Nome completo do documento"
+              autoComplete="off"
+              disabled={excluindo}
+              autoFocus
+              required
+            />
+            <div className={styles.acoesExclusao}>
+              <button
+                type="button"
+                className={styles.botaoCancelarExclusao}
+                onClick={fecharConfirmacaoExclusao}
+                disabled={excluindo}
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className={styles.botaoConfirmarExclusao}
+                disabled={
+                  excluindo || nomeConfirmacao !== documentoParaExcluir.nome
+                }
+              >
+                {excluindo ? "Excluindo..." : "Excluir"}
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </div>
