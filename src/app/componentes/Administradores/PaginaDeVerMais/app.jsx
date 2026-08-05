@@ -583,7 +583,31 @@ export default function VerMais() {
                     }}
                   >
                     <img
-                      src={`${import.meta.env.BASE_URL}pagVerMais/olho.png`}
+                      src={`${import.meta.env.BASE_URL}pagVerMais/ampliar.png`}
+                      alt="Ver imagem ampliada"
+                    />
+                  </button>
+                  <button
+                    className={styles.botaoVerAmpliado}
+                    onClick={() => {
+                      setImagemParaAmpliar(obterUrlImagemEntrada());
+                      setModalImagemAberto(true);
+                    }}
+                  >
+                    <img
+                      src={`${import.meta.env.BASE_URL}pagVerMais/coracao.png`}
+                      alt="Ver imagem ampliada"
+                    />
+                  </button>
+                  <button
+                    className={styles.botaoVerAmpliado}
+                    onClick={() => {
+                      setImagemParaAmpliar(obterUrlImagemEntrada());
+                      setModalImagemAberto(true);
+                    }}
+                  >
+                    <img
+                      src={`${import.meta.env.BASE_URL}pagVerMais/lixeira.png`}
                       alt="Ver imagem ampliada"
                     />
                   </button>
