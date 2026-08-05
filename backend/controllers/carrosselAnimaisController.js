@@ -11,7 +11,7 @@ const verificarAssociacoes = async () => {
     const testeAssociacao = await CarrosselAnimais.findOne().populate({
       path: "animalId",
       select:
-        "nome imagemEntrada imagemSaida descricaoEntrada descricaoSaida",
+        "nome imagemEntrada imagemSaida descricaoEntrada descricaoSaida statusVida",
     });
 
     console.log(
@@ -46,6 +46,8 @@ const listarAnimaisParaSelecao = async (req, res) => {
     );
 
     const animaisDisponiveis = await Animais.find({
+      statusVida: "vivo",
+
       _id: {
         $nin: idsNoCarrossel,
       },
@@ -71,7 +73,7 @@ const listarAnimaisParaSelecao = async (req, res) => {
       },
     })
       .select(
-        "nome descricaoEntrada descricaoSaida imagemEntrada imagemSaida"
+        "nome descricaoEntrada descricaoSaida imagemEntrada imagemSaida statusVida"
       )
       .sort({
         nome: 1,
@@ -101,13 +103,20 @@ const buscarAnimalPorId = async (req, res) => {
     }
 
     const animal = await Animais.findById(id).select(
-      "nome imagemEntrada imagemSaida descricaoEntrada descricaoSaida"
+      "nome imagemEntrada imagemSaida descricaoEntrada descricaoSaida statusVida"
     );
 
     if (!animal) {
       return res.status(404).json({
         success: false,
         message: "Animal não encontrado",
+      });
+    }
+
+    if (animal.statusVida === "falecido") {
+      return res.status(400).json({
+        success: false,
+        message: "Animais falecidos não podem ser adicionados ao carrossel",
       });
     }
 
@@ -140,6 +149,13 @@ const adicionarAnimalAoCarrossel = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Animal não encontrado",
+      });
+    }
+
+    if (animal.statusVida === "falecido") {
+      return res.status(400).json({
+        success: false,
+        message: "Animais falecidos não podem ser adicionados ao carrossel",
       });
     }
 
@@ -193,14 +209,17 @@ const listarAnimaisDoCarrossel = async (req, res) => {
       .populate({
         path: "animalId",
         select:
-          "nome imagemEntrada imagemSaida descricaoEntrada descricaoSaida",
+          "nome imagemEntrada imagemSaida descricaoEntrada descricaoSaida statusVida",
       })
       .sort({
         ordem: 1,
       });
 
     const dadosProcessados = animaisCarrossel
-      .filter((item) => item.animalId)
+      .filter(
+        (item) =>
+          item.animalId && item.animalId.statusVida !== "falecido"
+      )
       .map((item) => {
         const animal = item.animalId;
 

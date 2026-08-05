@@ -408,6 +408,13 @@ routes.put(
   animalController.atualizarDescricaoSaida,
 );
 
+routes.delete(
+  "/animais/:id",
+  verificarToken,
+  apenasAdministrador,
+  animalController.excluirAnimal,
+);
+
 // ============================================================================
 // ROTAS DE DOADORES
 // ============================================================================

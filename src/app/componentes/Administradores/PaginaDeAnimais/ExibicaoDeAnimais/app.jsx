@@ -77,7 +77,11 @@ export default function ExibicaoDeAnimais({
           <div className={styles.cardAnimais} key={animal.id}>
             <div className={styles.divImagem}>
               <img
-                className={styles.imagemAnimais}
+                className={`${styles.imagemAnimais} ${
+                  animal.statusVida === "falecido"
+                    ? styles.imagemFalecido
+                    : ""
+                }`}
                 src={
                   animal.imagemEntrada
                     ? `${import.meta.env.VITE_API_URL}/uploads/${animal.imagemEntrada}`

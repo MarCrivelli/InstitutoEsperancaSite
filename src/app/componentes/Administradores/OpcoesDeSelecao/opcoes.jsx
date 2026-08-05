@@ -64,6 +64,11 @@ const StatusVermifugacao = [
   { value: "semVerme", label: "Sem Vermes" },
 ];
 
+const StatusVida = [
+  { value: "vivo", label: "Vivo" },
+  { value: "falecido", label: "Falecido" },
+];
+
 const descricoes = [
   { value: "descricao", label: "Descrição de entrada" },
   { value: "descricaoSaida", label: "Descrição de saída" },
@@ -89,6 +94,7 @@ export const vincularLabel = (value, optionType) => {
     StatusAdocao,
     StatusMicrochipagem,
     StatusVermifugacao,
+    StatusVida,
     descricoes,
     tipoArquivo,
   }[optionType];
@@ -108,6 +114,7 @@ export default {
   StatusAdocao,
   StatusMicrochipagem,
   StatusVermifugacao,
+  StatusVida,
   descricoes,
   tipoArquivo,
   vincularLabel,

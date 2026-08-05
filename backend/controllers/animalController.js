@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
+const fs = require("fs");
+const path = require("path");
 const Animais = require("../models/Animais");
+const CarrosselAnimais = require("../models/CarrosselDeAnimais");
 
 const atualizarStatusVacinacao = (animal) => {
   if (animal.dataVacinacao) {
@@ -14,6 +17,20 @@ const atualizarStatusVacinacao = (animal) => {
 };
 
 const validarId = (id) => mongoose.isValidObjectId(id);
+
+const removerImagemSeExistir = (nomeArquivo) => {
+  if (!nomeArquivo) return;
+
+  const caminhoUploads = path.resolve(__dirname, "../uploads");
+  const caminhoImagem = path.resolve(caminhoUploads, path.basename(nomeArquivo));
+
+  if (
+    caminhoImagem.startsWith(`${caminhoUploads}${path.sep}`) &&
+    fs.existsSync(caminhoImagem)
+  ) {
+    fs.unlinkSync(caminhoImagem);
+  }
+};
 
 // Buscar todos os animais
 const procurarAnimais = async (req, res) => {
@@ -391,6 +408,55 @@ const atualizarDescricaoSaida = async (req, res) => {
   }
 };
 
+const excluirAnimal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const nomeInformado = String(req.body?.nome ?? "");
+
+    if (!validarId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID do animal inválido.",
+      });
+    }
+
+    const animal = await Animais.findById(id);
+
+    if (!animal) {
+      return res.status(404).json({
+        success: false,
+        message: "Animal não encontrado.",
+      });
+    }
+
+    if (nomeInformado !== animal.nome) {
+      return res.status(400).json({
+        success: false,
+        message: "O nome informado não corresponde ao nome completo do animal.",
+      });
+    }
+
+    await CarrosselAnimais.deleteMany({ animalId: animal._id });
+    await animal.deleteOne();
+
+    removerImagemSeExistir(animal.imagemEntrada);
+    removerImagemSeExistir(animal.imagemSaida);
+
+    return res.status(200).json({
+      success: true,
+      message: "Animal excluído com sucesso.",
+    });
+  } catch (error) {
+    console.error("❌ Erro ao excluir animal:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Erro ao excluir animal.",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   procurarAnimais,
   cadastrarAnimal,
@@ -399,4 +465,5 @@ module.exports = {
   atualizarImagemSaida,
   atualizarDescricaoSaida,
   atualizarAnimal,
+  excluirAnimal,
 };

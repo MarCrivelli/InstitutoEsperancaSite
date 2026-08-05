@@ -20,6 +20,10 @@
   width: 100%;
 }
 
+.imagemFalecido {
+  filter: grayscale(100%);
+}
+
 .infoAnimais {
   display: flex;
   flex-direction: column;

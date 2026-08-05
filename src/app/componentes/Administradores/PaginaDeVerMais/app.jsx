@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -13,6 +13,7 @@ import styles from "../PaginaDeVerMais/verMais.module.css";
 
 export default function VerMais() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   // Estados principais - controla os dados do animal
   const [dadosOriginais, setDadosOriginais] = useState(null);
@@ -22,6 +23,11 @@ export default function VerMais() {
   const [modoEdicao, setModoEdicao] = useState(false);
   const [existemAlteracoes, setExistemAlteracoes] = useState(false);
   const [salvandoDados, setSalvandoDados] = useState(false);
+  const [modalExclusaoAberto, setModalExclusaoAberto] = useState(false);
+  const [nomeConfirmacaoExclusao, setNomeConfirmacaoExclusao] = useState("");
+  const [exclusaoConfirmada, setExclusaoConfirmada] = useState(false);
+  const [excluindoAnimal, setExcluindoAnimal] = useState(false);
+  const [erroExclusao, setErroExclusao] = useState("");
 
   // Estados específicos
   const [referenciaArquivo, setReferenciaArquivo] = useState(useRef(null));
@@ -31,6 +37,19 @@ export default function VerMais() {
   // Novos estados para controle de imagens pendentes
   const [imagemEntradaPendente, setImagemEntradaPendente] = useState(null);
   const [imagemSaidaPendente, setImagemSaidaPendente] = useState(null);
+
+  const obterUsuarioLogado = () => {
+    try {
+      const usuarioSalvo = localStorage.getItem("usuario");
+      return usuarioSalvo ? JSON.parse(usuarioSalvo) : null;
+    } catch (error) {
+      console.error("Erro ao carregar usuário:", error);
+      return null;
+    }
+  };
+
+  const ehAdministrador =
+    obterUsuarioLogado()?.nivelDeAcesso === "administrador";
 
   // Estado do seletor de descrição (entrada/saída)
   const [descricaoSelecionada, setDescricaoSelecionada] = useState(
@@ -415,6 +434,62 @@ export default function VerMais() {
     }
   };
 
+  const fecharModalExclusao = () => {
+    if (excluindoAnimal) return;
+
+    setModalExclusaoAberto(false);
+    setNomeConfirmacaoExclusao("");
+    setExclusaoConfirmada(false);
+    setErroExclusao("");
+  };
+
+  const excluirAnimal = async (event) => {
+    event.preventDefault();
+
+    if (
+      !ehAdministrador ||
+      nomeConfirmacaoExclusao !== dadosOriginais.nome ||
+      !exclusaoConfirmada
+    ) {
+      return;
+    }
+
+    try {
+      setExcluindoAnimal(true);
+      setErroExclusao("");
+
+      const token = localStorage.getItem("token");
+      const resposta = await fetch(
+        `${import.meta.env.VITE_API_URL}/animais/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ nome: nomeConfirmacaoExclusao }),
+        }
+      );
+
+      const resultado = await resposta.json().catch(() => ({}));
+
+      if (!resposta.ok) {
+        throw new Error(
+          resultado.message ||
+            resultado.mensagem ||
+            "Não foi possível excluir o animal."
+        );
+      }
+
+      navigate("/fichas_de_animais", { replace: true });
+    } catch (error) {
+      console.error("Erro ao excluir animal:", error);
+      setErroExclusao(error.message);
+    } finally {
+      setExcluindoAnimal(false);
+    }
+  };
+
   // Função para obter a URL da imagem de entrada (com preview se pendente)
   const obterUrlImagemEntrada = () => {
     if (imagemEntradaPendente) {
@@ -538,6 +613,82 @@ export default function VerMais() {
       <RolarPCima />
       <ModalAmpliarImagem />
 
+      {modalExclusaoAberto && ehAdministrador && (
+        <div
+          className={styles.overlayExclusao}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="tituloExclusaoAnimal"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) fecharModalExclusao();
+          }}
+        >
+          <form className={styles.cardExclusao} onSubmit={excluirAnimal}>
+            <img
+              src={`${import.meta.env.BASE_URL}pagVerMais/lixeira.png`}
+              alt=""
+            />
+            <h2 id="tituloExclusaoAnimal">Excluir animal?</h2>
+            <strong>{dadosOriginais.nome}</strong>
+            <p>
+              Esta ação não poderá ser desfeita. Para confirmar, digite o nome
+              completo do animal.
+            </p>
+            <input
+              type="text"
+              value={nomeConfirmacaoExclusao}
+              onChange={(event) =>
+                setNomeConfirmacaoExclusao(event.target.value)
+              }
+              placeholder={dadosOriginais.nome}
+              aria-label="Nome completo do animal"
+              autoComplete="off"
+              disabled={excluindoAnimal}
+              autoFocus
+              required
+            />
+            <label className={styles.confirmacaoExclusao}>
+              <input
+                type="checkbox"
+                checked={exclusaoConfirmada}
+                onChange={(event) =>
+                  setExclusaoConfirmada(event.target.checked)
+                }
+                disabled={excluindoAnimal}
+                required
+              />
+              <span>desejo excluir esse animal.</span>
+            </label>
+            {erroExclusao && (
+              <p className={styles.erroExclusao} role="alert">
+                {erroExclusao}
+              </p>
+            )}
+            <div className={styles.acoesExclusao}>
+              <button
+                type="button"
+                className={styles.botaoCancelarExclusao}
+                onClick={fecharModalExclusao}
+                disabled={excluindoAnimal}
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className={styles.botaoConfirmarExclusao}
+                disabled={
+                  excluindoAnimal ||
+                  nomeConfirmacaoExclusao !== dadosOriginais.nome ||
+                  !exclusaoConfirmada
+                }
+              >
+                {excluindoAnimal ? "Excluindo..." : "Excluir animal"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
       <div className={styles.fundoVermais}>
         <div className={styles.painel}>
           {/* CARROSSEL DE IMAGENS */}
@@ -599,18 +750,20 @@ export default function VerMais() {
                       alt="Ver imagem ampliada"
                     />
                   </button>
-                  <button
-                    className={styles.botaoVerAmpliado}
-                    onClick={() => {
-                      setImagemParaAmpliar(obterUrlImagemEntrada());
-                      setModalImagemAberto(true);
-                    }}
-                  >
-                    <img
-                      src={`${import.meta.env.BASE_URL}pagVerMais/lixeira.png`}
-                      alt="Ver imagem ampliada"
-                    />
-                  </button>
+                  {ehAdministrador && (
+                    <button
+                      type="button"
+                      className={`${styles.botaoVerAmpliado} ${styles.botaoExcluirAnimal}`}
+                      onClick={() => setModalExclusaoAberto(true)}
+                      title="Excluir animal"
+                      aria-label={`Excluir o animal ${dadosOriginais.nome}`}
+                    >
+                      <img
+                        src={`${import.meta.env.BASE_URL}pagVerMais/lixeira.png`}
+                        alt=""
+                      />
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
