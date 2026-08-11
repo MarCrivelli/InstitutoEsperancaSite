@@ -59,8 +59,12 @@ const animaisSchema = new mongoose.Schema(
 
     statusVida: {
       type: String,
+      enum: {
+        values: ["vivo", "falecido"],
+        message: "O status de vida deve ser vivo ou falecido",
+      },
       default: "vivo",
-      trim: true,
+      required: [true, "O status de vida é obrigatório"],
     },
 
     imagemEntrada: {
@@ -98,6 +102,8 @@ const animaisSchema = new mongoose.Schema(
   }
 );
 
+// Equivale ao antigo "as: itensCarrossel" do Sequelize.
+// É um virtual: os itens continuam armazenados na coleção carrossel_animais.
 animaisSchema.virtual("itensCarrossel", {
   ref: "CarrosselDeAnimais",
   localField: "_id",

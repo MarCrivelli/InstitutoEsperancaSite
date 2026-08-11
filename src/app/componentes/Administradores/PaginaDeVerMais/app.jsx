@@ -497,7 +497,7 @@ export default function VerMais() {
     }
     return dadosOriginais.imagemEntrada
       ? `${import.meta.env.VITE_API_URL}/uploads/${dadosOriginais.imagemEntrada}`
-      : `${import.meta.env.BASE_URL}pagFichasDAnimais/imagemTeste.jpg`
+      : `${import.meta.env.BASE_URL}paraErros/semImagem.png`
   };
 
   // Função para obter a URL da imagem de saída (com preview se pendente)
@@ -507,7 +507,7 @@ export default function VerMais() {
     }
     return dadosOriginais.imagemSaida
       ? `${import.meta.env.VITE_API_URL}/uploads/${dadosOriginais.imagemSaida}`
-      : `${import.meta.env.BASE_URL}pagFichasDAnimais/imagemTeste.jpg`
+      : `${import.meta.env.BASE_URL}pagFichasDAnimais/imagemBase.png`
   };
 
   // LOADING
@@ -605,6 +605,8 @@ export default function VerMais() {
       display: "none",
     }),
   };
+
+  console.log(obterUrlImagemSaida() + " ablublé")
 
   return (
     <div className={styles.fundoPagina}>
@@ -816,7 +818,7 @@ export default function VerMais() {
                       }}
                     >
                       <img
-                        src="pagVerMais/olho.png"
+                        src="pagVerMais/ampliar.png"
                         alt="Ver imagem ampliada"
                       />
                     </button>

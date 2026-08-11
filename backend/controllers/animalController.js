@@ -39,7 +39,7 @@ const procurarAnimais = async (req, res) => {
       .select(
         "nome idade sexo tipo statusMicrochipagem statusVacinacao " +
           "statusCastracao statusAdocao statusVermifugacao imagemEntrada " +
-          "imagemSaida dataVacinacao descricaoEntrada descricaoSaida",
+          "imagemSaida dataVacinacao descricaoEntrada descricaoSaida statusVida",
       )
       .sort({ createdAt: 1 });
 
@@ -70,6 +70,7 @@ const cadastrarAnimal = async (req, res) => {
       statusAdocao,
       statusVermifugacao,
       descricaoEntrada,
+      statusVida,
     } = req.body;
 
     const imagemEntrada = req.file ? req.file.filename : null;
@@ -93,6 +94,7 @@ const cadastrarAnimal = async (req, res) => {
       statusAdocao,
       statusVermifugacao,
       descricaoEntrada,
+      statusVida: statusVida || "vivo",
       imagemEntrada,
     });
 
@@ -155,6 +157,7 @@ const atualizarAnimal = async (req, res) => {
       "statusVermifugacao",
       "descricaoEntrada",
       "descricaoSaida",
+      "statusVida",
     ];
 
     let houveAlteracao = false;
@@ -210,6 +213,10 @@ const atualizarAnimal = async (req, res) => {
     }
 
     await animal.save();
+
+    if (animal.statusVida === "falecido") {
+      await CarrosselAnimais.deleteMany({ animalId: animal._id });
+    }
 
     res.status(200).json({
       success: true,
