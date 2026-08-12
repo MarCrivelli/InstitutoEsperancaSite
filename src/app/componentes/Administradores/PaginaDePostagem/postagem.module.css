@@ -28,17 +28,38 @@
 .fundoPagina::after {
   bottom: 0;
   background-image: url(/imagensDeFundo/fundoOnda_Transicao2.svg);
+  z-index: 1;
+}
+
+.iconeBlob{
+  content: "";
+  position: absolute;
+  width: 100%;
+  margin-top: 230px;
+  min-height: 100vh;
+  z-index: 2;
+  overflow: visible;
+}
+
+.oBlobPai{
+  visibility: hidden;
+}
+
+.fundoPainel{
+  background-color: #ff1f66;
+  position: relative;
 }
 
 .painel {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #ff1f66;
   min-height: calc(100vh - (70px + 60px + 60px));
   width: 100%;
   padding: 0 5% 320px 5%;
   margin-top: 230px;
+  position: relative;
+  z-index: 1000;
 }
 
 .introducaoPagina,
@@ -144,20 +165,26 @@
   box-shadow: 2px 2px 0px #ff9900;
 }
 
+.containerBotaoPostagem > button{
+  width: 100%;
+  max-width: 200px;
+}
+
 .containerFiltros {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 10px;
   row-gap: 30px;
+  background-color: white;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.644);
+  padding: 40px;
+  border-radius: 20px;
 }
 
 .filtro {
   flex: 1 450px;
-  max-width: calc(50% - 10px);
-  background-color: white;
-  padding: 10px;
-  border-radius: 10px;
+  max-width: calc(50% - 30px);
 }
 
 .containerBotaoPostagem {
