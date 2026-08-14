@@ -11,6 +11,7 @@ export default function FiltroDeAnimais({ filtros, setFiltros }) {
   const tipoSelectRef = useRef(null);
   const idadeSelectRef = useRef(null);
   const sexoSelectRef = useRef(null);
+  const statusVidaSelectRef = useRef(null);
   const vacinacaoSelectRef = useRef(null);
   const dataVacinacaoSelectRef = useRef(null);
   const castracaoSelectRef = useRef(null);
@@ -35,6 +36,7 @@ export default function FiltroDeAnimais({ filtros, setFiltros }) {
     tipoSelectRef.current?.clearValue();
     idadeSelectRef.current?.clearValue();
     sexoSelectRef.current?.clearValue();
+    statusVidaSelectRef.current?.clearValue();
     vacinacaoSelectRef.current?.clearValue();
     dataVacinacaoSelectRef.current?.clearValue();
     castracaoSelectRef.current?.clearValue();
@@ -111,6 +113,25 @@ export default function FiltroDeAnimais({ filtros, setFiltros }) {
             className={styles.selectFiltrarAnimal}
             value={filtros.tipo.map((opt) =>
               opcoes.tipoAnimal.find((o) => o.value === opt)
+            )}
+          />
+        </div>
+        <div className={styles.alinharDadosDeFiltragem}>
+          <label className={styles.labelDeIdentificacao}>Status de vida:</label>
+          <Select
+            ref={statusVidaSelectRef}
+            isMulti
+            options={opcoes.StatusVida}
+            placeholder="Status de vida"
+            onChange={(selectedOptions) =>
+              setFiltros((prev) => ({
+                ...prev,
+                statusVida: (selectedOptions || []).map((opt) => opt.value),
+              }))
+            }
+            className={styles.selectFiltrarAnimal}
+            value={filtros.statusVida.map((opt) =>
+              opcoes.StatusVida.find((o) => o.value === opt)
             )}
           />
         </div>

@@ -64,17 +64,11 @@ Sites que peguei alguns componentes utilizados:
 22. Árvore
 <a href="https://www.flaticon.com/free-icons/bonsai" title="bonsai icons">Bonsai icons created by justicon - Flaticon</a>
 
-23. Borda floral
-<a href="https://www.flaticon.com/free-icons/floral" title="floral icons">Floral icons created by Freepik - Flaticon</a>
-
 24. Menos
 <a href="https://www.flaticon.com/free-icons/minus" title="minus icons">Minus icons created by Freepik - Flaticon</a>
 
 25. Mais
 <a href="https://www.flaticon.com/free-icons/plus" title="plus icons">Plus icons created by Freepik - Flaticon</a>
-
-26. Cachorro p/ carrossel adms
-<a href="https://www.flaticon.com/free-icons/golden-retriever" title="golden-retriever icons">Golden-retriever icons created by Freepik - Flaticon</a>
 
 27. Doações
 <a href="https://www.flaticon.com/free-icons/donation" title="donation icons">Donation icons created by Freepik - Flaticon</a>
@@ -91,10 +85,3 @@ Sites que peguei alguns componentes utilizados:
 31. X
 <a href="https://www.flaticon.com/free-icons/letter-x" title="letter x icons">Letter x icons created by Md Tanvirul Haque - Flaticon</a>
 
-https://react-select.com/home
-
-https://react-bootstrap.github.io/docs/components/tabs
-
-https://react-select.com/advanced
-
-npx sequelize-cli db:migrate

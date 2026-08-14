@@ -12,6 +12,7 @@ require("./models/Usuario");
 require("./models/Doadores");
 require("./models/Avisos");
 require("./models/Documentos");
+require("./models/Postagem");
 
 async function prepararBanco() {
   try {

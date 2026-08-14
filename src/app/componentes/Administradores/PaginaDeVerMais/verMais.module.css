@@ -326,6 +326,10 @@
   border: 5px solid white;
 }
 
+.imagemFalecido {
+  filter: grayscale(100%);
+}
+
 .botaoFecharModal {
   position: relative;
   margin-left: auto;

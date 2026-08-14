@@ -45,6 +45,15 @@
   visibility: hidden;
 }
 
+.oBlobPai,
+.oBlob1,
+.oBlob2,
+.oBlob3,
+.oBlob4,
+.oBlob5{
+  opacity: .7;
+}
+
 .fundoPainel{
   background-color: #ff1f66;
   position: relative;

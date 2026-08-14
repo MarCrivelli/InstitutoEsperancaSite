@@ -8,7 +8,8 @@
 
 .sobreNos,
 .redesSociais,
-.contato {
+.contato,
+.atribuicoes {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -61,6 +62,26 @@
 
 .alinharInfoContato strong {
   font-weight: 500;
+}
+
+.listaAtribuicoes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.listaAtribuicoes span {
+  display: block;
+}
+
+.listaAtribuicoes a {
+  color: inherit;
+  font-size: 0.75rem;
+  text-decoration: none;
+}
+
+.listaAtribuicoes a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 768px){

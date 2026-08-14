@@ -61,6 +61,10 @@ export function aplicarFiltrosAnimais(animais = [], filtros = {}) {
     const tipoMatch = incluiEmLista(filtros.tipo, animal.tipo);
     const idadeMatch = incluiEmLista(filtros.idade, animal.idade?.toString());
     const sexoMatch = incluiEmLista(filtros.sexo, animal.sexo);
+    const statusVidaSelecionados = filtros.statusVida || [];
+    const statusVidaMatch = statusVidaSelecionados.length
+      ? statusVidaSelecionados.includes(animal.statusVida || "vivo")
+      : animal.statusVida !== "falecido";
     const microchipagemMatch = incluiEmLista(
       filtros.statusMicrochipagem,
       animal.statusMicrochipagem
@@ -101,6 +105,7 @@ export function aplicarFiltrosAnimais(animais = [], filtros = {}) {
       tipoMatch &&
       idadeMatch &&
       sexoMatch &&
+      statusVidaMatch &&
       microchipagemMatch &&
       vacinacaoMatch &&
       dataVacinacaoMatch &&
@@ -161,6 +166,7 @@ export function criarFiltrosAnimaisPadrao() {
     tipo: [],
     idade: [],
     sexo: [],
+    statusVida: [],
     statusVacinacao: [],
     dataVacinacao: [],
     statusCastracao: [],

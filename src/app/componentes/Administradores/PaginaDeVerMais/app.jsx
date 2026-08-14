@@ -30,7 +30,7 @@ export default function VerMais() {
   const [erroExclusao, setErroExclusao] = useState("");
 
   // Estados específicos
-  const [referenciaArquivo, setReferenciaArquivo] = useState(useRef(null));
+  const referenciaArquivo = useRef(null);
   const [modalImagemAberto, setModalImagemAberto] = useState(false);
   const [imagemParaAmpliar, setImagemParaAmpliar] = useState("");
 
@@ -80,10 +80,10 @@ export default function VerMais() {
         const resposta = await fetch(`${import.meta.env.VITE_API_URL}/animais/${id}`);
         const dados = await resposta.json();
 
-        if (!dados.hasOwnProperty("descricao")) {
+        if (!Object.prototype.hasOwnProperty.call(dados, "descricao")) {
           dados.descricao = "";
         }
-        if (!dados.hasOwnProperty("descricaoSaida")) {
+        if (!Object.prototype.hasOwnProperty.call(dados, "descricaoSaida")) {
           dados.descricaoSaida = "";
         }
 
@@ -126,6 +126,19 @@ export default function VerMais() {
   const capturarMudancaSelecao = (nomeCampo, opcaoSelecionada) => {
     setDadosEditados((anterior) => {
       const novoEstado = { ...anterior, [nomeCampo]: opcaoSelecionada.value };
+      verificarSeExistemAlteracoes(dadosOriginais, novoEstado);
+      return novoEstado;
+    });
+  };
+
+  const alternarStatusVida = () => {
+    if (!modoEdicao || salvandoDados) return;
+
+    setDadosEditados((anterior) => {
+      const novoEstado = {
+        ...anterior,
+        statusVida: anterior.statusVida === "falecido" ? "vivo" : "falecido",
+      };
       verificarSeExistemAlteracoes(dadosOriginais, novoEstado);
       return novoEstado;
     });
@@ -268,40 +281,6 @@ export default function VerMais() {
     setExistemAlteracoes(true);
   };
 
-  // SALVAMENTO
-  const salvarDescricaoSaida = async () => {
-    try {
-      setSalvandoDados(true);
-
-      const resposta = await fetch(
-        `${import.meta.env.VITE_API_URL}/animais/${id}/descricao-saida`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            descricaoSaida: dadosEditados.descricaoSaida,
-          }),
-        }
-      );
-
-      if (resposta.ok) {
-        const dados = await resposta.json();
-        setDadosOriginais(dados.animal);
-        setDadosEditados({ ...dados.animal });
-        setExistemAlteracoes(false);
-      } else {
-        throw new Error("Erro ao atualizar descrição de saída.");
-      }
-    } catch (error) {
-      console.error("Erro ao salvar descrição de saída:", error);
-      throw error;
-    } finally {
-      setSalvandoDados(false);
-    }
-  };
-
   // Upload real das imagens para o servidor
   const uploadImagemParaServidor = async (imagemPendente, tipoCampo) => {
     const endpoint =
@@ -314,6 +293,9 @@ export default function VerMais() {
 
     const resposta = await fetch(endpoint, {
       method: "PUT",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       body: dadosFormulario,
     });
 
@@ -328,17 +310,6 @@ export default function VerMais() {
   const salvarTodasAlteracoes = async () => {
     try {
       setSalvandoDados(true);
-
-      // Se está editando apenas a descrição de saída, usa endpoint específico
-      if (
-        descricaoSelecionada.value === "descricaoSaida" &&
-        existemAlteracoes &&
-        !imagemEntradaPendente &&
-        !imagemSaidaPendente
-      ) {
-        await salvarDescricaoSaida();
-        return;
-      }
 
       // Upload das imagens pendentes
       if (imagemEntradaPendente) {
@@ -358,6 +329,7 @@ export default function VerMais() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify(dadosParaEnviar),
       });
@@ -541,7 +513,9 @@ export default function VerMais() {
           <img
             src={imagemParaAmpliar}
             alt="Imagem ampliada"
-            className={styles.imagemAmpliada}
+            className={`${styles.imagemAmpliada} ${
+              dadosEditados.statusVida === "falecido" ? styles.imagemFalecido : ""
+            }`}
           />
         </div>
       </div>
@@ -710,7 +684,9 @@ export default function VerMais() {
                 <img
                   src={obterUrlImagemEntrada()}
                   alt="Imagem de entrada"
-                  className={styles.imagemPrincipal}
+                  className={`${styles.imagemPrincipal} ${
+                    dadosEditados.statusVida === "falecido" ? styles.imagemFalecido : ""
+                  }`}
                 />
                 <div className={styles.botoesUtilitarios}>
                   <label 
@@ -741,15 +717,26 @@ export default function VerMais() {
                     />
                   </button>
                   <button
-                    className={styles.botaoVerAmpliado}
-                    onClick={() => {
-                      setImagemParaAmpliar(obterUrlImagemEntrada());
-                      setModalImagemAberto(true);
-                    }}
+                    type="button"
+                    className={`${styles.botaoVerAmpliado} ${
+                      !modoEdicao ? styles.desativado : ""
+                    }`}
+                    onClick={alternarStatusVida}
+                    disabled={!modoEdicao || salvandoDados}
+                    title={
+                      dadosEditados.statusVida === "falecido"
+                        ? "Marcar o animal como vivo"
+                        : "Marcar o animal como falecido"
+                    }
+                    aria-label={
+                      dadosEditados.statusVida === "falecido"
+                        ? "Marcar o animal como vivo"
+                        : "Marcar o animal como falecido"
+                    }
                   >
                     <img
                       src={`${import.meta.env.BASE_URL}pagVerMais/coracao.png`}
-                      alt="Ver imagem ampliada"
+                      alt=""
                     />
                   </button>
                   {ehAdministrador && (
@@ -786,7 +773,9 @@ export default function VerMais() {
                   <img
                     src={obterUrlImagemSaida()}
                     alt="Imagem de saída"
-                    className={styles.imagemPrincipal}
+                    className={`${styles.imagemPrincipal} ${
+                      dadosEditados.statusVida === "falecido" ? styles.imagemFalecido : ""
+                    }`}
                   />
                   <div className={styles.botoesUtilitarios}>
                     <label 
