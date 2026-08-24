@@ -1,4 +1,4 @@
-.infoInstituto {
+footer {
   display: flex;
   padding: 100px 20% 150px 20%;
   row-gap: 100px;
@@ -6,87 +6,101 @@
   background-color: white;
 }
 
-.sobreNos,
-.redesSociais,
-.contato,
-.atribuicoes {
+.secaoFooter {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.sobreNos p {
+.secaoFooter h1 {
+  margin-bottom: 10px;
+}
+
+.secaoFooter p {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.secaoFooter strong {
+  font-weight: 500;
+}
+
+.secaoFooter .sobreNos p {
   text-align: justify;
 }
 
-.alinharRedesSociais {
+.secaoFooter .alinharRedesSociais {
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
-.alinharRedesSociais a{
+.secaoFooter .alinharRedesSociais a {
   width: 50px;
   height: 50px;
 }
 
-.alinharRedesSociais a:last-child {
-  width: 45px;
-  height: 45px;
-}
-
-.alinharRedesSociais img {
+.secaoFooter .alinharRedesSociais img {
   width: 100%;
   height: 100%;
   transition: ease-in-out 0.15s;
 }
 
-.alinharRedesSociais img:hover {
+.secaoFooter .alinharRedesSociais img:hover {
   cursor: pointer;
   transform: scale(1.1);
 }
 
-.alinharInfoContato {
+.secaoFooter .alinharInfoContato {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
   row-gap: 0;
 }
 
-.alinharInfoContato strong,
-.alinharInfoContato p {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  margin-bottom: 0;
-}
-
-.alinharInfoContato strong {
-  font-weight: 500;
-}
-
-.listaAtribuicoes {
+.secaoFooter .listaAtribuicoes {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.listaAtribuicoes span {
+.secaoFooter .listaAtribuicoes span {
   display: block;
 }
 
-.listaAtribuicoes a {
-  color: inherit;
-  font-size: 0.75rem;
-  text-decoration: none;
+.secaoFooter .listaAtribuicoes a,
+.secaoFooter:nth-child(5) strong,
+.alinharMencao .alinharMencaoContato strong{
+  color: rgb(0, 60, 255);
 }
 
-.listaAtribuicoes a:hover {
+.secaoFooter .listaAtribuicoes a {
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.secaoFooter .listaAtribuicoes a:hover {
   text-decoration: underline;
 }
 
-@media (max-width: 768px){
 
-  .tituloSeccao{
+.alinharMencao{
+  margin-bottom: 15px;
+}
+
+.alinharMencao .alinharMencaoContato{
+  display: flex;
+  gap: 5px;
+}
+
+.alinharMencao .alinharMencaoContato strong,
+.alinharMencao .alinharMencaoContato p{
+  font-size: 0.8rem;
+}
+
+
+@media (max-width: 768px) {
+  .tituloSeccao {
     font-size: 2rem;
   }
 
@@ -95,11 +109,11 @@
   }
 
   .alinharInfoContato p,
-  .alinharInfoContato strong{
+  .alinharInfoContato strong {
     font-size: 0.8rem;
   }
 
-  .alinharInfoContato strong{
+  .alinharInfoContato strong {
     font-weight: 700;
   }
 

@@ -1,12 +1,12 @@
 import { useLocation } from "react-router-dom";
 import { atribuicoes } from "../../../hooks/Atribuicoes/atribuicoes.jsx";
-import { atribuicoesPorRota } from "../../../hooks/Atribuicoes/atribuicoesPorRota.jsx"
+import { atribuicoesPorRota } from "../../../hooks/Atribuicoes/atribuicoesPorRota.jsx";
 import styles from "./footer.module.css";
 
 export default function Footer() {
   const location = useLocation();
 
-  const atribuicoesFixas = ["instagram"];
+  const atribuicoesFixas = ["instagram", "facebook"];
 
   const atribuicoesEspecificas = atribuicoesPorRota[location.pathname] || [];
 
@@ -15,9 +15,9 @@ export default function Footer() {
   ];
 
   return (
-    <div className={styles.infoInstituto}>
-      <div className={styles.sobreNos}>
-        <h1 className={styles.tituloSeccao}>Sobre nós</h1>
+    <footer>
+      <div className={styles.secaoFooter}>
+        <h1>Sobre nós</h1>
 
         <p>
           O Instituto Esperança é uma instituição sem fins lucrativos que atua
@@ -27,8 +27,8 @@ export default function Footer() {
         </p>
       </div>
 
-      <div className={styles.redesSociais}>
-        <h1 className={styles.tituloSeccao}>Siga-nos nas redes sociais!</h1>
+      <div className={styles.secaoFooter}>
+        <h1>Siga-nos nas redes sociais!</h1>
 
         <div className={styles.alinharRedesSociais}>
           <a
@@ -55,19 +55,16 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className={styles.contato}>
-        <h1 className={styles.tituloSeccao}>Contate-nos</h1>
-
+      <div className={styles.secaoFooter}>
+        <h1>Contate-nos</h1>
         <div className={styles.alinharInfoContato}>
           <strong>Telefone:</strong>
           <p>+55 67 99904-2349</p>
         </div>
-
         <div className={styles.alinharInfoContato}>
           <strong>Cidade em que atuamos:</strong>
           <p>Taquarussu (MS)</p>
         </div>
-
         <div className={styles.alinharInfoContato}>
           <strong>Localização:</strong>
           <p>Rua José Martins dos Santos, nº 150</p>
@@ -75,8 +72,8 @@ export default function Footer() {
       </div>
 
       {atribuicoesDaPagina.length > 0 && (
-        <div className={styles.atribuicoes}>
-          <h1 className={styles.tituloSeccao}>Atribuições</h1>
+        <div className={styles.secaoFooter}>
+          <h1>Atribuições</h1>
 
           <div className={styles.listaAtribuicoes}>
             {atribuicoesDaPagina.map((nomeAtribuicao) => (
@@ -85,6 +82,41 @@ export default function Footer() {
           </div>
         </div>
       )}
-    </div>
+
+      <div className={styles.secaoFooter}>
+        <h1>Desenvolvido por:</h1>
+        <p>
+          Marco Antonio Prates Crivelli -{" "}
+          <strong> marco.crivelli@estudante.ifms.edu.br</strong>
+        </p>
+      </div>
+
+      <div className={styles.secaoFooter}>
+        <h1>Menções honrosas</h1>
+
+        <div className={styles.alinharMencao}>
+          <p>
+            Rodrigo Silva Duran -
+            <strong> Orientador do projeto</strong>
+          </p>
+          <div className={styles.alinharMencaoContato}>
+            <strong>E-mail para contato:</strong>
+            <p>rodrigo.duran@ifms.edu.br</p>
+          </div>
+        </div>
+
+        <div className={styles.alinharMencao}>
+          <p>
+            Marcelino Vitor dos Santos Garcia -
+            <strong> Co-orientador do projeto</strong>
+          </p>
+          <div className={styles.alinharMencaoContato}>
+            <strong>E-mail para contato:</strong>
+            <p>marcelino.garcia@ifms.edu.br</p>
+          </div>
+        </div>
+
+      </div>
+    </footer>
   );
 }

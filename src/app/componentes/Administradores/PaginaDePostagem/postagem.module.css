@@ -193,9 +193,43 @@
   border-radius: 20px;
 }
 
-.filtro {
+.filtroEssencial,
+.filtro{
   flex: 1 450px;
   max-width: calc(50% - 30px);
+}
+
+.filtroEssencial{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filtroEssencial label{
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #cf0953;
+}
+
+.filtroEssencial textarea{
+  padding: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.24);
+  border-radius: 7px;
+  max-height: 120px;
+  min-height: 35px;
+}
+
+.filtroEssencial span{
+  display: flex;
+  gap: 5px;
+}
+
+.filtroEssencial span input{
+  width: 15px;
+}
+
+.filtroEssencial span img{
+  width: 30px;
 }
 
 .containerBotaoPostagem {
@@ -218,6 +252,7 @@
   color: white;
   font-weight: 600;
 }
+
 
 @media (max-width: 768px) {
   .fundoPainel {

@@ -333,7 +333,7 @@ export default function ProgramarPostagem() {
               className={`${styles.conteudoTab} ${styles.conteudoTab1}`}
             >
               <div className={styles.containerFiltros}>
-                <div className={styles.filtro}>
+                <div className={styles.filtroEssencial}>
                   <label>Legenda da postagem</label>
                   <textarea
                     value={legenda}
@@ -343,30 +343,30 @@ export default function ProgramarPostagem() {
                     placeholder="Escreva a legenda que será publicada"
                   />
                 </div>
-                <div className={styles.filtro}>
+                <div className={styles.filtroEssencial}>
                   <label>Publicar em</label>
-                  <label>
+                  <span>
                     <input
                       type="checkbox"
                       checked={plataformas.includes("facebook")}
                       onChange={() => alternarPlataforma("facebook")}
-                    />{" "}
-                    Facebook{" "}
-                    {statusMeta.facebook
-                      ? "(configurado)"
-                      : "(aguardando acesso)"}
-                  </label>
-                  <label>
+                    />
+                    <img
+                      src={`${import.meta.env.BASE_URL}footer/facebook.png`}
+                      alt="Facebook do Instituto Esperança"
+                    />
+                  </span>
+                  <span>
                     <input
                       type="checkbox"
                       checked={plataformas.includes("instagram")}
                       onChange={() => alternarPlataforma("instagram")}
-                    />{" "}
-                    Instagram{" "}
-                    {statusMeta.instagram
-                      ? "(configurado)"
-                      : "(aguardando acesso)"}
-                  </label>
+                    />
+                    <img
+                      src={`${import.meta.env.BASE_URL}footer/instagram.png`}
+                      alt="Instagram do Instituto Esperança"
+                    />
+                  </span>
                 </div>
                 <div className={styles.filtro}>
                   <label>Idade</label>
