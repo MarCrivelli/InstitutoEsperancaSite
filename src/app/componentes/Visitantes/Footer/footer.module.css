@@ -4,6 +4,8 @@ footer {
   row-gap: 100px;
   flex-wrap: wrap;
   background-color: white;
+  z-index: 1000000;
+  position: relative;
 }
 
 .secaoFooter {

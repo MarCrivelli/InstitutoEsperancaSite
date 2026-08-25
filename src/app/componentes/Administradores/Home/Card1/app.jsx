@@ -11,26 +11,157 @@ const Lembrete = ({
   isNovo = false,
   usuarioAdministrador = false,
 }) => {
+  const [menuAberto, setMenuAberto] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!menuAberto) return undefined;
+
+    const fecharAoClicarFora = (event) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target)
+      ) {
+        setMenuAberto(false);
+      }
+    };
+
+    const fecharComEscape = (event) => {
+      if (event.key === "Escape") {
+        setMenuAberto(false);
+      }
+    };
+
+    document.addEventListener(
+      "mousedown",
+      fecharAoClicarFora,
+    );
+
+    document.addEventListener(
+      "keydown",
+      fecharComEscape,
+    );
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        fecharAoClicarFora,
+      );
+
+      document.removeEventListener(
+        "keydown",
+        fecharComEscape,
+      );
+    };
+  }, [menuAberto]);
+
+  const textoCompartilhamento =
+    `Lembrete - ${data}: ${descricao}`;
+
+  const enviarPorWhatsApp = () => {
+    const texto = encodeURIComponent(
+      textoCompartilhamento,
+    );
+
+    window.open(
+      `https://wa.me/?text=${texto}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+
+    setMenuAberto(false);
+  };
+
+  const enviarPorEmail = () => {
+    const assunto = encodeURIComponent(
+      "Lembrete do Instituto Esperança",
+    );
+
+    const corpo = encodeURIComponent(
+      textoCompartilhamento,
+    );
+
+    window.location.href =
+      `mailto:?subject=${assunto}&body=${corpo}`;
+
+    setMenuAberto(false);
+  };
+
+  const excluirLembrete = () => {
+    setMenuAberto(false);
+    onRemover();
+  };
+
   return (
     <div
       className={`${styles.lembreteItem} ${
-        isNovo ? styles.lembreteNovoAdicionado : styles.lembreteCarregado
+        isNovo
+          ? styles.lembreteNovoAdicionado
+          : styles.lembreteCarregado
       }`}
     >
-      <span className={styles.lembreteData} style={{ color: corData }}>
+      <span
+        className={styles.lembreteData}
+        style={{ color: corData }}
+      >
         {data + ": "}
-        <span className={styles.lembreteDescricao}>{descricao}</span>
+
+        <span className={styles.lembreteDescricao}>
+          {descricao}
+        </span>
       </span>
 
       {usuarioAdministrador && (
-        <button
-          className={styles.lembreteLixeira}
-          onClick={onRemover}
-          type="button"
-          title="Remover aviso"
+        <div
+          className={styles.menuLembreteContainer}
+          ref={menuRef}
         >
-          🗑️
-        </button>
+          <button
+            type="button"
+            className={styles.botaoMenuLembrete}
+            onClick={() =>
+              setMenuAberto((aberto) => !aberto)
+            }
+            title="Opções do lembrete"
+            aria-label="Opções do lembrete"
+            aria-haspopup="menu"
+            aria-expanded={menuAberto}
+          >
+            ⋮
+          </button>
+
+          {menuAberto && (
+            <div
+              className={styles.menuLembrete}
+              role="menu"
+            >
+              <button
+                type="button"
+                role="menuitem"
+                className={styles.opcaoExcluir}
+                onClick={excluirLembrete}
+              >
+                Excluir
+              </button>
+
+              <button
+                type="button"
+                role="menuitem"
+                onClick={enviarPorWhatsApp}
+              >
+                Mandar no WhatsApp
+              </button>
+
+              <button
+                type="button"
+                role="menuitem"
+                onClick={enviarPorEmail}
+              >
+                Mandar por e-mail
+              </button>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
@@ -38,11 +169,19 @@ const Lembrete = ({
 
 export default function Card1({ onAvisosChange }) {
   const [lembretes, setLembretes] = useState([]);
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [mostrarFormulario, setMostrarFormulario] =
+    useState(false);
+
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState(null);
-  const [ultimoLembreteId, setUltimoLembreteId] = useState(null);
-  const [usuarioAdministrador, setUsuarioAdministrador] = useState(false);
+
+  const [ultimoLembreteId, setUltimoLembreteId] =
+    useState(null);
+
+  const [
+    usuarioAdministrador,
+    setUsuarioAdministrador,
+  ] = useState(false);
 
   const [novoLembrete, setNovoLembrete] = useState({
     dataInicio: "",
@@ -61,7 +200,9 @@ export default function Card1({ onAvisosChange }) {
   useEffect(() => {
     const verificarPermissao = () => {
       try {
-        const dadosUsuario = localStorage.getItem("usuario");
+        const dadosUsuario =
+          localStorage.getItem("usuario");
+
         const token = localStorage.getItem("token");
 
         if (!dadosUsuario || !token) {
@@ -71,18 +212,26 @@ export default function Card1({ onAvisosChange }) {
 
         const usuario = JSON.parse(dadosUsuario);
 
-        const autorizado = usuario.nivelDeAcesso === "administrador";
+        const autorizado =
+          usuario.nivelDeAcesso === "administrador";
 
         setUsuarioAdministrador(autorizado);
       } catch (error) {
-        console.error("Erro ao verificar permissão do usuário:", error);
+        console.error(
+          "Erro ao verificar permissão do usuário:",
+          error,
+        );
+
         setUsuarioAdministrador(false);
       }
     };
 
     verificarPermissao();
 
-    const intervalo = setInterval(verificarPermissao, 5000);
+    const intervalo = setInterval(
+      verificarPermissao,
+      5000,
+    );
 
     return () => clearInterval(intervalo);
   }, []);
@@ -105,13 +254,19 @@ export default function Card1({ onAvisosChange }) {
       setErro(null);
 
       if (!API_BASE_URL) {
-        throw new Error("VITE_API_URL não está definida.");
+        throw new Error(
+          "VITE_API_URL não está definida.",
+        );
       }
 
-      const response = await fetch(`${API_BASE_URL}/avisos`);
+      const response = await fetch(
+        `${API_BASE_URL}/avisos`,
+      );
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = await response
+          .json()
+          .catch(() => ({}));
 
         throw new Error(
           errorData.mensagem ||
@@ -122,13 +277,21 @@ export default function Card1({ onAvisosChange }) {
 
       const avisos = await response.json();
 
-      setLembretes(Array.isArray(avisos) ? avisos : []);
+      setLembretes(
+        Array.isArray(avisos) ? avisos : [],
+      );
 
       setUltimoLembreteId(null);
     } catch (error) {
-      setErro(error.message || "Erro de conexão com o servidor");
+      setErro(
+        error.message ||
+          "Erro de conexão com o servidor",
+      );
 
-      console.error("Erro ao carregar avisos:", error);
+      console.error(
+        "Erro ao carregar avisos:",
+        error,
+      );
     } finally {
       setLoading(false);
     }
@@ -136,12 +299,16 @@ export default function Card1({ onAvisosChange }) {
 
   const abrirFormulario = () => {
     if (!usuarioAdministrador) {
-      setErro("Apenas administradores podem adicionar avisos.");
+      setErro(
+        "Apenas administradores podem adicionar avisos.",
+      );
+
       return;
     }
 
     setMostrarFormulario(true);
     setErro(null);
+
     document.body.classList.add("modal-aberto");
   };
 
@@ -157,40 +324,75 @@ export default function Card1({ onAvisosChange }) {
     });
 
     setErro(null);
+
     document.body.classList.remove("modal-aberto");
   };
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (event) => {
+    const {
+      name,
+      value,
+      type,
+      checked,
+    } = event.target;
 
-    setNovoLembrete((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
+    setNovoLembrete((anterior) => ({
+      ...anterior,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : value,
     }));
   };
 
   const adicionarLembrete = async () => {
     if (!usuarioAdministrador) {
-      setErro("Apenas administradores podem adicionar avisos.");
+      setErro(
+        "Apenas administradores podem adicionar avisos.",
+      );
+
       return;
     }
 
-    if (!novoLembrete.descricao || !novoLembrete.dataInicio) {
-      setErro("Preencha todos os campos obrigatórios");
+    if (
+      !novoLembrete.descricao ||
+      !novoLembrete.dataInicio
+    ) {
+      setErro(
+        "Preencha todos os campos obrigatórios",
+      );
+
       return;
     }
 
-    if (novoLembrete.ehPeriodo && !novoLembrete.dataFim) {
-      setErro("Para períodos, a data final é obrigatória");
+    if (
+      novoLembrete.ehPeriodo &&
+      !novoLembrete.dataFim
+    ) {
+      setErro(
+        "Para períodos, a data final é obrigatória",
+      );
+
       return;
     }
 
-    if (novoLembrete.ehPeriodo && novoLembrete.dataFim) {
-      const dataInicial = new Date(novoLembrete.dataInicio);
-      const dataFinal = new Date(novoLembrete.dataFim);
+    if (
+      novoLembrete.ehPeriodo &&
+      novoLembrete.dataFim
+    ) {
+      const dataInicial = new Date(
+        novoLembrete.dataInicio,
+      );
+
+      const dataFinal = new Date(
+        novoLembrete.dataFim,
+      );
 
       if (dataFinal < dataInicial) {
-        setErro("A data final deve ser posterior à data inicial");
+        setErro(
+          "A data final deve ser posterior à data inicial",
+        );
+
         return;
       }
     }
@@ -202,34 +404,55 @@ export default function Card1({ onAvisosChange }) {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        setErro("Você precisa estar logado como administrador.");
+        setErro(
+          "Você precisa estar logado como administrador.",
+        );
+
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/avisos`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${API_BASE_URL}/avisos`,
+        {
+          method: "POST",
+
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+            descricao: novoLembrete.descricao,
+            dataInicio: novoLembrete.dataInicio,
+
+            dataFim: novoLembrete.ehPeriodo
+              ? novoLembrete.dataFim
+              : null,
+
+            ehPeriodo: novoLembrete.ehPeriodo,
+            corData: novoLembrete.corData,
+          }),
         },
-        body: JSON.stringify({
-          descricao: novoLembrete.descricao,
-          dataInicio: novoLembrete.dataInicio,
-          dataFim: novoLembrete.ehPeriodo ? novoLembrete.dataFim : null,
-          ehPeriodo: novoLembrete.ehPeriodo,
-          corData: novoLembrete.corData,
-        }),
-      });
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
-        setErro(errorData.erro || "Erro ao adicionar aviso");
+
+        setErro(
+          errorData.erro ||
+            "Erro ao adicionar aviso",
+        );
+
         return;
       }
 
       const novoAviso = await response.json();
 
-      setLembretes((prev) => [...prev, novoAviso]);
+      setLembretes((anteriores) => [
+        ...anteriores,
+        novoAviso,
+      ]);
+
       setUltimoLembreteId(novoAviso.id);
 
       setTimeout(() => {
@@ -239,7 +462,11 @@ export default function Card1({ onAvisosChange }) {
       fecharFormulario();
     } catch (error) {
       setErro("Erro de conexão com o servidor");
-      console.error("Erro na requisição:", error);
+
+      console.error(
+        "Erro na requisição:",
+        error,
+      );
     } finally {
       setLoading(false);
     }
@@ -247,7 +474,10 @@ export default function Card1({ onAvisosChange }) {
 
   const removerLembrete = async (id) => {
     if (!usuarioAdministrador) {
-      setErro("Apenas administradores podem remover avisos.");
+      setErro(
+        "Apenas administradores podem remover avisos.",
+      );
+
       return;
     }
 
@@ -258,28 +488,52 @@ export default function Card1({ onAvisosChange }) {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        setErro("Você precisa estar logado como administrador.");
+        setErro(
+          "Você precisa estar logado como administrador.",
+        );
+
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/avisos/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${API_BASE_URL}/avisos/${id}`,
+        {
+          method: "DELETE",
+
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
-        setErro(errorData.erro || "Erro ao remover aviso");
-        console.error("Erro ao remover aviso:", errorData);
+
+        setErro(
+          errorData.erro ||
+            "Erro ao remover aviso",
+        );
+
+        console.error(
+          "Erro ao remover aviso:",
+          errorData,
+        );
+
         return;
       }
 
-      setLembretes((prev) => prev.filter((lembrete) => lembrete.id !== id));
+      setLembretes((anteriores) =>
+        anteriores.filter(
+          (lembrete) => lembrete.id !== id,
+        ),
+      );
     } catch (error) {
       setErro("Erro de conexão com o servidor");
-      console.error("Erro na requisição:", error);
+
+      console.error(
+        "Erro na requisição:",
+        error,
+      );
     } finally {
       setLoading(false);
     }
@@ -290,14 +544,18 @@ export default function Card1({ onAvisosChange }) {
 
     return (
       <div
-        className="alert alert-danger alert-dismissible fade show position-fixed"
+        className={
+          "alert alert-danger alert-dismissible " +
+          "fade show position-fixed"
+        }
         role="alert"
         style={{
           top: "20px",
           right: "20px",
           zIndex: 1050,
           maxWidth: "400px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          boxShadow:
+            "0 4px 12px rgba(0,0,0,0.15)",
         }}
       >
         {erro}
@@ -306,23 +564,26 @@ export default function Card1({ onAvisosChange }) {
           type="button"
           className="btn-close"
           onClick={() => setErro(null)}
-          aria-label="Close"
-        ></button>
+          aria-label="Fechar"
+        />
       </div>
     );
   };
 
   return (
-    
     <>
       {exibirErro()}
 
       {!loading && lembretes.length === 0 ? (
         <div className={styles.mensagemVazia}>
           <img
-            src={`${import.meta.env.BASE_URL}card1/homemConfuso.png`}
+            src={
+              `${import.meta.env.BASE_URL}` +
+              "card1/homemConfuso.png"
+            }
             alt="Ícone Aviso"
           />
+
           <p>Sem avisos por enquanto...</p>
 
           {usuarioAdministrador && (
@@ -334,7 +595,11 @@ export default function Card1({ onAvisosChange }) {
               title="Adicionar novo aviso"
             >
               <img
-                src={`${import.meta.env.BASE_URL}adicionarOuRemover/adicionar_branco.png`}
+                src={
+                  `${import.meta.env.BASE_URL}` +
+                  "adicionarOuRemover/" +
+                  "adicionar_branco.png"
+                }
                 alt="Adicionar novo aviso"
               />
             </button>
@@ -342,12 +607,20 @@ export default function Card1({ onAvisosChange }) {
         </div>
       ) : (
         <div className={styles.containerWrapper}>
-          <div className={styles.containerLembretes} ref={containerRef}>
-            {loading && lembretes.length === 0 && (
-              <p className={styles.mensagemCarregando}>
-                Carregando avisos...
-              </p>
-            )}
+          <div
+            className={styles.containerLembretes}
+            ref={containerRef}
+          >
+            {loading &&
+              lembretes.length === 0 && (
+                <p
+                  className={
+                    styles.mensagemCarregando
+                  }
+                >
+                  Carregando avisos...
+                </p>
+              )}
 
             {lembretes.map((lembrete) => (
               <Lembrete
@@ -355,9 +628,16 @@ export default function Card1({ onAvisosChange }) {
                 data={lembrete.data}
                 descricao={lembrete.descricao}
                 corData={lembrete.corData}
-                onRemover={() => removerLembrete(lembrete.id)}
-                isNovo={lembrete.id === ultimoLembreteId}
-                usuarioAdministrador={usuarioAdministrador}
+                onRemover={() =>
+                  removerLembrete(lembrete.id)
+                }
+                isNovo={
+                  lembrete.id ===
+                  ultimoLembreteId
+                }
+                usuarioAdministrador={
+                  usuarioAdministrador
+                }
               />
             ))}
           </div>
@@ -370,105 +650,179 @@ export default function Card1({ onAvisosChange }) {
               disabled={loading}
               title="Adicionar novo aviso"
             >
-              <img src={`${import.meta.env.BASE_URL}adicionarOuRemover/adicionar_branco.png`} />
+              <img
+                src={
+                  `${import.meta.env.BASE_URL}` +
+                  "adicionarOuRemover/" +
+                  "adicionar_branco.png"
+                }
+                alt="Adicionar novo aviso"
+              />
             </button>
           )}
         </div>
       )}
 
-      {mostrarFormulario && usuarioAdministrador && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
-            <h1>Novo Lembrete</h1>
+      {mostrarFormulario &&
+        usuarioAdministrador && (
+          <div className={styles.modal}>
+            <div className={styles.modalContent}>
+              <h1>Novo Lembrete</h1>
 
-            <div className={styles.alinharLadoALado}>
-              <input
-                type="checkbox"
-                name="ehPeriodo"
-                checked={novoLembrete.ehPeriodo}
-                onChange={handleChange}
-                className={styles.inputPeriodo}
-              />
+              <div
+                className={
+                  styles.alinharLadoALado
+                }
+              >
+                <input
+                  type="checkbox"
+                  name="ehPeriodo"
+                  checked={
+                    novoLembrete.ehPeriodo
+                  }
+                  onChange={handleChange}
+                  className={
+                    styles.inputPeriodo
+                  }
+                />
 
-              <label className={styles.labelNaFrente}>
-                Período em vez de data única
-              </label>
-            </div>
+                <label
+                  className={
+                    styles.labelNaFrente
+                  }
+                >
+                  Período em vez de data única
+                </label>
+              </div>
 
-            <div className={styles.alinharAcima}>
-              <label className={styles.labelInserirAviso}>
-                Data {novoLembrete.ehPeriodo ? "Inicial" : ""}
-              </label>
-
-              <input
-                type="date"
-                name="dataInicio"
-                value={novoLembrete.dataInicio}
-                onChange={handleChange}
-                required
-                className={styles.inputInserirAviso}
-              />
-            </div>
-
-            {novoLembrete.ehPeriodo && (
-              <div className={styles.alinharAcima}>
-                <label className={styles.labelInserirAviso}>Data Final</label>
+              <div
+                className={styles.alinharAcima}
+              >
+                <label
+                  className={
+                    styles.labelInserirAviso
+                  }
+                >
+                  Data{" "}
+                  {novoLembrete.ehPeriodo
+                    ? "Inicial"
+                    : ""}
+                </label>
 
                 <input
                   type="date"
-                  name="dataFim"
-                  value={novoLembrete.dataFim}
+                  name="dataInicio"
+                  value={
+                    novoLembrete.dataInicio
+                  }
                   onChange={handleChange}
                   required
-                  className={styles.inputInserirAviso}
+                  className={
+                    styles.inputInserirAviso
+                  }
                 />
               </div>
-            )}
 
-            <div className={styles.alinharAcima}>
-              <label className={styles.labelInserirAviso}>Descrição</label>
+              {novoLembrete.ehPeriodo && (
+                <div
+                  className={
+                    styles.alinharAcima
+                  }
+                >
+                  <label
+                    className={
+                      styles.labelInserirAviso
+                    }
+                  >
+                    Data Final
+                  </label>
 
-              <textarea
-                name="descricao"
-                value={novoLembrete.descricao}
-                onChange={handleChange}
-                required
-                className={`${styles.inputInserirAviso} ${styles.textareaInserirAviso}`}
-              />
-            </div>
+                  <input
+                    type="date"
+                    name="dataFim"
+                    value={
+                      novoLembrete.dataFim
+                    }
+                    onChange={handleChange}
+                    required
+                    className={
+                      styles.inputInserirAviso
+                    }
+                  />
+                </div>
+              )}
 
-            <div className={styles.alinharLadoALado}>
-              <input
-                type="color"
-                name="corData"
-                value={novoLembrete.corData}
-                onChange={handleChange}
-                className={styles.inputDeCor}
-              />
-
-              <label className={styles.labelNaFrente}>Cor da Data</label>
-            </div>
-
-            <div className={styles.botoesForm}>
-              <button
-                type="button"
-                onClick={fecharFormulario}
-                disabled={loading}
+              <div
+                className={styles.alinharAcima}
               >
-                Cancelar
-              </button>
+                <label
+                  className={
+                    styles.labelInserirAviso
+                  }
+                >
+                  Descrição
+                </label>
 
-              <button
-                type="button"
-                onClick={adicionarLembrete}
-                disabled={loading}
+                <textarea
+                  name="descricao"
+                  value={
+                    novoLembrete.descricao
+                  }
+                  onChange={handleChange}
+                  required
+                  className={
+                    `${styles.inputInserirAviso} ` +
+                    styles.textareaInserirAviso
+                  }
+                />
+              </div>
+
+              <div
+                className={
+                  styles.alinharLadoALado
+                }
               >
-                {loading ? "Salvando..." : "Adicionar"}
-              </button>
+                <input
+                  type="color"
+                  name="corData"
+                  value={novoLembrete.corData}
+                  onChange={handleChange}
+                  className={styles.inputDeCor}
+                />
+
+                <label
+                  className={
+                    styles.labelNaFrente
+                  }
+                >
+                  Cor da Data
+                </label>
+              </div>
+
+              <div
+                className={styles.botoesForm}
+              >
+                <button
+                  type="button"
+                  onClick={fecharFormulario}
+                  disabled={loading}
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  type="button"
+                  onClick={adicionarLembrete}
+                  disabled={loading}
+                >
+                  {loading
+                    ? "Salvando..."
+                    : "Adicionar"}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
     </>
   );
 }

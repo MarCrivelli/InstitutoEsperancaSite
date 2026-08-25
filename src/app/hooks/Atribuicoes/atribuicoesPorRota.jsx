@@ -31,19 +31,7 @@ export const atribuicoesPorRota = {
   ],
 
   "/autenticar": [
-    "lua",
+    
   ],
 
-  "/fichas_de_animais": [
-    "mais",
-    "menos",
-    "editar",
-    "homemConfuso",
-  ],
-
-  "/configuracoes": [
-    "engrenagem",
-    "sino",
-    "fechar",
-  ],
 };

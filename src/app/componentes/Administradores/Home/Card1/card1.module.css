@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 15px 10px 15px 10px;
+  padding: 15px 10px;
   background-color: #191919;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -23,10 +23,12 @@
   min-width: 100%;
 }
 
-.containerLembretes:before {
+.containerLembretes::before {
   content: "";
   position: absolute;
-  background-image: url(/imagensDeFundo/fundoPatas_BrancoTotal.png);
+  background-image: url(
+    /imagensDeFundo/fundoPatas_BrancoTotal.png
+  );
   background-repeat: repeat;
   background-size: 550px;
   background-position: top left;
@@ -51,7 +53,7 @@
 
 .containerLembretes::-webkit-scrollbar-thumb {
   background-color: #008cff;
-  border-radius: 0px;
+  border-radius: 0;
   border: 2px solid currentColor;
 }
 
@@ -64,7 +66,11 @@
 }
 
 .lembreteNovoAdicionado {
-  animation: animacaoDeNovoLembrete 0.7s ease-out forwards;
+  animation:
+    animacaoDeNovoLembrete
+    0.7s
+    ease-out
+    forwards;
 }
 
 @keyframes animacaoDeNovoLembrete {
@@ -73,8 +79,9 @@
     opacity: 0;
     position: absolute;
   }
+
   to {
-    transform: translateY(0px);
+    transform: translateY(0);
     opacity: 1;
     position: relative;
   }
@@ -82,20 +89,30 @@
 
 .lembreteCarregado {
   opacity: 1;
-  transform: translateY(0px);
+  transform: translateY(0);
 }
 
 .lembreteItem {
+  position: relative;
   display: flex;
+  align-items: flex-start;
   height: auto;
+  min-height: 45px;
   padding: 8px;
-  background-color: rgba(24, 37, 53, 0.925);
+  background-color: rgba(
+    24,
+    37,
+    53,
+    0.925
+  );
   border-radius: 5px;
   color: white;
   width: 100%;
 }
 
 .lembreteData {
+  flex: 1;
+  min-width: 0;
   font-weight: bold;
   display: inline;
   margin-right: 8px;
@@ -109,24 +126,77 @@
   color: white;
 }
 
-.lembreteLixeira {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  color: #ff6b6b;
+.menuLembreteContainer {
+  position: relative;
   flex-shrink: 0;
   margin: 0 0 auto auto;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 0.3s ease,
-    visibility 0.3s ease;
 }
 
-.lembreteItem:hover .lembreteLixeira {
-  opacity: 1;
-  visibility: visible;
+.botaoMenuLembrete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: none;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.botaoMenuLembrete:hover,
+.botaoMenuLembrete:focus-visible {
+  background-color:
+    rgba(255, 255, 255, 0.15);
+  outline: none;
+}
+
+.menuLembrete {
+  position: absolute;
+  top: 31px;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  width: 190px;
+  padding: 6px;
+  background-color: white;
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  box-shadow:
+    0 5px 18px rgba(0, 0, 0, 0.35);
+}
+
+.menuLembrete button {
+  width: 100%;
+  padding: 9px 10px;
+  background: none;
+  color: #252525;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.menuLembrete button:hover,
+.menuLembrete button:focus-visible {
+  background-color: #eeeeee;
+  outline: none;
+}
+
+.menuLembrete .opcaoExcluir {
+  color: #d1242f;
+}
+
+.menuLembrete .opcaoExcluir:hover,
+.menuLembrete .opcaoExcluir:focus-visible {
+  background-color: #ffe7e7;
 }
 
 .botaoAdicionar {
@@ -148,7 +218,7 @@
   opacity: 0.9;
 }
 
-.botaoAdicionar img{
+.botaoAdicionar img {
   width: 90%;
   position: relative;
 }
@@ -159,7 +229,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color:
+    rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,7 +246,11 @@
   width: 400px;
   max-width: 90%;
   gap: 20px;
-  animation: deslizarModal 0.5s ease-out forwards all;
+  animation:
+    deslizarModal
+    0.5s
+    ease-out
+    forwards;
 }
 
 @keyframes deslizarModal {
@@ -183,8 +258,9 @@
     transform: translateY(120vh);
     opacity: 0;
   }
+
   to {
-    transform: translateY(0vh);
+    transform: translateY(0);
     opacity: 1;
   }
 }
@@ -277,15 +353,15 @@
   overflow: hidden;
 }
 
-.mensagemVazia::before{
-  content:"";
+.mensagemVazia::before {
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
   background-color: rgb(22, 0, 0);
-  opacity: .3;
+  opacity: 0.3;
   z-index: 1;
 }
 
@@ -293,7 +369,10 @@
   width: 100%;
   max-width: 200px;
   z-index: 2;
-  filter: drop-shadow(-1px 0 1px rgb(0, 18, 36));
+  filter:
+    drop-shadow(
+      -1px 0 1px rgb(0, 18, 36)
+    );
 }
 
 .mensagemVazia p {
@@ -304,17 +383,40 @@
   z-index: 2;
 }
 
+.mensagemCarregando {
+  color: white;
+  text-align: center;
+}
+
 @media (max-width: 700px) {
   .botaoAdicionar {
     width: 35px;
     height: 35px;
   }
+
   .lembreteData {
     font-size: 0.7rem;
   }
+
+  .botaoMenuLembrete {
+    width: 27px;
+    height: 27px;
+    font-size: 22px;
+  }
+
+  .menuLembrete {
+    top: 28px;
+    width: 175px;
+  }
+
+  .menuLembrete button {
+    font-size: 0.8rem;
+  }
+
   .mensagemVazia img {
     max-width: 120px;
   }
+
   .mensagemVazia p {
     font-size: 1.5rem;
   }

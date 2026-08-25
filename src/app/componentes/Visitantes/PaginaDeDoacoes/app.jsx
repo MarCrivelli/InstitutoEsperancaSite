@@ -10,9 +10,13 @@ import styles from "./doe.module.css";
 export default function ComoDoar() {
   const [qrCopiado, setQrCopiado] = useState(false);
 
-  async function copiarQRCode() {
-    await navigator.clipboard.writeText("TESTEEEEE A DASDA DS.");
+  async function copiarChavePix() {
+    await navigator.clipboard.writeText("50077678000140");
     setQrCopiado(true);
+
+    setTimeout(() => {
+      setQrCopiado(false);
+    }, 3000);
   }
 
   return (
@@ -23,7 +27,7 @@ export default function ComoDoar() {
         <section
           className={`${styles.secao} ${styles.parallax} ${styles.parallax1}`}
         >
-          <Header destino="visitantes"/>
+          <Header destino="visitantes" />
           <h1>Tem interesse em fazer uma doação monetária?</h1>
         </section>
 
@@ -36,15 +40,17 @@ export default function ComoDoar() {
               Ao escanear, você poderá fazer uma doação para o número PIX do
               Instituto Esperança. Qualquer valor é bem-vindo!
             </h2>
-            <img src="QRCodeDoacao/QRCodeTeste.png"></img>
+            <img
+              src="QRCodeDoacao/QrCode.png"
+              alt="QR Code Pix para doações ao Instituto Esperança"
+            />
 
             <button
-              onClick={copiarQRCode}
+              type="button"
+              onClick={copiarChavePix}
               className={qrCopiado ? styles.QRCodeCopiado : ""}
             >
-              {qrCopiado
-                ? "QR-Code copiado!"
-                : "Clique aqui para copiar o QR-Code"}
+              {qrCopiado ? "Chave Pix copiada!" : "Copiar chave Pix"}
             </button>
           </div>
         </section>
@@ -121,8 +127,8 @@ export default function ComoDoar() {
               precisa estar totalmente fechada e na embalagem original, pois do
               contrário não aceitaremos &#40;risco de contaminação ou
               envenenamento&#41;. Além disso, não doe caminhas ou cobertores
-              usados por pets que estejam ou estiveram recentemente com doenças ou
-              infecções contagiosas, como sarna ou cinomose, por exemplo.
+              usados por pets que estejam ou estiveram recentemente com doenças
+              ou infecções contagiosas, como sarna ou cinomose, por exemplo.
               Pedimos a sua compreenção.
             </h2>
           </div>

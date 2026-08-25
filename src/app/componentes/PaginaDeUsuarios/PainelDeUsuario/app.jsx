@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 //================ Minhas importações ================//
 import styles from "./painelUsuario.module.css";
 import Header from "../../Header/app";
+import Footer from "../../Visitantes/Footer/app";
 
 export default function PainelUsuario({
   usuarioLogado,
@@ -671,6 +672,7 @@ export default function PainelUsuario({
           <h1 className={styles.tituloPainel}>Configurações</h1>
           <div className={styles.bloco}>{ConteudoConfiguracoes}</div>
         </div>
+        <Footer/>
       </div>
 
       {/* Overlay de Exclusão de Conta */}
