@@ -28,39 +28,121 @@ const verificarConfiguracaoMeta = () => {
   };
 };
 
-async function chamarGraph(caminho, parametros) {
+async function requisitarGraph(
+  caminho,
+  {
+    metodo = "POST",
+    parametros = {},
+  } = {}
+) {
   const { accessToken } =
     obterConfiguracao();
+
+  if (!accessToken) {
+    throw new Error(
+      "META_PAGE_ACCESS_TOKEN não configurado."
+    );
+  }
 
   const corpo = new URLSearchParams({
     ...parametros,
     access_token: accessToken,
   });
 
-  const resposta = await fetch(
-    `${GRAPH_URL}/${caminho}`,
-    {
-      method: "POST",
+  const url =
+    metodo === "GET"
+      ? `${GRAPH_URL}/${caminho}?${corpo.toString()}`
+      : `${GRAPH_URL}/${caminho}`;
 
-      headers: {
-        "Content-Type":
-          "application/x-www-form-urlencoded",
-      },
+  const resposta = await fetch(url, {
+    method: metodo,
 
-      body: corpo,
-    }
-  );
+    headers: {
+      "Content-Type":
+        "application/x-www-form-urlencoded",
+    },
 
-  const dados = await resposta.json();
+    body:
+      metodo === "GET"
+        ? undefined
+        : corpo,
+  });
+
+  const dados = await resposta
+    .json()
+    .catch(() => ({}));
 
   if (!resposta.ok || dados.error) {
+    const codigo =
+      dados.error?.code
+        ? ` (código ${dados.error.code})`
+        : "";
+
     throw new Error(
-      dados.error?.message ||
+      `${
+        dados.error?.message ||
         "A Meta recusou a publicação."
+      }${codigo}`
     );
   }
 
   return dados;
+}
+
+const chamarGraph = (
+  caminho,
+  parametros
+) =>
+  requisitarGraph(caminho, {
+    parametros,
+  });
+
+const esperar = (milissegundos) =>
+  new Promise((resolve) =>
+    setTimeout(resolve, milissegundos)
+  );
+
+async function aguardarContainerInstagram(
+  containerId
+) {
+  for (
+    let tentativa = 0;
+    tentativa < 10;
+    tentativa += 1
+  ) {
+    const container =
+      await requisitarGraph(containerId, {
+        metodo: "GET",
+        parametros: {
+          fields:
+            "status_code,status",
+        },
+      });
+
+    if (
+      container.status_code ===
+      "FINISHED"
+    ) {
+      return;
+    }
+
+    if (
+      ["ERROR", "EXPIRED"].includes(
+        container.status_code
+      )
+    ) {
+      throw new Error(
+        container.status ||
+          "A Meta não conseguiu processar a imagem."
+      );
+    }
+
+    await esperar(2000);
+  }
+
+  throw new Error(
+    "A Meta demorou demais para processar a imagem do Instagram."
+  );
 }
 
 async function publicarNoFacebook({
@@ -147,6 +229,10 @@ async function publicarNoInstagram({
           }
         );
 
+      await aguardarContainerInstagram(
+        filho.id
+      );
+
       filhos.push(filho.id);
     }
 
@@ -162,6 +248,10 @@ async function publicarNoInstagram({
 
     creationId = container.id;
   }
+
+  await aguardarContainerInstagram(
+    creationId
+  );
 
   return chamarGraph(
     `${instagramUserId}/media_publish`,
