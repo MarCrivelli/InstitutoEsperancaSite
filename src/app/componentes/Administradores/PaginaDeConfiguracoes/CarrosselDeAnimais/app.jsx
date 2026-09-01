@@ -321,7 +321,7 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
   const iniciarEdicaoSlide = (slide) => {
     const dadosPreparados = {
       ...slide.animal,
-      descricao: slide.animal.descricao || "",
+      descricao: slide.animal.descricaoEntrada || "",
       descricaoSaida: slide.animal.descricaoSaida || "",
     };
 
@@ -470,7 +470,7 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
 
       let dadosParaEnviar = {
         nome: dadosEditados.nome,
-        descricao: dadosEditados.descricao,
+        descricao: dadosEditados.descricaoEntrada,
         descricaoSaida: dadosEditados.descricaoSaida,
       };
 
@@ -892,7 +892,7 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
                     {mostrarSaidaFormulario
                       ? animalSelecionado.descricaoSaida ||
                         "Sem descrição de saída"
-                      : animalSelecionado.descricao ||
+                      : animalSelecionado.descricaoEntrada ||
                         "Sem descrição de entrada"}
                   </p>
                 )}

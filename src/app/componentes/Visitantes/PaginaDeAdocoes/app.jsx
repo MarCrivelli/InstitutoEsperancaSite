@@ -90,7 +90,7 @@ export default function QueroAdotar() {
         </div>
       </div>
     );
-  } else if (!animaisFiltrados || animaisFiltrados.length >= 0) {
+  } else if (!animaisFiltrados || animaisFiltrados.length === 0) {
     ConteudoCarrossel = (
       <div className={styles.mensagemCarrossel}>
         <div className={styles.painel}>

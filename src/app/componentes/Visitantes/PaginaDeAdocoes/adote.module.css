@@ -63,7 +63,8 @@ section.secao.parallax h1 {
 
 .carrossel {
   flex-direction: column;
-  padding: 100px 0;
+  padding: 100px 0 100px 20px;
+  justify-content: space-around;
 }
 
 .mensagemCarrossel {
@@ -145,6 +146,7 @@ section.secao.parallax h1 {
 .cardAnimal {
   display: flex;
   flex-direction: column;
+  position: relative;
   width: 370px;
   min-height: 520px;
   background-color: white;
@@ -154,6 +156,9 @@ section.secao.parallax h1 {
   transition:
     transform 0.4s ease,
     opacity 0.4s ease;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform, opacity;
   animation: animacaoFluidaCard 1.5s ease-in-out;
 }
 
@@ -168,13 +173,13 @@ section.secao.parallax h1 {
 }
 
 .cardAtivo {
-  transform: scale(1);
+  transform: translateZ(0) scale(1);
   opacity: 1;
   pointer-events: auto;
 }
 
 .cardInativo {
-  transform: scale(0.82);
+  transform: translateZ(0) scale(0.82);
   opacity: 0.65;
   pointer-events: none;
 }
@@ -231,20 +236,25 @@ section.secao.parallax h1 {
   left: 0;
   transform: translateY(-50%);
   gap: 10px;
+  pointer-events: none;
 }
 
 .botaoNavegacao {
   background-color: rgba(0, 3, 36, 0.7);
-  border: none;
+  border: 3px solid black;
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  color: rgb(255, 255, 255);
-  border: 3px solid black;
+  color: white;
   font-weight: 800;
   font-size: 1.3rem;
   position: absolute;
-  transition: all 0.3s ease;
+  pointer-events: auto;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
 }
 
 .botaoNavegacao:hover {
