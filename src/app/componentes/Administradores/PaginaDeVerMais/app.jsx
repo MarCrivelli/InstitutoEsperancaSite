@@ -926,21 +926,17 @@ export default function VerMais() {
               </div>
               <div className={styles.alinharDados}>
                 <label className={styles.labelDeIdentificacao}>
-                  Status de microchipagem:
+                  Número do Microchip:
                 </label>
-                <Select
-                  options={opcoes.StatusMicrochipagem}
-                  value={opcoes.StatusMicrochipagem.find(
-                    (opcao) => opcao.value === dadosEditados.statusMicrochipagem
-                  )}
-                  onChange={(opcaoSelecionada) =>
-                    capturarMudancaSelecao(
-                      "statusMicrochipagem",
-                      opcaoSelecionada
-                    )
-                  }
-                  className={styles.selectInserirAnimal}
-                  isDisabled={!modoEdicao}
+                <input
+                  className={`${styles.inputDadosIdentificacao} ${!modoEdicao ? styles.inputDesativado : ''}`}
+                  name="idade"
+                  min="1"
+                  max="15"
+                  type="number"
+                  value={dadosEditados.idade || ""}
+                  onChange={capturarMudancaCampo}
+                  disabled={!modoEdicao}
                 />
               </div>
             </div>
@@ -1001,6 +997,19 @@ export default function VerMais() {
                 />
               </div>
               <div className={styles.alinharDados}>
+                <label className={styles.labelDeIdentificacao}>
+                  Data da última castração:
+                </label>
+                <input
+                  className={`${styles.inputDadosIdentificacao} ${!modoEdicao ? styles.inputDesativado : ''}`}
+                  name="idade"
+                  type="date"
+                  value={dadosEditados.idade || ""}
+                  onChange={capturarMudancaCampo}
+                  disabled={!modoEdicao}
+                />
+              </div>
+              <div className={styles.alinharDados}>
                 <label className={styles.labelDadosSaude}>
                   Status de adoção:
                 </label>
@@ -1028,6 +1037,25 @@ export default function VerMais() {
                   onChange={(opcaoSelecionada) =>
                     capturarMudancaSelecao(
                       "statusVermifugacao",
+                      opcaoSelecionada
+                    )
+                  }
+                  className={styles.selectInserirAnimal}
+                  isDisabled={!modoEdicao}
+                />
+              </div>
+              <div className={styles.alinharDados}>
+                <label className={styles.labelDeIdentificacao}>
+                  Status de microchipagem:
+                </label>
+                <Select
+                  options={opcoes.StatusMicrochipagem}
+                  value={opcoes.StatusMicrochipagem.find(
+                    (opcao) => opcao.value === dadosEditados.statusMicrochipagem
+                  )}
+                  onChange={(opcaoSelecionada) =>
+                    capturarMudancaSelecao(
+                      "statusMicrochipagem",
                       opcaoSelecionada
                     )
                   }

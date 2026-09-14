@@ -190,7 +190,7 @@ export default function Denuncie() {
                   <strong>Polícia Militar Ambiental &#40;Batayporã&#41;:</strong> 67 3443-1095
                   <br />
                   <strong>Polícia Civil &#40;Taquarussu&#41;:</strong> 67
-                  3443-1095
+                  99223-0178
                 </p>
               </div>
             </div>
@@ -258,6 +258,12 @@ export default function Denuncie() {
                 machucar, afogar, ou até mesmo forçar situações em que deixam o
                 animal com medo, apenas por diversão, também é passível de
                 denúncia.
+              </li>
+              <li>
+                <strong>Abandono:</strong> abandonar animais é crime e é um motivo válido para denúncia.
+              </li>
+              <li>
+                <strong>Canil Clandestino:</strong> abrigar animais para a venda sem autorização é crime.
               </li>
             </ol>
           </div>
