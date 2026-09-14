@@ -867,7 +867,7 @@ export default function VerMais() {
             </div>
 
             {/* DADOS DE IDENTIFICAÇÃO */}
-            <div className={styles.dadosDeIdentificacao}>
+            <div className={`${styles.dadosDeIdentificacao} ${styles.listaDeDados}`}>
               <h1 className={styles.tituloDadosDeIdentificacao}>
                 Dados de identificação
               </h1>
@@ -939,10 +939,25 @@ export default function VerMais() {
                   disabled={!modoEdicao}
                 />
               </div>
+              <div className={styles.alinharDados}>
+                <label className={styles.labelDeIdentificacao}>
+                  Nome do dono:
+                </label>
+                <input
+                  className={`${styles.inputDadosIdentificacao} ${!modoEdicao ? styles.inputDesativado : ''}`}
+                  name="idade"
+                  min="1"
+                  max="15"
+                  type="text"
+                  value={dadosEditados.idade || ""}
+                  onChange={capturarMudancaCampo}
+                  disabled={!modoEdicao}
+                />
+              </div>
             </div>
 
             {/* DADOS DE SAÚDE */}
-            <div className={styles.dadosDeIdentificacao}>
+            <div className={`${styles.dadosDeIdentificacao} ${styles.listaDeDados}`}>
               <h1 className={styles.tituloDadosDeIdentificacao}>
                 Dados de saúde
               </h1>

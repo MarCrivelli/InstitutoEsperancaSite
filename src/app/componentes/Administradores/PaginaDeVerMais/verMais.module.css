@@ -1,4 +1,4 @@
-.fundoCarregando{
+.fundoCarregando {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -23,7 +23,7 @@
   z-index: 1;
 }
 
-.fundoCarregando .iconeCarregando{
+.fundoCarregando .iconeCarregando {
   width: 100px;
   z-index: 10;
 }
@@ -239,7 +239,7 @@
   margin: 14px 0;
 }
 
-.cardExclusao p > span{
+.cardExclusao p > span {
   font-weight: 500;
 }
 
@@ -365,6 +365,33 @@
   flex-direction: column;
   padding-bottom: 20px;
   row-gap: 20px;
+}
+
+.listaDeDados {
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.listaDeDados::-webkit-scrollbar {
+  width: 6px;
+}
+
+.listaDeDados::-webkit-scrollbar-track,
+.listaDeDados::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+}
+
+.listaDeDados::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.089);
+}
+
+.listaDeDados::-webkit-scrollbar-thumb {
+  background-color: #008cff;
+}
+
+.listaDeDados::-webkit-scrollbar-thumb:hover {
+  background-color: #008cff;
 }
 
 .tituloDadosDeIdentificacao,
@@ -575,7 +602,7 @@
 .descricaoTextarea {
   height: 100%;
   min-height: 200px;
-  max-height: 375px;
+  max-height: 240px;
   padding: 6px 0px 6px 12px;
 }
 
@@ -615,7 +642,9 @@
 }
 
 /* Garantir que os selects desativados também tenham o cursor correto */
-.selectInserirAnimal .react-select__control--is-disabled .react-select__value-container {
+.selectInserirAnimal
+  .react-select__control--is-disabled
+  .react-select__value-container {
   cursor: not-allowed !important;
 }
 
@@ -736,13 +765,13 @@
   .descricaoTextarea {
     max-height: 315px;
   }
-  .botaoEditar{
+  .botaoEditar {
     padding: 7px 30px;
   }
-  
+
   .botaoCancelar,
   .botaoSalvar {
     padding: 8px 25px;
-    font-size: .7rem;
+    font-size: 0.7rem;
   }
 }
