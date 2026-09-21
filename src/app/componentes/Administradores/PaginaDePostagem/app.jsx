@@ -303,218 +303,144 @@ export default function ProgramarPostagem() {
       <div className={styles.fundoPainel}>
         <div className={styles.painel}>
           <div className={styles.introducaoPagina}>
-            <h1>Programar Postagens</h1>
+            <h1>Destaques e Eventos</h1>
             <p>
-              Faça postagens diretamente pelo site de maneira fácil e rápida!
-              Logo abaixo estarão{" "}
-              <span>&quot;Filtros pré-selecionados&quot;</span> e{" "}
-              <span>&quot;Seleção Manual&quot;</span>. No bloco de filtros
-              pré-selecionados, você escolherá as características que os animais
-              que farão parte da postagem terão e qual a data que deseja postar.
-              Já no bloco de selecão manual, você mesmo selecionará os animais
-              que você deseja inserir na postagem.
+              Edite o que deve aparecer na sessão{" "}
+              <span>&quot;Destaques e Eventos&quot;</span> na página inicial do
+              site.
             </p>
           </div>
-          <Tabs
-            defaultActiveKey="primeiroTopico"
-            id="uncontrolled-tab-example"
-            onSelect={(key) => setAbaAtiva(key)}
-            activeKey={abaAtiva}
-            className={styles.tabs}
-          >
-            <Tab
-              eventKey="primeiroTopico"
-              title="Pré-seleção"
-              tabClassName={
-                abaAtiva === "primeiroTopico"
-                  ? styles.botaoTabSelecionado
-                  : styles.botaoTabNaoSelecionado
-              }
-              className={`${styles.conteudoTab} ${styles.conteudoTab1}`}
-            >
-              <div className={styles.containerFiltros}>
-                <div className={styles.filtroEssencial}>
-                  <label>Legenda da postagem</label>
-                  <textarea
-                    value={legenda}
-                    onChange={(event) => setLegenda(event.target.value)}
-                    maxLength={2200}
-                    rows={5}
-                    placeholder="Escreva a legenda que será publicada"
-                  />
-                </div>
-                <div className={styles.filtroEssencial}>
-                  <label>Publicar em</label>
-                  <span>
-                    <input
-                      type="checkbox"
-                      checked={plataformas.includes("facebook")}
-                      onChange={() => alternarPlataforma("facebook")}
-                    />
-                    <img
-                      src={`${import.meta.env.BASE_URL}footer/facebook.png`}
-                      alt="Facebook do Instituto Esperança"
-                    />
-                  </span>
-                  <span>
-                    <input
-                      type="checkbox"
-                      checked={plataformas.includes("instagram")}
-                      onChange={() => alternarPlataforma("instagram")}
-                    />
-                    <img
-                      src={`${import.meta.env.BASE_URL}footer/instagram.png`}
-                      alt="Instagram do Instituto Esperança"
-                    />
-                  </span>
-                </div>
-                <div className={styles.filtro}>
-                  <label>Idade</label>
-                  <Select
-                    isMulti
-                    options={opcoesSelect.idadeAnimais}
-                    value={filtrosSelecionados.idade}
-                    onChange={handleChangeFiltro("idade")}
-                    placeholder="Selecione"
-                    className={styles.select}
-                  />
-                </div>
+          <div className={styles.containerFiltros}>
+            <div className={styles.filtroEssencial}>
+              <label>Legenda da Sessão</label>
+              <textarea
+                value={legenda}
+                onChange={(event) => setLegenda(event.target.value)}
+                maxLength={2200}
+                rows={5}
+                placeholder="Escreva a legenda que irá acompanhar a imagem."
+              />
+            </div>
+            <div className={styles.filtro}>
+              <label>Idade</label>
+              <Select
+                isMulti
+                options={opcoesSelect.idadeAnimais}
+                value={filtrosSelecionados.idade}
+                onChange={handleChangeFiltro("idade")}
+                placeholder="Selecione"
+                className={styles.select}
+              />
+            </div>
 
-                <div className={styles.filtro}>
-                  <label>Tipo de animal</label>
-                  <Select
-                    options={opcoesSelect.tipoAnimal}
-                    value={filtrosSelecionados.tipoAnimal}
-                    onChange={handleChangeFiltro("tipoAnimal")}
-                    placeholder="Selecione"
-                    className={styles.select}
+            <div className={styles.filtro}>
+              <label>Tipo de animal</label>
+              <Select
+                options={opcoesSelect.tipoAnimal}
+                value={filtrosSelecionados.tipoAnimal}
+                onChange={handleChangeFiltro("tipoAnimal")}
+                placeholder="Selecione"
+                className={styles.select}
+              />
+            </div>
+
+            <div className={styles.filtro}>
+              <label>Sexo</label>
+              <Select
+                options={opcoesSelect.sexoDoAnimal}
+                value={filtrosSelecionados.sexo}
+                onChange={handleChangeFiltro("sexo")}
+                placeholder="Selecione"
+                className={styles.select}
+              />
+            </div>
+
+            <div className={styles.filtro}>
+              <label>Status de vacinação</label>
+              <Select
+                options={opcoesSelect.StatusVacinacao}
+                value={filtrosSelecionados.statusVacinacao}
+                onChange={handleChangeFiltro("statusVacinacao")}
+                placeholder="Selecione"
+                className={styles.select}
+              />
+            </div>
+
+            <div className={styles.filtro}>
+              <label>Status de castração</label>
+              <Select
+                options={opcoesSelect.StatusCastracao}
+                value={filtrosSelecionados.statusCastracao}
+                onChange={handleChangeFiltro("statusCastracao")}
+                placeholder="Selecione"
+                className={styles.select}
+              />
+            </div>
+
+            <div className={styles.filtro}>
+              <label>Status de adoção</label>
+              <Select
+                options={opcoesSelect.StatusAdocao}
+                value={filtrosSelecionados.statusAdocao}
+                onChange={handleChangeFiltro("statusAdocao")}
+                placeholder="Selecione"
+                className={styles.select}
+              />
+            </div>
+
+            <div className={styles.filtro}>
+              <label>Status de microchipagem</label>
+              <Select
+                options={opcoesSelect.StatusMicrochipagem}
+                value={filtrosSelecionados.statusMicrochipagem}
+                onChange={handleChangeFiltro("statusMicrochipagem")}
+                placeholder="Selecione"
+                className={styles.select}
+              />
+            </div>
+
+            <div className={styles.filtro}>
+              <label>Status de vermifugação</label>
+              <Select
+                options={opcoesSelect.StatusVermifugacao}
+                value={filtrosSelecionados.statusVermifugacao}
+                onChange={handleChangeFiltro("statusVermifugacao")}
+                placeholder="Selecione"
+                className={styles.select}
+              />
+            </div>
+
+            <div className={styles.filtro}>
+              <label>Quando publicar?</label>
+              <Select
+                options={opcoesTempoPostagem}
+                value={filtrosSelecionados.opcaoPublicacao}
+                onChange={handleChangeTempoPostagem}
+                placeholder="Selecione"
+                className={styles.select}
+              />
+
+              {filtrosSelecionados.opcaoPublicacao?.value === "agendar" && (
+                <div className={styles.seletorDataContainer}>
+                  <input
+                    type="datetime-local"
+                    name="dataPostagem"
+                    value={filtrosSelecionados.dataPostagem}
+                    onChange={handleChangeData}
+                    min={obterDataHoraLocalAtual()}
+                    required
+                    className={styles.seletorDataInput}
                   />
                 </div>
-
-                <div className={styles.filtro}>
-                  <label>Sexo</label>
-                  <Select
-                    options={opcoesSelect.sexoDoAnimal}
-                    value={filtrosSelecionados.sexo}
-                    onChange={handleChangeFiltro("sexo")}
-                    placeholder="Selecione"
-                    className={styles.select}
-                  />
-                </div>
-
-                <div className={styles.filtro}>
-                  <label>Status de vacinação</label>
-                  <Select
-                    options={opcoesSelect.StatusVacinacao}
-                    value={filtrosSelecionados.statusVacinacao}
-                    onChange={handleChangeFiltro("statusVacinacao")}
-                    placeholder="Selecione"
-                    className={styles.select}
-                  />
-                </div>
-
-                <div className={styles.filtro}>
-                  <label>Status de castração</label>
-                  <Select
-                    options={opcoesSelect.StatusCastracao}
-                    value={filtrosSelecionados.statusCastracao}
-                    onChange={handleChangeFiltro("statusCastracao")}
-                    placeholder="Selecione"
-                    className={styles.select}
-                  />
-                </div>
-
-                <div className={styles.filtro}>
-                  <label>Status de adoção</label>
-                  <Select
-                    options={opcoesSelect.StatusAdocao}
-                    value={filtrosSelecionados.statusAdocao}
-                    onChange={handleChangeFiltro("statusAdocao")}
-                    placeholder="Selecione"
-                    className={styles.select}
-                  />
-                </div>
-
-                <div className={styles.filtro}>
-                  <label>Status de microchipagem</label>
-                  <Select
-                    options={opcoesSelect.StatusMicrochipagem}
-                    value={filtrosSelecionados.statusMicrochipagem}
-                    onChange={handleChangeFiltro("statusMicrochipagem")}
-                    placeholder="Selecione"
-                    className={styles.select}
-                  />
-                </div>
-
-                <div className={styles.filtro}>
-                  <label>Status de vermifugação</label>
-                  <Select
-                    options={opcoesSelect.StatusVermifugacao}
-                    value={filtrosSelecionados.statusVermifugacao}
-                    onChange={handleChangeFiltro("statusVermifugacao")}
-                    placeholder="Selecione"
-                    className={styles.select}
-                  />
-                </div>
-
-                <div className={styles.filtro}>
-                  <label>Quando publicar?</label>
-                  <Select
-                    options={opcoesTempoPostagem}
-                    value={filtrosSelecionados.opcaoPublicacao}
-                    onChange={handleChangeTempoPostagem}
-                    placeholder="Selecione"
-                    className={styles.select}
-                  />
-
-                  {filtrosSelecionados.opcaoPublicacao?.value === "agendar" && (
-                    <div className={styles.seletorDataContainer}>
-                      <input
-                        type="datetime-local"
-                        name="dataPostagem"
-                        value={filtrosSelecionados.dataPostagem}
-                        onChange={handleChangeData}
-                        min={obterDataHoraLocalAtual()}
-                        required
-                        className={styles.seletorDataInput}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className={styles.containerBotaoPostagem}>
-                <button onClick={publicar} disabled={enviando}>
-                  {enviando ? "Enviando..." : "Postar"}
-                </button>
-                {mensagem && <p role="status">{mensagem}</p>}
-              </div>
-            </Tab>
-            <Tab
-              eventKey="segundoTopico"
-              title="Seleção Manual"
-              tabClassName={
-                abaAtiva === "segundoTopico"
-                  ? styles.botaoTabSelecionado
-                  : styles.botaoTabNaoSelecionado
-              }
-              className={styles.conteudoTab}
-            >
-              <div className={styles.conteudoTab2}>
-                <h1>Seleção Manual</h1>
-                <p>
-                  Deseja ignorar os filtros e selecionar manualmente os animais
-                  que você gostaria que fizessem parte da postagem?{" "}
-                  <Link
-                    to="/fichas_de_animais?modoPostagem=true"
-                    className={styles.linkSelecaoAvulsa}
-                  >
-                    Clique aqui
-                  </Link>{" "}
-                  para começar a seleção.
-                </p>
-              </div>
-            </Tab>
-          </Tabs>
+              )}
+            </div>
+          </div>
+          <div className={styles.containerBotaoPostagem}>
+            <button onClick={publicar} disabled={enviando}>
+              {enviando ? "Enviando..." : "Postar"}
+            </button>
+            {mensagem && <p role="status">{mensagem}</p>}
+          </div>
         </div>
       </div>
     </div>
