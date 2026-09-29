@@ -95,11 +95,28 @@ const animaisSchema = new mongoose.Schema(
       default: null,
       trim: true,
     },
+    
+    dataCastracao: {
+      type: Date,
+      default: null,
+    },
+
+    nomeDono: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
+    numeroMicrochip: {
+      type: String,
+      default: null,
+      trim: true,
+    },
   },
   {
     ...modelOptions,
     collection: "animais",
-  }
+  },
 );
 
 // Equivale ao antigo "as: itensCarrossel" do Sequelize.
@@ -111,5 +128,4 @@ animaisSchema.virtual("itensCarrossel", {
 });
 
 module.exports =
-  mongoose.models.Animais ||
-  mongoose.model("Animais", animaisSchema);
+  mongoose.models.Animais || mongoose.model("Animais", animaisSchema);

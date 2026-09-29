@@ -22,7 +22,10 @@ const removerImagemSeExistir = (nomeArquivo) => {
   if (!nomeArquivo) return;
 
   const caminhoUploads = path.resolve(__dirname, "../uploads");
-  const caminhoImagem = path.resolve(caminhoUploads, path.basename(nomeArquivo));
+  const caminhoImagem = path.resolve(
+    caminhoUploads,
+    path.basename(nomeArquivo),
+  );
 
   if (
     caminhoImagem.startsWith(`${caminhoUploads}${path.sep}`) &&
@@ -39,7 +42,8 @@ const procurarAnimais = async (req, res) => {
       .select(
         "nome idade sexo tipo statusMicrochipagem statusVacinacao " +
           "statusCastracao statusAdocao statusVermifugacao imagemEntrada " +
-          "imagemSaida dataVacinacao descricaoEntrada descricaoSaida statusVida",
+          "imagemSaida dataVacinacao descricaoEntrada descricaoSaida statusVida " +
+          "dataCastracao nomeDono numeroMicrochip",
       )
       .sort({ createdAt: 1 });
 
@@ -71,6 +75,9 @@ const cadastrarAnimal = async (req, res) => {
       statusVermifugacao,
       descricaoEntrada,
       statusVida,
+      dataCastracao,
+      nomeDono,
+      numeroMicrochip,
     } = req.body;
 
     const imagemEntrada = req.file ? req.file.filename : null;
@@ -95,6 +102,9 @@ const cadastrarAnimal = async (req, res) => {
       statusVermifugacao,
       descricaoEntrada,
       statusVida: statusVida || "vivo",
+      dataCastracao: dataCastracao || null,
+      nomeDono: nomeDono || null,
+      numeroMicrochip: numeroMicrochip || null,
       imagemEntrada,
     });
 
@@ -158,6 +168,9 @@ const atualizarAnimal = async (req, res) => {
       "descricaoEntrada",
       "descricaoSaida",
       "statusVida",
+      "dataCastracao",
+      "nomeDono",
+      "numeroMicrochip",
     ];
 
     let houveAlteracao = false;
@@ -177,7 +190,7 @@ const atualizarAnimal = async (req, res) => {
         valor = Number(valor);
       }
 
-      if (campo === "dataVacinacao" && !valor) {
+      if (["dataVacinacao", "dataCastracao"].includes(campo) && !valor) {
         valor = null;
       }
 
@@ -187,7 +200,7 @@ const atualizarAnimal = async (req, res) => {
           : animal[campo];
 
       const novoValor =
-        campo === "dataVacinacao" && valor
+        ["dataVacinacao", "dataCastracao"].includes(campo) && valor
           ? new Date(valor).toISOString()
           : valor;
 

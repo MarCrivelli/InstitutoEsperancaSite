@@ -6,7 +6,6 @@ import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import styles from "./carrossel.module.css";
 
-
 const SetaCustomizadaDoCarrossel = ({ onClick, direcao }) => {
   const Icone = direcao === "left" ? FiChevronLeft : FiChevronRight;
 
@@ -25,7 +24,6 @@ const SetaCustomizadaDoCarrossel = ({ onClick, direcao }) => {
 };
 
 export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
-
   // ESTADOS PRINCIPAIS
   const [erro, setErro] = useState("");
   const [animais, setAnimais] = useState([]);
@@ -33,6 +31,7 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
   const [animalSelecionado, setAnimalSelecionado] = useState(null);
   const [carregando, setCarregando] = useState(false);
   const [carregandoCarrossel, setCarregandoCarrossel] = useState(false);
+  const [indiceAtual, setIndiceAtual] = useState(0);
 
   // ESTADOS PARA CONTROLE DE EXIBIÇÃO
   const [mostrarSaidaFormulario, setMostrarSaidaFormulario] = useState(false);
@@ -55,9 +54,19 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
+    const totalSlides =
+      animaisCarrossel.length + (podeGerenciarCarrosseis ? 1 : 0);
+
+    setIndiceAtual((indiceAnterior) => {
+      if (totalSlides <= 0) {
+        return 0;
+      }
+
+      return Math.min(indiceAnterior, totalSlides - 1);
+    });
     carregarAnimais();
     carregarAnimaisCarrossel();
-  }, []);
+  }, [animaisCarrossel.length, podeGerenciarCarrosseis]);
 
   const carregarAnimais = async () => {
     try {
@@ -246,11 +255,11 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
   };
 
   const handleRemoverAnimal = async (slideId, nomeAnimal) => {
-    if (
-      !window.confirm(
-        `Tem certeza que deseja remover "${nomeAnimal}" do carrossel?`,
-      )
-    ) {
+    const confirmou = window.confirm(
+      `Tem certeza que deseja remover ` + `"${nomeAnimal}" do carrossel?`,
+    );
+
+    if (!confirmou) {
       return;
     }
 
@@ -261,8 +270,10 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
         `${import.meta.env.VITE_API_URL}/carrossel/animais/${slideId}`,
         {
           method: "DELETE",
+
           headers: {
             "Content-Type": "application/json",
+
             Authorization: `Bearer ${token}`,
           },
         },
@@ -270,19 +281,44 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+
         throw new Error(
-          errorData.message || `Erro ao remover animal do carrossel`,
+          errorData.message || "Erro ao remover animal " + "do carrossel",
         );
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      const indiceDoSlide = animaisCarrossel.findIndex(
+        (slide) => slide.id === slideId,
+      );
 
-      await carregarAnimaisCarrossel();
+      const novosSlides = animaisCarrossel.filter(
+        (slide) => slide.id !== slideId,
+      );
+
+      const deslocamentoFormulario = podeGerenciarCarrosseis ? 1 : 0;
+
+      const totalDepoisDaExclusao = novosSlides.length + deslocamentoFormulario;
+
+      const novoIndice =
+        totalDepoisDaExclusao > 0
+          ? Math.min(
+              indiceDoSlide + deslocamentoFormulario,
+              totalDepoisDaExclusao - 1,
+            )
+          : 0;
+
+      setIndiceAtual(novoIndice);
+      setAnimaisCarrossel(novosSlides);
+
       await carregarAnimais();
 
-      setMostrarSaidaPorSlide((prev) => {
-        const novoEstado = { ...prev };
+      setMostrarSaidaPorSlide((estadoAnterior) => {
+        const novoEstado = {
+          ...estadoAnterior,
+        };
+
         delete novoEstado[slideId];
+
         return novoEstado;
       });
 
@@ -291,12 +327,14 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
       }
 
       setErro("");
-      console.log("Animal removido com sucesso e listas atualizadas");
+
+      console.log("Animal removido do carrossel " + "com sucesso.");
     } catch (error) {
       console.error("Erro ao remover animal:", error);
+
       setErro(
         error.message ||
-          "Erro ao remover animal do carrossel. Tente novamente.",
+          "Erro ao remover animal do " + "carrossel. Tente novamente.",
       );
     } finally {
       setRemovendoAnimal(null);
@@ -728,15 +766,28 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
     );
   }
 
+  const totalSlides =
+    animaisCarrossel.length + (podeGerenciarCarrosseis ? 1 : 0);
+
+  const indiceSeguro =
+    totalSlides > 0 ? Math.max(0, Math.min(indiceAtual, totalSlides - 1)) : 0;
+
+  const identidadeCarrossel = `animais-${animaisCarrossel
+    .map((slide) => slide.id)
+    .join("-")}`;
+
   return (
     <div className={styles.fundoCarrossel}>
       <Carousel
+        key={identidadeCarrossel}
+        selectedItem={indiceSeguro}
+        onChange={(novoIndice) => setIndiceAtual(novoIndice)}
         className={styles.carrossel}
         showThumbs={false}
         showStatus={false}
-        infiniteLoop={true}
+        infiniteLoop={totalSlides > 1}
         showIndicators={false}
-        preventMovementUntilSwipeScrollTolerance={true}
+        preventMovementUntilSwipeScrollTolerance
         swipeScrollTolerance={40}
         renderArrowPrev={(onClickHandler, hasPrev) =>
           hasPrev && (
@@ -757,160 +808,163 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
       >
         {/* Retornar um array vazio evita que o Carousel crie um slide em branco. */}
         {podeGerenciarCarrosseis ? (
-        <div key="formulario-animal" className={styles.slideFormulario}>
-          <div
-            className={styles.divBotaoTrocarDados}
-            onClick={alternarDadosFormulario}
-          >
-            <img
-              src={`${import.meta.env.BASE_URL}pagConfiguracoes/trocarDados.png`}
-              alt="Trocar dados"
-              style={{
-                cursor: animalSelecionado ? "pointer" : "default",
-                opacity: animalSelecionado ? 1 : 0.5,
-                transform: mostrarSaidaFormulario
-                  ? "rotate(-90deg)"
-                  : "rotate(90deg)",
-                transition: "transform 0.3s ease",
-              }}
-            />
-          </div>
-
-          <div className={styles.conteudoSlide}>
-            <div className={styles.containerImagem}>
-              {!animalSelecionado ? (
-                <div className={styles.preRenderImagem}>
-                  Sem imagem por enquanto
-                </div>
-              ) : (
-                <img
-                  className={styles.imagemAnimal}
-                  src={`${import.meta.env.VITE_API_URL}/uploads/${
-                    mostrarSaidaFormulario
-                      ? animalSelecionado.imagemSaida
-                      : animalSelecionado.imagemEntrada
-                  }`}
-                  alt={`${mostrarSaidaFormulario ? "Depois" : "Antes"} - ${
-                    animalSelecionado.nome
-                  }`}
-                  onError={(e) => {
-                    e.target.src = `${import.meta.env.BASE_URL}paraErros/semImagem.png`;
-                    e.target.onerror = null;
-                  }}
-                />
-              )}
-            </div>
-
-            <div className={styles.containerDados}>
-              <div className={styles.containerNome}>
-                <div className={styles.alinharLabelComAjuda}>
-                  <label>Nome do animal</label>
-                  <button
-                    data-tooltip-id="selectNome"
-                    className={styles.botaoAjuda}
-                  >
-                    <img
-                      src={`${import.meta.env.BASE_URL}pagConfiguracoes/explicacao.png`}
-                      alt=""
-                    />
-                  </button>
-                  <Tooltip
-                    className={styles.tooltip}
-                    id="selectNome"
-                    place="top"
-                  >
-                    Selecione um animal que possui todos os dados necessários
-                    para o carrossel &#40;nome, descrição de entrada e saída, e
-                    imagem de entrada e saída&#41;.
-                  </Tooltip>
-                </div>
-                <Select
-                  className={styles.selectNomeAnimal}
-                  placeholder={
-                    animais.length === 0
-                      ? "Nenhum animal disponível"
-                      : "Selecione"
-                  }
-                  options={animais}
-                  onChange={handleSelecionarAnimal}
-                  isDisabled={animais.length === 0}
-                  value={
-                    animalSelecionado
-                      ? {
-                          value: animalSelecionado.id,
-                          label: animalSelecionado.nome,
-                        }
-                      : null
-                  }
-                  noOptionsMessage={() => "Nenhum animal encontrado"}
-                />
-                {animais.length === 0 && (
-                  <p
-                    style={{
-                      color: "#666",
-                      fontSize: "14px",
-                      marginTop: "5px",
-                      fontStyle: "italic",
-                    }}
-                  >
-                    Todos os animais já estão no carrossel ou não possuem todos
-                    os dados necessários.
-                  </p>
-                )}
-              </div>
-
-              <div className={styles.containerDescricao}>
-                <div className={styles.alinharLabelComAjuda}>
-                  <label>
-                    Descrição de {mostrarSaidaFormulario ? "saída" : "entrada"}
-                  </label>
-                  <button
-                    data-tooltip-id="descricoesAnimal"
-                    className={styles.botaoAjuda}
-                  >
-                    <img
-                      src={`${import.meta.env.BASE_URL}pagConfiguracoes/explicacao.png`}
-                      alt=""
-                    />
-                  </button>
-                  <Tooltip
-                    className={styles.tooltip}
-                    id="descricoesAnimal"
-                    place="top"
-                  >
-                    {mostrarSaidaFormulario
-                      ? "A descrição de saída explica o que aconteceu com o animal após ser resgatado"
-                      : "A descrição de entrada é uma breve explicação do estado em que o animal foi encontrado ao ser resgatado"}
-                  </Tooltip>
-                </div>
-                {!animalSelecionado ? (
-                  <p className={styles.semDescricao}>
-                    Selecione um animal para ver sua descrição
-                  </p>
-                ) : (
-                  <p className={styles.descricaoAnimal}>
-                    {mostrarSaidaFormulario
-                      ? animalSelecionado.descricaoSaida ||
-                        "Sem descrição de saída"
-                      : animalSelecionado.descricaoEntrada ||
-                        "Sem descrição de entrada"}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.divBotaoSlide}>
-            <button
-              className={styles.botaoInserir}
-              onClick={handleInserirAnimal}
-              disabled={!animalSelecionado}
+          <div key="formulario-animal" className={styles.slideFormulario}>
+            <div
+              className={styles.divBotaoTrocarDados}
+              onClick={alternarDadosFormulario}
             >
-              Inserir animal
-            </button>
+              <img
+                src={`${import.meta.env.BASE_URL}pagConfiguracoes/trocarDados.png`}
+                alt="Trocar dados"
+                style={{
+                  cursor: animalSelecionado ? "pointer" : "default",
+                  opacity: animalSelecionado ? 1 : 0.5,
+                  transform: mostrarSaidaFormulario
+                    ? "rotate(-90deg)"
+                    : "rotate(90deg)",
+                  transition: "transform 0.3s ease",
+                }}
+              />
+            </div>
+
+            <div className={styles.conteudoSlide}>
+              <div className={styles.containerImagem}>
+                {!animalSelecionado ? (
+                  <div className={styles.preRenderImagem}>
+                    Sem imagem por enquanto
+                  </div>
+                ) : (
+                  <img
+                    className={styles.imagemAnimal}
+                    src={`${import.meta.env.VITE_API_URL}/uploads/${
+                      mostrarSaidaFormulario
+                        ? animalSelecionado.imagemSaida
+                        : animalSelecionado.imagemEntrada
+                    }`}
+                    alt={`${mostrarSaidaFormulario ? "Depois" : "Antes"} - ${
+                      animalSelecionado.nome
+                    }`}
+                    onError={(e) => {
+                      e.target.src = `${import.meta.env.BASE_URL}paraErros/semImagem.png`;
+                      e.target.onerror = null;
+                    }}
+                  />
+                )}
+              </div>
+
+              <div className={styles.containerDados}>
+                <div className={styles.containerNome}>
+                  <div className={styles.alinharLabelComAjuda}>
+                    <label>Nome do animal</label>
+                    <button
+                      data-tooltip-id="selectNome"
+                      className={styles.botaoAjuda}
+                    >
+                      <img
+                        src={`${import.meta.env.BASE_URL}pagConfiguracoes/explicacao.png`}
+                        alt=""
+                      />
+                    </button>
+                    <Tooltip
+                      className={styles.tooltip}
+                      id="selectNome"
+                      place="top"
+                    >
+                      Selecione um animal que possui todos os dados necessários
+                      para o carrossel &#40;nome, descrição de entrada e saída,
+                      e imagem de entrada e saída&#41;.
+                    </Tooltip>
+                  </div>
+                  <Select
+                    className={styles.selectNomeAnimal}
+                    placeholder={
+                      animais.length === 0
+                        ? "Nenhum animal disponível"
+                        : "Selecione"
+                    }
+                    options={animais}
+                    onChange={handleSelecionarAnimal}
+                    isDisabled={animais.length === 0}
+                    value={
+                      animalSelecionado
+                        ? {
+                            value: animalSelecionado.id,
+                            label: animalSelecionado.nome,
+                          }
+                        : null
+                    }
+                    noOptionsMessage={() => "Nenhum animal encontrado"}
+                  />
+                  {animais.length === 0 && (
+                    <p
+                      style={{
+                        color: "#666",
+                        fontSize: "14px",
+                        marginTop: "5px",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      Todos os animais já estão no carrossel ou não possuem
+                      todos os dados necessários.
+                    </p>
+                  )}
+                </div>
+
+                <div className={styles.containerDescricao}>
+                  <div className={styles.alinharLabelComAjuda}>
+                    <label>
+                      Descrição de{" "}
+                      {mostrarSaidaFormulario ? "saída" : "entrada"}
+                    </label>
+                    <button
+                      data-tooltip-id="descricoesAnimal"
+                      className={styles.botaoAjuda}
+                    >
+                      <img
+                        src={`${import.meta.env.BASE_URL}pagConfiguracoes/explicacao.png`}
+                        alt=""
+                      />
+                    </button>
+                    <Tooltip
+                      className={styles.tooltip}
+                      id="descricoesAnimal"
+                      place="top"
+                    >
+                      {mostrarSaidaFormulario
+                        ? "A descrição de saída explica o que aconteceu com o animal após ser resgatado"
+                        : "A descrição de entrada é uma breve explicação do estado em que o animal foi encontrado ao ser resgatado"}
+                    </Tooltip>
+                  </div>
+                  {!animalSelecionado ? (
+                    <p className={styles.semDescricao}>
+                      Selecione um animal para ver sua descrição
+                    </p>
+                  ) : (
+                    <p className={styles.descricaoAnimal}>
+                      {mostrarSaidaFormulario
+                        ? animalSelecionado.descricaoSaida ||
+                          "Sem descrição de saída"
+                        : animalSelecionado.descricaoEntrada ||
+                          "Sem descrição de entrada"}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.divBotaoSlide}>
+              <button
+                className={styles.botaoInserir}
+                onClick={handleInserirAnimal}
+                disabled={!animalSelecionado}
+              >
+                Inserir animal
+              </button>
+            </div>
           </div>
-        </div>
-        ) : []}
+        ) : (
+          []
+        )}
 
         {/*SLIDES DOS ANIMAIS CADASTRADOS*/}
         {animaisCarrossel.length > 0 ? (
@@ -1076,57 +1130,59 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
                 </div>
 
                 {podeGerenciarCarrosseis && (
-                <div className={styles.divBotaoSlide}>
-                  {estaEditando ? (
-                    <div className={styles.divBotoesEdicao}>
-                      <button
-                        className={styles.botaoCancelar}
-                        onClick={cancelarEdicao}
-                        disabled={salvandoEdicao}
-                      >
-                        Cancelar
-                      </button>
-                      <button
-                        className={`${styles.botaoSalvar} ${
-                          !existemAlteracoes || salvandoEdicao
-                            ? styles.desativado
-                            : ""
-                        }`}
-                        onClick={() => salvarEdicaoSlide(slide.id)}
-                        disabled={!existemAlteracoes || salvandoEdicao}
-                      >
-                        {salvandoEdicao ? "Salvando..." : "Salvar"}
-                      </button>
-                    </div>
-                  ) : (
-                    <div className={styles.divBotoesEdicao}>
-                      <button
-                        className={styles.botaoEditar}
-                        onClick={() => iniciarEdicaoSlide(slide)}
-                      >
-                        Editar slide
-                      </button>
-                      <button
-                        className={styles.botaoRemover}
-                        onClick={() =>
-                          handleRemoverAnimal(slide.id, slide.animal.nome)
-                        }
-                        disabled={removendoAnimal === slide.id}
-                        style={{
-                          cursor:
-                            removendoAnimal === slide.id
-                              ? "not-allowed"
-                              : "pointer",
-                          opacity: removendoAnimal === slide.id ? 0.6 : 1,
-                        }}
-                      >
-                        {removendoAnimal === slide.id
-                          ? "Removendo..."
-                          : "Remover animal"}
-                      </button>
-                    </div>
-                  )}
-                </div>
+                  <div className={styles.divBotaoSlide}>
+                    {estaEditando ? (
+                      <div className={styles.divBotoesEdicao}>
+                        <button
+                          className={styles.botaoCancelar}
+                          onClick={cancelarEdicao}
+                          disabled={salvandoEdicao}
+                        >
+                          Cancelar
+                        </button>
+                        <button
+                          className={`${styles.botaoSalvar} ${
+                            !existemAlteracoes || salvandoEdicao
+                              ? styles.desativado
+                              : ""
+                          }`}
+                          onClick={() => salvarEdicaoSlide(slide.id)}
+                          disabled={!existemAlteracoes || salvandoEdicao}
+                        >
+                          {salvandoEdicao ? "Salvando..." : "Salvar"}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className={styles.divBotoesEdicao}>
+                        <button
+                          className={styles.botaoEditar}
+                          onClick={() => iniciarEdicaoSlide(slide)}
+                        >
+                          Editar slide
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.botaoRemover}
+                          onClick={() =>
+                            handleRemoverAnimal(slide.id, slide.animal.nome)
+                          }
+                          disabled={removendoAnimal === slide.id}
+                          style={{
+                            cursor:
+                              removendoAnimal === slide.id
+                                ? "not-allowed"
+                                : "pointer",
+
+                            opacity: removendoAnimal === slide.id ? 0.6 : 1,
+                          }}
+                        >
+                          {removendoAnimal === slide.id
+                            ? "Removendo..."
+                            : "Remover animal"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             );

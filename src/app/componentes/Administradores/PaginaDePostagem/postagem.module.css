@@ -129,6 +129,7 @@
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.644);
   padding: 40px;
   border-radius: 20px;
+  min-width: 45%;
 }
 
 

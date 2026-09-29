@@ -8,5 +8,6 @@ module.exports = {
   CarrosselDeAnimais: require("./CarrosselDeAnimais"),
   Doadores: require("./Doadores"),
   Documentos: require("./Documentos"),
+  Destaque: require("./Destaque"),
   Usuario: require("./Usuario"),
 };

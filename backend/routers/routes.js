@@ -35,6 +35,11 @@ const postagemController = require(
   "../controllers/postagemController",
 );
 
+const destaqueController = require(
+  "../controllers/destaqueController",
+);
+
+
 // ============================================================================
 // MIDDLEWARES DE AUTENTICAÇÃO
 // ============================================================================
