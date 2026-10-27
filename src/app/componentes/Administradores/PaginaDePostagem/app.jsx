@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 
-export default function ProgramarPostagem() {
+export default function DestaquesEEventos() {
   const [abaAtiva, setAbaAtiva] = useState("primeiroTopico");
   const [legenda, setLegenda] = useState("");
   const [plataformas, setPlataformas] = useState(["facebook", "instagram"]);
@@ -311,8 +311,18 @@ export default function ProgramarPostagem() {
             </p>
           </div>
           <div className={styles.containerFiltros}>
-            <div className={styles.filtroEssencial}>
+            <div className={styles.filtro}>
               <label>Legenda da Sessão</label>
+              <textarea
+                value={legenda}
+                onChange={(event) => setLegenda(event.target.value)}
+                maxLength={2200}
+                rows={5}
+                placeholder="Escreva a legenda que irá acompanhar a imagem."
+              />
+            </div>
+            <div className={styles.filtro}>
+              <label>Imagem da sessão</label>
               <textarea
                 value={legenda}
                 onChange={(event) => setLegenda(event.target.value)}

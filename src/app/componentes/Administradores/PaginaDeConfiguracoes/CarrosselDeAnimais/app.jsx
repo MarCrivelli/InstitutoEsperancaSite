@@ -28,10 +28,11 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
   const [erro, setErro] = useState("");
   const [animais, setAnimais] = useState([]);
   const [animaisCarrossel, setAnimaisCarrossel] = useState([]);
+
+  const [indiceAtual, setIndiceAtual] = useState(0);
   const [animalSelecionado, setAnimalSelecionado] = useState(null);
   const [carregando, setCarregando] = useState(false);
   const [carregandoCarrossel, setCarregandoCarrossel] = useState(false);
-  const [indiceAtual, setIndiceAtual] = useState(0);
 
   // ESTADOS PARA CONTROLE DE EXIBIÇÃO
   const [mostrarSaidaFormulario, setMostrarSaidaFormulario] = useState(false);
@@ -64,8 +65,6 @@ export default function CarrosselAnimais({ podeGerenciarCarrosseis }) {
 
       return Math.min(indiceAnterior, totalSlides - 1);
     });
-    carregarAnimais();
-    carregarAnimaisCarrossel();
   }, [animaisCarrossel.length, podeGerenciarCarrosseis]);
 
   const carregarAnimais = async () => {

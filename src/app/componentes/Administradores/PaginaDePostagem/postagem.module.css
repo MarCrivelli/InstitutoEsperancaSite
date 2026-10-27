@@ -138,20 +138,20 @@
   max-width: calc(50% - 30px);
 }
 
-.filtroEssencial{
+.filtro{
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 100%;
 }
 
-.filtroEssencial label{
+.filtro label{
   font-size: 1.3rem;
   font-weight: 600;
   color: #cf0953;
 }
 
-.filtroEssencial textarea{
+.filtro textarea{
   padding: 4px;
   border: 1px solid rgba(0, 0, 0, 0.24);
   border-radius: 7px;
@@ -159,16 +159,16 @@
   min-height: 35px;
 }
 
-.filtroEssencial span{
+.filtro span{
   display: flex;
   gap: 5px;
 }
 
-.filtroEssencial span input{
+.filtro span input{
   width: 15px;
 }
 
-.filtroEssencial span img{
+.filtro span img{
   width: 30px;
 }
 
