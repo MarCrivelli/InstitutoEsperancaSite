@@ -318,7 +318,7 @@ export default function DestaquesEEventos() {
                 onChange={(event) => setLegenda(event.target.value)}
                 maxLength={2200}
                 rows={5}
-                placeholder="Escreva a legenda que irá acompanhar a imagem."
+                placeholder="Escreva a legenda que vai acompanhar a imagem."
               />
             </div>
             <div className={styles.filtro}>
@@ -328,7 +328,7 @@ export default function DestaquesEEventos() {
                 onChange={(event) => setLegenda(event.target.value)}
                 maxLength={2200}
                 rows={5}
-                placeholder="Escreva a legenda que irá acompanhar a imagem."
+                placeholder="Escreva a legenda que vai acompanhar a imagem."
               />
             </div>
             
