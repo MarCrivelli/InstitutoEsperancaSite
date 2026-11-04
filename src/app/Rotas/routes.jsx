@@ -15,7 +15,7 @@ import RotaProtegida from "./rotaProtegida";
 import HomeAdms from "../componentes/Administradores/Home/PaginaPrincipal/app";
 import FichasDeAnimais from "../componentes/Administradores/PaginaDeAnimais/PaginaPrincipal/app";
 import Configuracoes from "../componentes/Administradores/PaginaDeConfiguracoes/PaginaPrincipal/app";
-import ProgramarPostagem from "../componentes/Administradores/PaginaDePostagem/app";
+import Destaques from "../componentes/Administradores/PaginaDeDestaque/app";
 import VerMais from "../componentes/Administradores/PaginaDeVerMais/app";
 
 export default function Rotas() {
@@ -105,7 +105,7 @@ export default function Rotas() {
         />
 
         <Route
-          path="/programar_postagem"
+          path="/destaques"
           element={
             <RotaProtegida
               niveisPermitidos={[
@@ -114,7 +114,7 @@ export default function Rotas() {
                 "administrador",
               ]}
             >
-              <ProgramarPostagem />
+              <Destaques />
             </RotaProtegida>
           }
         />

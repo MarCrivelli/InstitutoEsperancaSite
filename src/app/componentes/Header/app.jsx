@@ -39,7 +39,7 @@ export default function Header({ destino = "visitantes", tipo = "padrao" }) {
         },
         {
           texto: "Postagens",
-          rota: "/programar_postagem",
+          rota: "/destaques",
           icone: `${import.meta.env.BASE_URL}headerAdms/post.png`,
         },
         {

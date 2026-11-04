@@ -1,21 +1,13 @@
-import styles from "./postagem.module.css";
+import styles from "./destaque.module.css";
 import Header from "../../Header/app";
 import BotaoDeTrocaDePaginas from "../../BotaoParaPaginaDeAdms/app";
 import opcoesSelect from "../OpcoesDeSelecao/opcoes";
 import Select from "react-select";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import Tab from "react-bootstrap/Tab";
-import Tabs from "react-bootstrap/Tabs";
 
 export default function DestaquesEEventos() {
   const [abaAtiva, setAbaAtiva] = useState("primeiroTopico");
   const [legenda, setLegenda] = useState("");
-  const [plataformas, setPlataformas] = useState(["facebook", "instagram"]);
-  const [statusMeta, setStatusMeta] = useState({
-    facebook: false,
-    instagram: false,
-  });
   const [enviando, setEnviando] = useState(false);
   const [mensagem, setMensagem] = useState("");
 
@@ -33,11 +25,6 @@ export default function DestaquesEEventos() {
     opcaoPublicacao: null,
   });
 
-  // Opções para o seletor de data/hora
-  const opcoesTempoPostagem = [
-    { value: "agora", label: "Publicar agora" },
-    { value: "agendar", label: "Agendar para depois" },
-  ];
 
   // Manipuladores genéricos para os selects
   const handleChangeFiltro = (campo) => (opcaoSelecionada) => {
