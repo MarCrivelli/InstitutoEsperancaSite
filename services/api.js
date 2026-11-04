@@ -1,7 +1,15 @@
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
+if (!API_URL) {
+  throw new Error(
+    "VITE_API_URL não configurada no frontend."
+  );
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: API_URL.replace(/\/+$/, ""),
   timeout: 60000,
 });
 

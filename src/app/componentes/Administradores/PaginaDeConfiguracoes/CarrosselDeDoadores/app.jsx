@@ -3,7 +3,7 @@ import axios from "axios";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
-import api from "../../../../../services/api";
+import api from "../../../../../../services/api";
 import styles from "./carrossel.module.css";
 
 export default function CarrosselDeDoadores({

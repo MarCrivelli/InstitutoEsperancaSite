@@ -1,6 +1,6 @@
 //================ Importações externas ================//
 import { useState, useEffect } from "react";
-import api from "../../../../../../services/api";
+import api from "../../../../../../../services/api";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
