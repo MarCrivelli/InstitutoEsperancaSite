@@ -6,7 +6,6 @@ import Select from "react-select";
 import { useEffect, useState } from "react";
 
 export default function DestaquesEEventos() {
-  const [abaAtiva, setAbaAtiva] = useState("primeiroTopico");
   const [legenda, setLegenda] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [mensagem, setMensagem] = useState("");
@@ -24,7 +23,6 @@ export default function DestaquesEEventos() {
     dataPostagem: "",
     opcaoPublicacao: null,
   });
-
 
   // Manipuladores genéricos para os selects
   const handleChangeFiltro = (campo) => (opcaoSelecionada) => {
@@ -299,6 +297,17 @@ export default function DestaquesEEventos() {
           </div>
           <div className={styles.containerFiltros}>
             <div className={styles.filtro}>
+              <label>Imagem da sessão</label>
+              <label>
+                <input
+                  type="file"
+                  style={{ display: "none" }}
+                  accept="image/*"
+                />
+              </label>
+            </div>
+
+            <div className={styles.filtro}>
               <label>Legenda da Sessão</label>
               <textarea
                 value={legenda}
@@ -308,17 +317,6 @@ export default function DestaquesEEventos() {
                 placeholder="Escreva a legenda que vai acompanhar a imagem."
               />
             </div>
-            <div className={styles.filtro}>
-              <label>Imagem da sessão</label>
-              <textarea
-                value={legenda}
-                onChange={(event) => setLegenda(event.target.value)}
-                maxLength={2200}
-                rows={5}
-                placeholder="Escreva a legenda que vai acompanhar a imagem."
-              />
-            </div>
-            
           </div>
           <div className={styles.containerBotaoPostagem}>
             <button onClick={publicar} disabled={enviando}>

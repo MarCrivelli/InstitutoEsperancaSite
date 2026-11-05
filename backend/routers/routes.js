@@ -31,10 +31,6 @@ const documentosController = require(
   "../controllers/documentosController",
 );
 
-const postagemController = require(
-  "../controllers/postagemController",
-);
-
 const destaqueController = require(
   "../controllers/destaqueController",
 );

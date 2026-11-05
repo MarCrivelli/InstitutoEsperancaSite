@@ -38,7 +38,7 @@ export default function Header({ destino = "visitantes", tipo = "padrao" }) {
           icone: `${import.meta.env.BASE_URL}headerAdms/pata.png`,
         },
         {
-          texto: "Postagens",
+          texto: "Destaques",
           rota: "/destaques",
           icone: `${import.meta.env.BASE_URL}headerAdms/post.png`,
         },
