@@ -256,42 +256,6 @@ routes.delete(
 );
 
 // ============================================================================
-// POSTAGENS NO FACEBOOK E INSTAGRAM
-// ============================================================================
-
-routes.get(
-  "/postagens/meta/status",
-  verificarToken,
-  apenasAdministrador,
-  postagemController.obterStatusMeta,
-);
-
-routes.get(
-  "/postagens",
-  verificarToken,
-  apenasAdministrador,
-  postagemController.listarPostagens,
-);
-
-routes.post(
-  "/postagens",
-  verificarToken,
-  apenasAdministrador,
-  postagemController.criarPostagem,
-);
-
-routes.post(
-  "/postagens/processar-agendadas",
-  (req, res, next) => {
-    if (!process.env.META_CRON_SECRET || req.get("x-cron-secret") !== process.env.META_CRON_SECRET) {
-      return res.status(401).json({ message: "Cron não autorizado." });
-    }
-    next();
-  },
-  postagemController.processarAgendadas,
-);
-
-// ============================================================================
 // ROTAS DO CARROSSEL
 // ============================================================================
 

@@ -14,6 +14,44 @@ footer {
   width: 100%;
 }
 
+.secaoFooter:first-child{
+  padding: 20px;
+  row-gap: 40px;
+  border-radius: 10px;
+}
+
+.secaoFooter:first-child .Tabs{
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.secaoFooter:first-child .Tab{
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.secaoFooter:first-child .Tab .cardVoluntarios, .cardDiretoria{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background-color: white;
+  flex: 1 300px;
+}
+
+.secaoFooter:first-child .Tab .cardVoluntarios img, .cardDiretoria img{
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+}
+
+.secaoFooter:first-child .Tab .cardVoluntarios h2, .cardDiretoria h2{
+  width: 100%;
+}
+
 .secaoFooter h1 {
   margin-bottom: 10px;
 }

@@ -156,6 +156,9 @@
   height: 50px;
   cursor: pointer;
   border: 2px dashed #ffb300;
+  color: #ffb300;
+  justify-content: center;
+  font-size: 1.6rem;
   background-color: #ffb3000c;
   border-radius: 10px;
   margin-inline: auto;

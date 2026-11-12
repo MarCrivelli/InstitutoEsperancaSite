@@ -24,38 +24,6 @@ export default function DestaquesEEventos() {
     opcaoPublicacao: null,
   });
 
-  // Manipuladores genéricos para os selects
-  const handleChangeFiltro = (campo) => (opcaoSelecionada) => {
-    setFiltrosSelecionados((prev) => ({
-      ...prev,
-      [campo]: opcaoSelecionada,
-    }));
-  };
-
-  // Manipulador específico para o tempo de publicação
-  const handleChangeTempoPostagem = (opcaoSelecionada) => {
-    setFiltrosSelecionados((prev) => ({
-      ...prev,
-      opcaoPublicacao: opcaoSelecionada,
-      dataPostagem:
-        opcaoSelecionada?.value === "agora" ? "" : prev.dataPostagem,
-    }));
-  };
-
-  // Manipulador para a data selecionada
-  const handleChangeData = (e) => {
-    setFiltrosSelecionados((prev) => ({
-      ...prev,
-      dataPostagem: e.target.value,
-    }));
-  };
-
-  const obterDataHoraLocalAtual = () => {
-    const agora = new Date();
-    agora.setMinutes(agora.getMinutes() - agora.getTimezoneOffset());
-    return agora.toISOString().slice(0, 16);
-  };
-
   useEffect(() => {
     const carregarStatusMeta = async () => {
       try {
@@ -75,13 +43,6 @@ export default function DestaquesEEventos() {
     carregarStatusMeta();
   }, []);
 
-  const alternarPlataforma = (plataforma) => {
-    setPlataformas((atuais) =>
-      atuais.includes(plataforma)
-        ? atuais.filter((item) => item !== plataforma)
-        : [...atuais, plataforma],
-    );
-  };
 
   const publicar = async () => {
     setMensagem("");
@@ -200,14 +161,6 @@ export default function DestaquesEEventos() {
     morph3.start();
     morph4.start();
     morph5.start();
-
-    return () => {
-      morph1.stop();
-      morph2.stop();
-      morph3.stop();
-      morph4.stop();
-      morph5.stop();
-    };
   }, []);
 
   return (
@@ -303,7 +256,8 @@ export default function DestaquesEEventos() {
                   type="file"
                   style={{ display: "none" }}
                   accept="image/*"
-                />
+                /> 
+                +
               </label>
             </div>
 

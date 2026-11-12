@@ -2,6 +2,8 @@ import { useLocation } from "react-router-dom";
 import { atribuicoes } from "../../../hooks/Atribuicoes/atribuicoes.jsx";
 import { atribuicoesPorRota } from "../../../hooks/Atribuicoes/atribuicoesPorRota.jsx";
 import styles from "./footer.module.css";
+import Tab from "react-bootstrap/Tab";
+import Tabs from "react-bootstrap/Tabs";
 
 export default function Footer() {
   const location = useLocation();
@@ -14,17 +16,59 @@ export default function Footer() {
     ...new Set([...atribuicoesFixas, ...atribuicoesEspecificas]),
   ];
 
+  const voluntarios = [
+    { nome: "Eliane", img: "voluntarios/voluntario1.jpeg" },
+    { nome: "Maria", img: "voluntarios/voluntario2.jpeg" },
+    { nome: "Pedro", img: "voluntarios/voluntario3.jpeg" },
+    { nome: "Clodoaldo", img: "voluntarios/voluntario4.jpeg" },
+    { nome: "Keila", img: "voluntarios/voluntario5.jpeg" },
+    { nome: "Marilza", img: "voluntarios/voluntario6.jpeg" },
+  ];
+
+  const diretoria = [
+    { nome: "Eliane", img: "diretoria/diretor1.jpeg" },
+    { nome: "Maria", img: "diretoria/diretor2.jpeg" },
+    { nome: "Pedro", img: "diretoria/diretor3.jpeg" },
+    { nome: "Clodoaldo", img: "diretoria/diretor4.jpeg" },
+    { nome: "Keila", img: "diretoria/diretor5.jpeg" },
+  ];
+
   return (
     <footer>
       <div className={styles.secaoFooter}>
-        <h1>Sobre nós</h1>
+        <Tabs
+          defaultActiveKey="profile"
+          id="justify-tab-example"
+          className={styles.Tabs}
+          justify
+        >
+          <Tab className={styles.Tab} eventKey="home" title="Voluntários">
+            {voluntarios.map((voluntario, index) => (
+              <div className={styles.cardVoluntarios} key={index}>
+                <img src={voluntario.img} alt={voluntario.img} />
+                <h2>{voluntario.nome}</h2>
+              </div>
+            ))}
+          </Tab>
+          <Tab className={styles.Tab} eventKey="profile" title="Diretoria">
+            {diretoria.map((diretoria, index) => (
+              <div className={styles.cardDiretoria} key={index}>
+                <img src={diretoria.img} alt={diretoria.img} />
+                <h2>{diretoria.nome}</h2>
+              </div>
+            ))}
+          </Tab>
+        </Tabs>
+        <div>
+          <h1>Sobre nós</h1>
 
-        <p>
-          O Instituto Esperança é uma instituição sem fins lucrativos que atua
-          diretamente na causa animal, com o objetivo principal de conscientizar
-          as pessoas quanto ao bem-estar animal, aos maus-tratos e à adoção
-          responsável.
-        </p>
+          <p>
+            O Instituto Esperança é uma instituição sem fins lucrativos que atua
+            diretamente na causa animal, com o objetivo principal de
+            conscientizar as pessoas quanto ao bem-estar animal, aos maus-tratos
+            e à adoção responsável.
+          </p>
+        </div>
       </div>
 
       <div className={styles.secaoFooter}>
@@ -96,8 +140,7 @@ export default function Footer() {
 
         <div className={styles.alinharMencao}>
           <p>
-            Rodrigo Silva Duran -
-            <strong> Orientador do projeto</strong>
+            Rodrigo Silva Duran -<strong> Orientador do projeto</strong>
           </p>
           <div className={styles.alinharMencaoContato}>
             <strong>E-mail para contato:</strong>
@@ -115,7 +158,6 @@ export default function Footer() {
             <p>marcelino.garcia@ifms.edu.br</p>
           </div>
         </div>
-
       </div>
     </footer>
   );
