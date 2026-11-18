@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { atribuicoes } from "../../../hooks/Atribuicoes/atribuicoes.jsx";
 import { atribuicoesPorRota } from "../../../hooks/Atribuicoes/atribuicoesPorRota.jsx";
+import { useState } from "react";
 import styles from "./footer.module.css";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
@@ -26,39 +27,58 @@ export default function Footer() {
   ];
 
   const diretoria = [
-    { nome: "Eliane", img: "diretoria/diretor1.jpeg" },
-    { nome: "Maria", img: "diretoria/diretor2.jpeg" },
-    { nome: "Pedro", img: "diretoria/diretor3.jpeg" },
-    { nome: "Clodoaldo", img: "diretoria/diretor4.jpeg" },
-    { nome: "Keila", img: "diretoria/diretor5.jpeg" },
+    { nome: "Ailton", img: "diretoria/diretor1.jpeg" },
+    { nome: "Patrícia", img: "diretoria/diretor2.jpeg" },
+    { nome: "Toninha", img: "diretoria/diretor3.jpeg" },
+    { nome: "Célia", img: "diretoria/diretor4.jpeg" },
+    { nome: "Isa", img: "diretoria/diretor5.jpeg" },
   ];
+
+  const [abaAtiva, setAbaAtiva] = useState("primeiroTopico");
 
   return (
     <footer>
       <div className={styles.secaoFooter}>
         <Tabs
-          defaultActiveKey="profile"
-          id="justify-tab-example"
+          defaultActiveKey="primeiroTopico"
+          onSelect={(key) => {
+            if (key) {
+              setAbaAtiva(key);
+            }
+          }}
+          activeKey={abaAtiva}
+          transition={true}
           className={styles.Tabs}
-          justify
         >
-          <Tab className={styles.Tab} eventKey="home" title="Voluntários">
+          <Tab
+            eventKey="primeiroTopico"
+            title="Voluntários"
+            tabClassName={`${abaAtiva === "primeiroTopico" ? styles.tabAtivo : styles.tabPadrao}`}
+            className={styles.Tab}
+          >
             {voluntarios.map((voluntario, index) => (
-              <div className={styles.cardVoluntarios} key={index}>
+              <div className={`${abaAtiva === "segundoTopico" ? styles.tabInativo : styles.cardVoluntarios}`} key={index}>
                 <img src={voluntario.img} alt={voluntario.img} />
                 <h2>{voluntario.nome}</h2>
               </div>
             ))}
           </Tab>
-          <Tab className={styles.Tab} eventKey="profile" title="Diretoria">
+
+          <Tab
+            eventKey="segundoTopico"
+            title="Diretoria"
+            tabClassName={`${abaAtiva === "primeiroTopico" ? styles.tabAtivo : styles.tabPadrao}`}
+            className={styles.Tab}
+          >
             {diretoria.map((diretoria, index) => (
-              <div className={styles.cardDiretoria} key={index}>
+              <div className={`${abaAtiva === "primeiroTopico" ? styles.tabInativo : styles.cardDiretoria}`} key={index}>
                 <img src={diretoria.img} alt={diretoria.img} />
                 <h2>{diretoria.nome}</h2>
               </div>
             ))}
           </Tab>
         </Tabs>
+
         <div>
           <h1>Sobre nós</h1>
 

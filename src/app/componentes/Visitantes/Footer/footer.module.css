@@ -15,29 +15,32 @@ footer {
 }
 
 .secaoFooter:first-child{
-  padding: 20px;
-  row-gap: 40px;
   border-radius: 10px;
 }
 
 .secaoFooter:first-child .Tabs{
   padding: 20px;
   border-radius: 10px;
+  background-color: rgb(0, 60, 255);
 }
 
 .secaoFooter:first-child .Tab{
   display: flex;
   flex-wrap: wrap;
-  padding: 20px;
-  gap: 20px;
+  padding: 20px 0;
+  gap: 40px;
+  row-gap: 20px;
   justify-content: space-between;
+}
+
+.tabInativo{
+  display: none !important;
 }
 
 .secaoFooter:first-child .Tab .cardVoluntarios, .cardDiretoria{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
   background-color: white;
   flex: 1 300px;
 }
@@ -46,10 +49,12 @@ footer {
   width: 100%;
   max-height: 300px;
   object-fit: cover;
+  border-radius: 10px;
 }
 
 .secaoFooter:first-child .Tab .cardVoluntarios h2, .cardDiretoria h2{
   width: 100%;
+  font-size: 1.2rem;
 }
 
 .secaoFooter h1 {
